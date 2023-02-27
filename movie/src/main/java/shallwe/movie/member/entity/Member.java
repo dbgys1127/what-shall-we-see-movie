@@ -1,19 +1,55 @@
 package shallwe.movie.member.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import shallwe.movie.audit.TimeAudit;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Member {
+@NoArgsConstructor
+public class Member extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private String memberImage;
+
+    @Column(nullable = false)
+    private int warningCard;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
+    public enum MemberRole{
+        ROLE_USER,ROLE_ADMIN
+    }
+
+    public Member(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.memberImage = "이미지";
+    }
+
+    // test용 생성자
+    public Member(Long id, String email, String password, String memberImage, int warningCard) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.memberImage = memberImage;
+        this.warningCard = warningCard;
+    }
 }
