@@ -12,5 +12,7 @@
     password: <input type="text" name="password" />
     <button type="submit">회원가입</button>
 </form>
+    <button type="button"><a href="/">메인</a></button>
+
 </body>
 </html>

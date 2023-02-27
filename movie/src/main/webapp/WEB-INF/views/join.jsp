@@ -10,5 +10,6 @@
 <ul>
     <li> email = ${member.email}</li>
     <li> memberImage = ${member.memberImage}</li>
+    <button type="button"><a href="/">메인</a></button>
 </body>
 </html>

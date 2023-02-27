@@ -10,6 +10,7 @@ import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.member.service.MemberServiceImpl;
 import shallwe.movie.querydsl.QuerydslRepositoryImpl;
+import shallwe.movie.security.service.CustomAuthorityUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +22,7 @@ public class TestConfig {
 
     @Autowired
     MemberRepository memberRepository;
+
 
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
@@ -34,6 +36,6 @@ public class TestConfig {
 
     @Bean
     public MemberService memberService() {
-        return new MemberServiceImpl(memberRepository, PasswordEncoderFactories.createDelegatingPasswordEncoder());
+        return new MemberServiceImpl(memberRepository, PasswordEncoderFactories.createDelegatingPasswordEncoder(),new CustomAuthorityUtils());
     }
 }

@@ -12,7 +12,7 @@
     <div class="row alert alert-danger center" role="alert" >
         <c:if test="${param.error != null}">로그인 인증에 실패했습니다.</c:if>
     </div>
-    email: <input type="text" name="email" />
+    email: <input type="text" name="username" />
     password: <input type="text" name="password" />
     <button type="submit">로그인</button>
 </form>

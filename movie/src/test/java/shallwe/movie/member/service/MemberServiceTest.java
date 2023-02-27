@@ -25,7 +25,7 @@ class MemberServiceTest {
     @DisplayName("1. 회원가입이 정확하게 되는지와 비밀번호가 암호화되는가?")
     @Test
     void is_save_member() {
-        Member member = new Member(1L,"dbgys@gmail.com","1234","이미지",1;
+        Member member = new Member(1L,"dbgys@gmail.com","1234","이미지",1);
         Member savedMember = memberService.createMember(member);
         System.out.println(savedMember.getPassword());
         assertThat(savedMember.getEmail()).isEqualTo("dbgys@gmail.com");

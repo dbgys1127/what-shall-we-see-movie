@@ -1,11 +1,13 @@
 package shallwe.movie.security.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
@@ -15,6 +17,7 @@ import shallwe.movie.member.repository.MemberRepository;
 import java.util.Collection;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             setId(member.getId());
             setEmail(member.getEmail());
             setPassword(member.getPassword());
+            setMemberImage("이미지");
             setWarningCard(0);
             setRoles(member.getRoles());
         }
@@ -40,11 +44,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return authorityUtils.createAuthorities(this.getRoles());
-        }
-
-        @Override
-        public String getPassword() {
-            return null;
         }
 
         @Override
