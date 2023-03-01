@@ -23,14 +23,19 @@ public class MemberController {
         return "login";
     }
 
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "join-form";
-    }
-
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "accessdenied";
+    }
+
+    @GetMapping("/logout-form")
+    public String logoutForm() {
+        return "logout";
+    }
+
+    @GetMapping("/join-form")
+    public String joinForm() {
+        return "join-form";
     }
 
     @PostMapping("/join")

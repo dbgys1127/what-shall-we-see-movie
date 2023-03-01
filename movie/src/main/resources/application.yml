@@ -20,6 +20,12 @@ spring:
       properties:
         hibernate:
           format_sql: true
+  # redis setting
+  redis:
+    host: localhost
+    port: 6379
+  session:
+    store-type: redis
 
   # view setting
   mvc:
@@ -29,13 +35,18 @@ spring:
 
 #https setting
 server:
-  ssl:
-    key-store: src/main/resources/localhost.p12
-    key-store-type: PKCS12
-    key-store-password: changeit
-  port: 8888
+  servlet:
+    session:
+      timeout: 5m
+      cookie:
+        max-age: 5m
+        http-only: true
+  port: 8080
 
 #admin setting
 mail:
   address:
     admin: admin@gmail.com
+
+handlebars:
+  expose-session-attributes: true

@@ -41,7 +41,7 @@ public class CustomUserAuthenticationProvider implements AuthenticationProvider 
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
             return UsernamePasswordAuthenticationToken.authenticated(username, password, authorities);
         } catch (Exception ex) {
-            throw new UsernameNotFoundException(ex.getMessage()); // (1) AuthenticationException으로 다시 throw 한다.
+            throw new UsernameNotFoundException(ex.getMessage());
         }
     }
 

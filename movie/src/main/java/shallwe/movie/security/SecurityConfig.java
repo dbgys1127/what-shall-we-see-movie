@@ -32,8 +32,13 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/")
                 .loginProcessingUrl("/process_login")
                 .failureUrl("/login-form?error")
+                .successHandler(new CustomLoginSuccessHandler())
                 .and()
                 .exceptionHandling().accessDeniedPage("/access-denied")
+                .and()
+                .logout()
+                .logoutUrl("/process_logout")
+                .logoutSuccessUrl("/login-form")
                 .and()
                 .authorizeHttpRequests(authorize->authorize
                         .antMatchers("/mypage/**").hasRole("USER")
