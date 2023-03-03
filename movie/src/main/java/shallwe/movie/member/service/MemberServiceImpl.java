@@ -34,10 +34,7 @@ public class MemberServiceImpl implements MemberService{
         List<String> roles = authorityUtils.createRoles(member.getEmail());
         member.setRoles(roles);
 
-        Member savedMember = memberRepository.save(member);
-        log.info("Created Member email: {}",savedMember.getEmail());
-        log.info("Created Member password: {}",savedMember.getPassword());
-        return savedMember;
+        return memberRepository.save(member);
     }
 
     private void verifyExistsEmail(String email) {

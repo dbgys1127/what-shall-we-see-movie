@@ -12,6 +12,8 @@ import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
 
+import javax.validation.Valid;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDto.Post memberDto, Model model) {
+    public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         Member member = new Member(memberDto.getEmail(), memberDto.getPassword());
         Member saveMember=memberService.createMember(member);
         model.addAttribute("member",saveMember);
