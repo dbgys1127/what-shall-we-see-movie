@@ -17,9 +17,11 @@ spring:
     hibernate:
       ddl-auto: create
       show-sql: true
+      generate-ddl: true
       properties:
         hibernate:
           format_sql: true
+
   # redis setting
   redis:
     host: localhost
@@ -41,7 +43,7 @@ server:
       cookie:
         max-age: 5m
         http-only: true
-  port: 8081
+  port: 8080
 
 #admin setting
 mail:
