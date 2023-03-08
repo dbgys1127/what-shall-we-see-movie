@@ -44,7 +44,6 @@ server:
       cookie:
         max-age: 5m
         http-only: true
-  port: 8080
 
 #admin setting
 mail:
