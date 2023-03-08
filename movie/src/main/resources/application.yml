@@ -8,7 +8,7 @@ spring:
   # Database Setting Info
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/test
+    url: jdbc:h2:tcp://localhost/~/test
     username: sa
     password:
   # Jpa setting
