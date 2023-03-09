@@ -2,6 +2,7 @@ package shallwe.movie.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,8 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
+    @Value("${server.port}")
+    private String port;
     private final MemberService memberService;
 
     @GetMapping("/login-form")
@@ -42,9 +45,23 @@ public class MemberController {
 
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
+        log.info("now port {}",port);
         Member member = new Member(memberDto.getEmail(), memberDto.getPassword());
         Member saveMember=memberService.createMember(member);
         model.addAttribute("member",saveMember);
         return "join";
     }
+    @GetMapping("/mypage")
+    public void mypage() {
+        log.info("now port {}",port);
+    }
+    @GetMapping("/movie")
+    public void movie() {
+        log.info("now port {}",port);
+    }
+    @GetMapping("/inquiry")
+    public void inquiry() {
+        log.info("now port {}",port);
+    }
+
 }
