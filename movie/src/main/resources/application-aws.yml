@@ -17,6 +17,11 @@ spring:
   session:
     store-type: redis
 
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
 mail:
   address:
     admin: admin@gmail.com
