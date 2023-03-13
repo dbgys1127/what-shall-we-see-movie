@@ -9,6 +9,7 @@
 <ul>
     ${nowMember}
     ${sessionId}
+    <h2> war 덮어쓰기 확인 </h2>
 
     <li><a href="/">홈 화면 </a></li>
     <li><a href="/movie">영화 </a></li>
