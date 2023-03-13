@@ -48,5 +48,6 @@ public class SecurityConfig {
                         .antMatchers("/admin/**").hasRole("ADMIN")
                         .antMatchers("/**").permitAll());
         return http.build();
+        //
     }
 }
