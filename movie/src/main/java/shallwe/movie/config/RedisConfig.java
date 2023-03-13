@@ -35,7 +35,7 @@ public class RedisConfig {
 //            redisServer.stop();
 //        }
 //    }
-
+//
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(redisHost, redisPort);
