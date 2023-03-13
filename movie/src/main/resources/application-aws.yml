@@ -12,7 +12,7 @@ spring:
 
   # redis setting
   redis:
-    host: localhost
+    host: ${ENDPOINT}
     port: 6379
   session:
     store-type: redis
