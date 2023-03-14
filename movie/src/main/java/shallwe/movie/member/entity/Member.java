@@ -1,9 +1,6 @@
 package shallwe.movie.member.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import shallwe.movie.audit.TimeAudit;
 
 import javax.persistence.*;
@@ -45,6 +42,7 @@ public class Member extends TimeAudit {
     }
 
     // test용 생성자
+    @Builder
     public Member(Long id, String email, String password, String memberImage, int warningCard) {
         this.id = id;
         this.email = email;

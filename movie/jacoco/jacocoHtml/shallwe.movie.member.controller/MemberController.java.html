@@ -2,6 +2,7 @@
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,38 +15,54 @@ import shallwe.movie.member.service.MemberService;
 
 import javax.validation.Valid;
 
-<span class="fc" id="L17">@Slf4j</span>
+<span class="fc" id="L18">@Slf4j</span>
 @Controller
-<span class="fc" id="L19">@RequiredArgsConstructor</span>
+<span class="fc" id="L20">@RequiredArgsConstructor</span>
 public class MemberController {
+    @Value(&quot;${server.port}&quot;)
+    private String port;
     private final MemberService memberService;
 
     @GetMapping(&quot;/login-form&quot;)
     public String loginForm() {
-<span class="nc" id="L25">        return &quot;login&quot;;</span>
+<span class="nc" id="L28">        return &quot;login&quot;;</span>
     }
 
     @GetMapping(&quot;/access-denied&quot;)
     public String accessDenied() {
-<span class="nc" id="L30">        return &quot;accessdenied&quot;;</span>
+<span class="nc" id="L33">        return &quot;accessdenied&quot;;</span>
     }
 
     @GetMapping(&quot;/logout-form&quot;)
     public String logoutForm() {
-<span class="nc" id="L35">        return &quot;logout&quot;;</span>
+<span class="nc" id="L38">        return &quot;logout&quot;;</span>
     }
 
     @GetMapping(&quot;/join-form&quot;)
     public String joinForm() {
-<span class="nc" id="L40">        return &quot;join-form&quot;;</span>
+<span class="nc" id="L43">        return &quot;join-form&quot;;</span>
     }
 
     @PostMapping(&quot;/join&quot;)
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-<span class="nc" id="L45">        Member member = new Member(memberDto.getEmail(), memberDto.getPassword());</span>
-<span class="nc" id="L46">        Member saveMember=memberService.createMember(member);</span>
-<span class="nc" id="L47">        model.addAttribute(&quot;member&quot;,saveMember);</span>
-<span class="nc" id="L48">        return &quot;join&quot;;</span>
+<span class="nc" id="L48">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="nc" id="L49">        Member member = new Member(memberDto.getEmail(), memberDto.getPassword());</span>
+<span class="nc" id="L50">        Member saveMember=memberService.createMember(member);</span>
+<span class="nc" id="L51">        model.addAttribute(&quot;member&quot;,saveMember);</span>
+<span class="nc" id="L52">        return &quot;join&quot;;</span>
     }
+    @GetMapping(&quot;/mypage&quot;)
+    public void mypage() {
+<span class="nc" id="L56">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="nc" id="L57">    }</span>
+    @GetMapping(&quot;/movie&quot;)
+    public void movie() {
+<span class="nc" id="L60">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="nc" id="L61">    }</span>
+    @GetMapping(&quot;/inquiry&quot;)
+    public void inquiry() {
+<span class="nc" id="L64">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="nc" id="L65">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
