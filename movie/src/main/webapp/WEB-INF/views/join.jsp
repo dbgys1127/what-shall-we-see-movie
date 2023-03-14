@@ -8,8 +8,8 @@
 <body>
 <h2> 가입성공 화면 </h2>
 <ul>
-    <li> email = ${member.email}</li>
-    <li> memberImage = ${member.memberImage}</li>
+    <li> email = ${email}</li>
+    <li> memberImage = ${memberImage}</li>
     <button type="button"><a href="/">메인</a></button>
 </body>
 </html>
