@@ -7,6 +7,9 @@
 </head>
 <body>
 <h2> Mypage </h2>
+<img src="${memberImage}" />
+<br>
+${email}
 <button type="button"><a href="/my-info">회원수정</a></button>
 </body>
 </html>

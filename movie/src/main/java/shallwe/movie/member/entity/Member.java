@@ -22,7 +22,7 @@ public class Member extends TimeAudit {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String memberImage="이미지";
 
     @Column(nullable = false)
@@ -38,11 +38,11 @@ public class Member extends TimeAudit {
 
     // test용 생성자
     @Builder
-    public Member(Long memberId, String email, String password, String memberImage, int warningCard, List<String> roles) {
+    public Member(Long memberId, String email, String password, int warningCard, List<String> roles) {
         this.memberId = memberId;
         this.email = email;
         this.password = password;
-        this.memberImage = memberImage;
+        this.memberImage = "이미지";
         this.warningCard = warningCard;
         this.roles = roles;
     }

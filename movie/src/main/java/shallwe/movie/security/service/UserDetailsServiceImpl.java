@@ -13,6 +13,7 @@ import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
+import shallwe.movie.s3.S3UploadService;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new CustomUserDetails(findMember);
     }
 
-    private class CustomUserDetails extends Member implements UserDetails {
+    public class CustomUserDetails extends Member implements UserDetails {
         public CustomUserDetails(Member member) {
             setMemberId(member.getMemberId());
             setEmail(member.getEmail());

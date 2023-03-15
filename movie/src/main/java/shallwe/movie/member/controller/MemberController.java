@@ -3,6 +3,9 @@ package shallwe.movie.member.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,8 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
+import shallwe.movie.security.service.UserDetailsServiceImpl;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,12 +75,16 @@ public class MemberController {
         return "my-info";
     }
 
-    @PatchMapping("/my-info")
+    @PostMapping("/my-info")
     public String patchMyInfo(@RequestParam("memberImage") MultipartFile multipartFile,
                               @ModelAttribute @Valid MemberDto.Patch memberPatchDto,
-                              Model model) {
-        Member member = new Member();
-        member.setPassword(memberPatchDto.getPassword());
+                              Authentication authentication,
+                              Model model) throws IOException {
+        String memberEmail = authentication.getName();
+        log.info("memberEmail = {}",memberEmail);
+        MemberDto.Response patchMember = memberService.updateMember(multipartFile, memberPatchDto,memberEmail);
+        model.addAttribute("memberImage", patchMember.getMemberImage());
+        model.addAttribute("email", memberEmail);
         return "mypage";
     }
 

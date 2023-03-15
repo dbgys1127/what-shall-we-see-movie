@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2> 회원정보 수정 </h2>
-<form action="/my-info" method="patch" enctype="multipart/form-data">
+<form action="/my-info" method="post" enctype="multipart/form-data">
     memberImage: <input type="file" name="memberImage"/>
     password: <input type="text" name="password" />
     <br>

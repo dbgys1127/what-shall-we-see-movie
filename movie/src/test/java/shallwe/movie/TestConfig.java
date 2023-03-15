@@ -1,5 +1,6 @@
 package shallwe.movie;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.querydsl.QuerydslRepositoryImpl;
+import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
 
 import javax.persistence.EntityManager;
@@ -35,7 +37,7 @@ public class TestConfig {
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository, PasswordEncoderFactories.createDelegatingPasswordEncoder(),new CustomAuthorityUtils());
+        return new MemberService(memberRepository, PasswordEncoderFactories.createDelegatingPasswordEncoder(),new CustomAuthorityUtils(),new S3UploadService(new AmazonS3Client()));
     }
 
     @Bean
