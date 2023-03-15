@@ -25,17 +25,19 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
 
-    public Member createMember(MemberDto.Post memberDto) {
+    public MemberDto.Response createMember(MemberDto.Post memberDto) {
         verifyExistsEmail(memberDto.getEmail());
         String encryptedPassword = passwordEncoder.encode(memberDto.getPassword());
         List<String> roles = authorityUtils.createRoles(memberDto.getEmail());
 
-        Member member = new Member();
-        member.setEmail(memberDto.getEmail());
-        member.setPassword(encryptedPassword);
-        member.setRoles(roles);
+        Member member = Member.builder().email(memberDto.getEmail()).password(encryptedPassword).roles(roles).build();
+        Member savedMember = memberRepository.save(member);
 
-        return memberRepository.save(member);
+        MemberDto.Response memberRepDto = MemberDto.Response.builder()
+                .memberImage(member.getMemberImage())
+                .email(member.getEmail()).build();
+
+        return memberRepDto;
     }
 
     private void verifyExistsEmail(String email) {

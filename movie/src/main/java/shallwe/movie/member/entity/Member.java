@@ -38,11 +38,12 @@ public class Member extends TimeAudit {
 
     // test용 생성자
     @Builder
-    public Member(Long memberId, String email, String password, String memberImage, int warningCard) {
+    public Member(Long memberId, String email, String password, String memberImage, int warningCard, List<String> roles) {
         this.memberId = memberId;
         this.email = email;
         this.password = password;
         this.memberImage = memberImage;
         this.warningCard = warningCard;
+        this.roles = roles;
     }
 }

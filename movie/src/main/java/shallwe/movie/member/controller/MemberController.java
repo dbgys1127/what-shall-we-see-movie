@@ -51,8 +51,7 @@ public class MemberController {
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         log.info("now port {}",port);
-//        Member member = new Member(memberDto.getEmail(), memberDto.getPassword());
-        Member saveMember=memberService.createMember(memberDto);
+        MemberDto.Response saveMember=memberService.createMember(memberDto);
         model.addAttribute("email",saveMember.getEmail());
         model.addAttribute("memberImage",saveMember.getMemberImage());
         return "join";

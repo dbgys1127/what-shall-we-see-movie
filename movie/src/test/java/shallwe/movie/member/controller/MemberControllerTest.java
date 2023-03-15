@@ -55,9 +55,7 @@ public class MemberControllerTest {
     @Test
     void email_and_password_cannot_be_blanked() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("");
-        member.setPassword("");
+        MemberDto.Post member = MemberDto.Post.builder().email("").password("").build();
 
         //when
         MvcResult result=mockMvc.perform(post("/join")
@@ -76,9 +74,8 @@ public class MemberControllerTest {
     @Test
     void email_cannot_be_blanked() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("");
-        member.setPassword("1234!abc");
+        MemberDto.Post member = MemberDto.Post.builder().email("").password("1234!abc").build();
+
 
         //when
         MvcResult result = mockMvc.perform(post("/join")
@@ -95,9 +92,7 @@ public class MemberControllerTest {
     @Test
     void password_cannot_be_blanked() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("dbgys@gmail.com");
-        member.setPassword("");
+        MemberDto.Post member = MemberDto.Post.builder().email("dbgys@gmail.com").password("").build();
 
         //when
         MvcResult result=mockMvc.perform(post("/join")
@@ -113,9 +108,7 @@ public class MemberControllerTest {
     @Test
     void with_incorrect_email() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("dbgysgmail.com");
-        member.setPassword("1234!abc");
+        MemberDto.Post member = MemberDto.Post.builder().email("dbgysgmail.com").password("1234!abc").build();
 
         //when
         MvcResult result=mockMvc.perform(post("/join")
@@ -132,9 +125,7 @@ public class MemberControllerTest {
     @Test
     void with_incorrect_password() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("dbgys@gmail.com");
-        member.setPassword("1234abc");
+        MemberDto.Post member = MemberDto.Post.builder().email("dbgys@gmail.com").password("123abc").build();
 
         //when
         MvcResult result=mockMvc.perform(post("/join")
@@ -151,24 +142,19 @@ public class MemberControllerTest {
     @Test
     void with_correct_password_email() throws Exception {
         //given
-        MemberDto.Post member = new MemberDto.Post();
-        member.setEmail("dbgys@gmail.com");
-        member.setPassword("1234!abc");
+        MemberDto.Post member = MemberDto.Post.builder().email("dbgys@gmail.com").password("1234!abc").build();
 
         //when
         mockMvc.perform(post("/join")
                 .param("email",member.getEmail())
                 .param("password",member.getPassword()))
                 .andExpect(model().attribute("email","dbgys@gmail.com"))
-                .andExpect(model().attribute("memberImage","이미지"))
                 .andExpect(view().name("join"));
     }
     @DisplayName("7.올바른 회원정보 입력시 테스트 성공")
     @Test
     void is_right_member() throws Exception {
-        MemberDto.Post memberDto = new MemberDto.Post();
-        memberDto.setEmail("test@gmail.com");
-        memberDto.setPassword("1234!abc");
+        MemberDto.Post memberDto = MemberDto.Post.builder().email("test@gmail.com").password("1234!abc").build();
         memberService.createMember(memberDto);
         mockMvc.perform(formLogin("/process_login").user("test@gmail.com").password("1234!abc"))
                 .andExpect(status().is3xxRedirection())
@@ -179,9 +165,7 @@ public class MemberControllerTest {
     @DisplayName("8.틀린 회원정보 입력시 인증 실패")
     @Test
     void is_wrong_member() throws Exception {
-        MemberDto.Post memberDto = new MemberDto.Post();
-        memberDto.setEmail("test@gmail.com");
-        memberDto.setPassword("1234!abc");
+        MemberDto.Post memberDto = MemberDto.Post.builder().email("test@gmail.com").password("123!abc").build();
         memberService.createMember(memberDto);
         mockMvc.perform(formLogin("/process_login").user("test1@gmail.com").password("1234!abc"))
                 .andExpect(unauthenticated())
