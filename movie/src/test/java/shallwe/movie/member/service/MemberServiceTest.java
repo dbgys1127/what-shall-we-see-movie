@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import shallwe.movie.TestConfig;
 import shallwe.movie.exception.BusinessLogicException;
+import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 
@@ -24,23 +25,27 @@ class MemberServiceTest {
     private MemberService memberService;
 
     @DisplayName("1. 회원가입이 정확하게 되는지와 비밀번호가 암호화되는가?")
-//    @Sql("classpath:db/tableInit.sql")
     @Test
     void is_save_member() {
-        Member member = new Member(1L,"dbgys@gmail.com","1234","이미지",1);
-        Member savedMember = memberService.createMember(member);
-        System.out.println(savedMember.getPassword());
-        assertThat(savedMember.getEmail()).isEqualTo("dbgys@gmail.com");
+        MemberDto.Post memberDto = new MemberDto.Post();
+        memberDto.setEmail("test@gmail.com");
+        memberDto.setPassword("1234!abc");
+        Member savedMember =memberService.createMember(memberDto);
+        assertThat(savedMember.getEmail()).isEqualTo(memberDto.getEmail());
         assertThat(savedMember.getRoles().get(0)).isEqualTo("USER");
     }
 
     @DisplayName("2. 메일이 이미 존재할때 존재한다는 예외가 나오는지 테스트")
     @Test
     void is_exist_member() {
-        Member member = new Member(1L,"dbgys@gmail.com","1234","이미지",1);
-        Member savedMember1 = memberService.createMember(member);
-        Member member1 = new Member(2L, "dbgys@gmail.com", "1234", "이미지", 1);
-        assertThatThrownBy(() -> memberService.createMember(member1))
+        MemberDto.Post memberDto = new MemberDto.Post();
+        memberDto.setEmail("test@gmail.com");
+        memberDto.setPassword("1234!abc");
+        Member savedMember =memberService.createMember(memberDto);
+        MemberDto.Post memberDto1 = new MemberDto.Post();
+        memberDto1.setEmail("test@gmail.com");
+        memberDto1.setPassword("1234!abc");
+        assertThatThrownBy(() -> memberService.createMember(memberDto1))
                 .isInstanceOf(BusinessLogicException.class);
     }
 }

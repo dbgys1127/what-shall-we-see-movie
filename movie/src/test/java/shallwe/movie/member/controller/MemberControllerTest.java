@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import shallwe.movie.member.dto.MemberDto;
@@ -31,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles("local")
 public class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -166,14 +166,10 @@ public class MemberControllerTest {
     @DisplayName("7.올바른 회원정보 입력시 테스트 성공")
     @Test
     void is_right_member() throws Exception {
-        Member member = Member.builder()
-                .email("test@gmail.com")
-                .password("1234!abc")
-                .memberImage("이미지")
-                .warningCard(1)
-                .id(1L)
-                .build();
-        memberService.createMember(member);
+        MemberDto.Post memberDto = new MemberDto.Post();
+        memberDto.setEmail("test@gmail.com");
+        memberDto.setPassword("1234!abc");
+        memberService.createMember(memberDto);
         mockMvc.perform(formLogin("/process_login").user("test@gmail.com").password("1234!abc"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
@@ -183,14 +179,10 @@ public class MemberControllerTest {
     @DisplayName("8.틀린 회원정보 입력시 인증 실패")
     @Test
     void is_wrong_member() throws Exception {
-        Member member = Member.builder()
-                .email("test@gmail.com")
-                .password("1234!abc")
-                .memberImage("이미지")
-                .warningCard(1)
-                .id(1L)
-                .build();
-        memberService.createMember(member);
+        MemberDto.Post memberDto = new MemberDto.Post();
+        memberDto.setEmail("test@gmail.com");
+        memberDto.setPassword("1234!abc");
+        memberService.createMember(memberDto);
         mockMvc.perform(formLogin("/process_login").user("test1@gmail.com").password("1234!abc"))
                 .andExpect(unauthenticated())
                 .andExpect(redirectedUrl("/login-form?error"));
@@ -251,5 +243,11 @@ public class MemberControllerTest {
     void join_form() throws Exception {
         mockMvc.perform(get("/join-form"))
                 .andExpect(view().name("join-form"));
+    }
+    @DisplayName("17.회원정보 수정(my-info)으로 접근시 my-info.jsp로 흘러간다.")
+    @Test
+    void member_patch_form() throws Exception {
+        mockMvc.perform(get("/my-info"))
+                .andExpect(view().name("my-info"));
     }
 }

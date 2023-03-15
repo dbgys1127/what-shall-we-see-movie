@@ -14,7 +14,7 @@ import java.util.List;
 public class Member extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long memberId;
 
     @Column(nullable = false)
     private String email;
@@ -23,10 +23,10 @@ public class Member extends TimeAudit {
     private String password;
 
     @Column
-    private String memberImage;
+    private String memberImage="이미지";
 
     @Column(nullable = false)
-    private int warningCard;
+    private int warningCard=0;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
@@ -35,16 +35,11 @@ public class Member extends TimeAudit {
         ROLE_USER,ROLE_ADMIN
     }
 
-    public Member(String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.memberImage = "이미지";
-    }
 
     // test용 생성자
     @Builder
-    public Member(Long id, String email, String password, String memberImage, int warningCard) {
-        this.id = id;
+    public Member(Long memberId, String email, String password, String memberImage, int warningCard) {
+        this.memberId = memberId;
         this.email = email;
         this.password = password;
         this.memberImage = memberImage;

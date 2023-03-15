@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
@@ -23,9 +21,10 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
+    private final MemberService memberService;
+
     @Value("${server.port}")
     private String port;
-    private final MemberService memberService;
 
     @GetMapping("/login-form")
     public String loginForm() {
@@ -52,17 +51,33 @@ public class MemberController {
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         log.info("now port {}",port);
-        Member member = new Member(memberDto.getEmail(), memberDto.getPassword());
-        Member saveMember=memberService.createMember(member);
+//        Member member = new Member(memberDto.getEmail(), memberDto.getPassword());
+        Member saveMember=memberService.createMember(memberDto);
         model.addAttribute("email",saveMember.getEmail());
         model.addAttribute("memberImage",saveMember.getMemberImage());
         return "join";
     }
+
     @GetMapping("/mypage")
     public String mypage() {
         log.info("now port {}",port);
         return "mypage";
     }
+
+    @GetMapping("/my-info")
+    public String myInfoForm() {
+        return "my-info";
+    }
+
+    @PatchMapping("/my-info")
+    public String patchMyInfo(@RequestParam("memberImage") MultipartFile multipartFile,
+                              @ModelAttribute @Valid MemberDto.Patch memberPatchDto,
+                              Model model) {
+        Member member = new Member();
+        member.setPassword(memberPatchDto.getPassword());
+        return "mypage";
+    }
+
     @GetMapping("/admin")
     public String adminPage() {
         log.info("now port {}",port);

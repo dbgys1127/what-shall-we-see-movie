@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private class CustomUserDetails extends Member implements UserDetails {
         public CustomUserDetails(Member member) {
-            setId(member.getId());
+            setMemberId(member.getMemberId());
             setEmail(member.getEmail());
             setPassword(member.getPassword());
             setMemberImage("이미지");

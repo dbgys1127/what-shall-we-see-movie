@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>S3UploadService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.s3</a> &gt; <span class="el_source">S3UploadService.java</span></div><h1>S3UploadService.java</h1><pre class="source lang-java linenums">package shallwe.movie.s3;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.UUID;
+
+@Service
+<span class="fc" id="L14">@RequiredArgsConstructor</span>
+public class S3UploadService {
+    @Value(&quot;${cloud.aws.s3.bucket}&quot;)
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
+
+    public String upload(MultipartFile multipartFile) throws IOException {
+        //파일이름 중복방지
+<span class="nc" id="L23">        String s3FileName = UUID.randomUUID() + &quot;-&quot; + multipartFile.getOriginalFilename();</span>
+
+        //S3에 파일의 사이즈를 알려주는 용도
+<span class="nc" id="L26">        ObjectMetadata objMeta = new ObjectMetadata();</span>
+<span class="nc" id="L27">        objMeta.setContentLength(multipartFile.getInputStream().available());</span>
+
+        //S3 파일 업로드
+<span class="nc" id="L30">        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);</span>
+
+        //DB 저장용 URL
+<span class="nc" id="L33">        return amazonS3.getUrl(bucket, s3FileName).toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

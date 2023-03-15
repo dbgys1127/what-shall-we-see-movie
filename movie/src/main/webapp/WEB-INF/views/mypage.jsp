@@ -6,8 +6,7 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <body>
-
 <h2> Mypage </h2>
-</form>
+<button type="button"><a href="/my-info">회원수정</a></button>
 </body>
 </html>
