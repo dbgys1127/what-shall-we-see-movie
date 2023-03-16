@@ -15,6 +15,7 @@ import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +69,19 @@ public class MemberService {
             findMember.setMemberImage(url);
         }
     }
-
+    public List<MemberDto.Response> searchMember(String email) {
+        List<Member> members = memberRepository.findMemberBySearch(email);
+        List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
+        for (Member member : members) {
+            MemberDto.Response memberRepDto = MemberDto.Response.builder()
+                    .email(member.getEmail())
+                    .createdAt(member.getCreatedAt())
+                    .warningCard(member.getWarningCard())
+                    .build();
+            memberRepDtoList.add(memberRepDto);
+        }
+        return memberRepDtoList;
+    }
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()) {

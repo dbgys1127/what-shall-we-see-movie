@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -63,9 +64,11 @@ public class MemberController {
         return "mypage";
     }
 
-    @GetMapping("/admin/member")
-    public String adminMemberPage() {
+    @GetMapping("/admin/member/search")
+    public String getMemberBySearch(@RequestParam("email") String email,Model model) {
 
+        List<MemberDto.Response> memberRepDtoList = memberService.searchMember(email);
+        model.addAttribute("members", memberRepDtoList);
         return "member";
     }
 }

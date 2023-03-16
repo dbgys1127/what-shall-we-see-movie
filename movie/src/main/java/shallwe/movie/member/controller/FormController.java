@@ -58,4 +58,8 @@ public class FormController {
         return "admin";
     }
 
+    @GetMapping("/admin/member")
+    public String adminMemberPage() {
+        return "member";
+    }
 }

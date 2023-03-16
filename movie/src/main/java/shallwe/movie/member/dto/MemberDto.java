@@ -8,6 +8,8 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MemberDto {
 
@@ -43,11 +45,14 @@ public class MemberDto {
         private String memberImage;
         private int warningCard;
 
+        private LocalDateTime createdAt;
+
         @Builder
-        public Response(String email, String memberImage, int warningCard) {
+        public Response(String email, String memberImage, int warningCard, LocalDateTime createdAt) {
             this.email = email;
             this.memberImage = memberImage;
             this.warningCard = warningCard;
+            this.createdAt = createdAt;
         }
     }
 
