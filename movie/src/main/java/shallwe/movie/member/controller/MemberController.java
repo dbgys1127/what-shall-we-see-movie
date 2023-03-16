@@ -3,6 +3,7 @@ package shallwe.movie.member.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,67 +31,41 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
 
-    @Value("${server.port}")
-    private String port;
-
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "login";
-    }
-
-    @GetMapping("/access-denied")
-    public String accessDenied() {
-        return "accessdenied";
-    }
-
-    @GetMapping("/logout-form")
-    public String logoutForm() {
-        return "logout";
-    }
-
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "join-form";
-    }
-
     // 수정할 것
     // 유효성 검증 실패에 대한 내용 view 전달 방법 필요
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-        log.info("now port {}",port);
         MemberDto.Response saveMember=memberService.createMember(memberDto);
         model.addAttribute("email",saveMember.getEmail());
         model.addAttribute("memberImage",saveMember.getMemberImage());
         return "join";
     }
 
-    @GetMapping("/mypage")
-    public String mypage() {
-        log.info("now port {}",port);
-        return "mypage";
-    }
-
-    @GetMapping("/my-info")
-    public String myInfoForm() {
-        return "my-info";
-    }
-
-    @PostMapping("/my-info")
-    public String patchMyInfo(@RequestParam("memberImage") MultipartFile multipartFile,
-                              @ModelAttribute @Valid MemberDto.Patch memberPatchDto,
+    @PostMapping("/my-info/myImage")
+    public String patchMyImage(@RequestPart("myImage") MultipartFile multipartFile,
                               Authentication authentication,
                               Model model) throws IOException {
-        String memberEmail = authentication.getName();
-        log.info("memberEmail = {}",memberEmail);
-        MemberDto.Response patchMember = memberService.updateMember(multipartFile, memberPatchDto,memberEmail);
+        String email = authentication.getName();//aop 필요
+        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile,email);
         model.addAttribute("memberImage", patchMember.getMemberImage());
-        model.addAttribute("email", memberEmail);
+        model.addAttribute("email", email);
         return "mypage";
     }
 
-    @GetMapping("/admin")
-    public String adminPage() {
-        log.info("now port {}",port);
-        return "admin";
+    @PostMapping("/my-info/myPassword")
+    public String patchMyPassword(@ModelAttribute @Valid MemberDto.Patch memberDto,
+                              Authentication authentication,
+                              Model model) throws IOException {
+        String email = authentication.getName();
+        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto,email);
+        model.addAttribute("memberImage", patchMember.getMemberImage());
+        model.addAttribute("email", email);
+        return "mypage";
+    }
+
+    @GetMapping("/admin/member")
+    public String adminMemberPage() {
+
+        return "member";
     }
 }

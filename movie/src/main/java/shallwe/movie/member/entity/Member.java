@@ -23,7 +23,7 @@ public class Member extends TimeAudit {
     private String password;
 
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String memberImage="이미지";
+    private String memberImage;
 
     @Column(nullable = false)
     private int warningCard=0;
@@ -35,14 +35,13 @@ public class Member extends TimeAudit {
         ROLE_USER,ROLE_ADMIN
     }
 
-
     // test용 생성자
     @Builder
     public Member(Long memberId, String email, String password, int warningCard, List<String> roles) {
         this.memberId = memberId;
         this.email = email;
         this.password = password;
-        this.memberImage = "이미지";
+        this.memberImage = "https://movie-project-bucket.s3.ap-northeast-2.amazonaws.com/4648c38d-87ef-4d66-93ee-15ac8cc373fb-%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%89%E1%85%A1%E1%84%8C%E1%85%B5%E1%86%AB.png";
         this.warningCard = warningCard;
         this.roles = roles;
     }
