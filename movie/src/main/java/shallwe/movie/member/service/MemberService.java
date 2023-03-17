@@ -63,24 +63,35 @@ public class MemberService {
 
         return memberRepDto;
     }
-    private void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
-        String url = s3UploadService.upload(multipartFile);
-        if (!url.equals("")) {
-            findMember.setMemberImage(url);
-        }
+
+    public MemberDto.Response pickMember(String email) {
+        Member member = is_exist_member(email);
+        MemberDto.Response memberRepDto = getRepDto(member);
+        return memberRepDto;
     }
+
     public List<MemberDto.Response> searchMember(String email) {
         List<Member> members = memberRepository.findMemberBySearch(email);
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : members) {
-            MemberDto.Response memberRepDto = MemberDto.Response.builder()
-                    .email(member.getEmail())
-                    .createdAt(member.getCreatedAt())
-                    .warningCard(member.getWarningCard())
-                    .build();
+            MemberDto.Response memberRepDto = getRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
         return memberRepDtoList;
+    }
+
+    public MemberDto.Response giveWarning(String email,String warning, String block) {
+        Member member = is_exist_member(email);
+        if (warning.equals("on")) {
+            member.setWarningCard(member.getWarningCard()+1);
+        }
+        if (block.equals("on")) {
+            member.setMemberStatus(Member.MemberStatus.차단);
+        } else {
+            member.setMemberStatus(Member.MemberStatus.활성);
+        }
+        MemberDto.Response memberRepDto = getRepDto(member);
+        return memberRepDto;
     }
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
@@ -95,6 +106,20 @@ public class MemberService {
         return findMember;
     }
 
+    private void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
+        String url = s3UploadService.upload(multipartFile);
+        if (!url.equals("")) {
+            findMember.setMemberImage(url);
+        }
+    }
 
-
+    private static MemberDto.Response getRepDto(Member member) {
+        MemberDto.Response memberRepDto = MemberDto.Response.builder()
+                .email(member.getEmail())
+                .createdAt(member.getCreatedAt())
+                .warningCard(member.getWarningCard())
+                .memberStatus(member.getMemberStatus())
+                .build();
+        return memberRepDto;
+    }
 }

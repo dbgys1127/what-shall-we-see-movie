@@ -149,7 +149,7 @@ public class MemberControllerTest {
                 .param("email",member.getEmail())
                 .param("password",member.getPassword()))
                 .andExpect(model().attribute("email","dbgys@gmail.com"))
-                .andExpect(view().name("join"));
+                .andExpect(view().name("member/join"));
     }
     @DisplayName("7.올바른 회원정보 입력시 테스트 성공")
     @Test
@@ -185,7 +185,7 @@ public class MemberControllerTest {
     @WithMockUser(username = "test",roles = "USER")
     void login_member_can_access_my_page() throws Exception {
         mockMvc.perform(get("/mypage"))
-                .andExpect(view().name("mypage"));
+                .andExpect(view().name("member/mypage"));
     }
 
     @DisplayName("11.접근권한이 없는 멤버가 접근시 접근금지 페이지가 렌더링 된다.")
@@ -201,37 +201,31 @@ public class MemberControllerTest {
     @WithMockUser(username = "test",roles = "ADMIN")
     void Authorized_member_can_access_some_page() throws Exception {
         mockMvc.perform(get("/admin"))
-                .andExpect(view().name("admin"));
+                .andExpect(view().name("member/admin"));
     }
 
     @DisplayName("13.login-form으로 접근시 login.jsp로 흘러간다.")
     @Test
     void loginform_access() throws Exception {
         mockMvc.perform(get("/login-form"))
-                .andExpect(view().name("login"));
+                .andExpect(view().name("member/login"));
     }
     @DisplayName("14.access-denied로 접근시 accessdenied.jsp로 흘러간다.")
     @Test
     void access_denied() throws Exception {
         mockMvc.perform(get("/access-denied"))
-                .andExpect(view().name("accessdenied"));
+                .andExpect(view().name("member/accessdenied"));
     }
     @DisplayName("15.logout-form으로 접근시 logout.jsp로 흘러간다.")
     @Test
     void logout_form() throws Exception {
         mockMvc.perform(get("/logout-form"))
-                .andExpect(view().name("logout"));
+                .andExpect(view().name("member/logout"));
     }
     @DisplayName("16.join-form으로 접근시 join-form.jsp로 흘러간다.")
     @Test
     void join_form() throws Exception {
         mockMvc.perform(get("/join-form"))
-                .andExpect(view().name("join-form"));
-    }
-    @DisplayName("17.회원정보 수정(my-info)으로 접근시 my-info.jsp로 흘러간다.")
-    @Test
-    void member_patch_form() throws Exception {
-        mockMvc.perform(get("/my-info"))
-                .andExpect(view().name("my-info"));
+                .andExpect(view().name("member/join-form"));
     }
 }

@@ -14,52 +14,52 @@ public class FormController {
     @GetMapping("/login-form")
     public String loginForm() {
         log.info("now port {}",port);
-        return "login";
+        return "member/login";
     }
 
     @GetMapping("/access-denied")
     public String accessDenied() {
         log.info("now port {}",port);
-        return "accessdenied";
+        return "member/accessdenied";
     }
 
     @GetMapping("/logout-form")
     public String logoutForm() {
         log.info("now port {}",port);
-        return "logout";
+        return "member/logout";
     }
 
     @GetMapping("/join-form")
     public String joinForm() {
         log.info("now port {}",port);
-        return "join-form";
+        return "member/join-form";
     }
 
     @GetMapping("/mypage")
     public String mypage() {
         log.info("now port {}",port);
-        return "mypage";
+        return "member/mypage";
     }
     @GetMapping("/my-info/myImage")
     public String myImageForm() {
         log.info("now port {}",port);
-        return "myImage";
+        return "member/myImage";
     }
 
     @GetMapping("/my-info/myPassword")
     public String myPasswordForm() {
         log.info("now port {}",port);
-        return "myPassword";
+        return "member/myPassword";
     }
 
     @GetMapping("/admin")
     public String adminPage() {
         log.info("now port {}",port);
-        return "admin";
+        return "member/admin";
     }
 
     @GetMapping("/admin/member")
     public String adminMemberPage() {
-        return "member";
+        return "member/member";
     }
 }

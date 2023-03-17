@@ -39,7 +39,7 @@ public class MemberController {
         MemberDto.Response saveMember=memberService.createMember(memberDto);
         model.addAttribute("email",saveMember.getEmail());
         model.addAttribute("memberImage",saveMember.getMemberImage());
-        return "join";
+        return "member/join";
     }
 
     @PostMapping("/my-info/myImage")
@@ -50,7 +50,7 @@ public class MemberController {
         MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile,email);
         model.addAttribute("memberImage", patchMember.getMemberImage());
         model.addAttribute("email", email);
-        return "mypage";
+        return "member/mypage";
     }
 
     @PostMapping("/my-info/myPassword")
@@ -61,7 +61,27 @@ public class MemberController {
         MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto,email);
         model.addAttribute("memberImage", patchMember.getMemberImage());
         model.addAttribute("email", email);
-        return "mypage";
+        return "member/mypage";
+    }
+
+    @GetMapping("/admin/member/patch-member")
+    public String adminPatchMember(@RequestParam("email") String email, Model model) {
+        MemberDto.Response memberRepDto=memberService.pickMember(email);
+        model.addAttribute("email", memberRepDto.getEmail());
+        model.addAttribute("warningCard", memberRepDto.getWarningCard());
+        model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
+        return "member/patch-member";
+    }
+
+    @PostMapping("/admin/member/patch-member")
+    public String adminWarningMember(@RequestParam("email") String email,
+                                     @RequestParam(value = "warning",defaultValue = "off") String warning,
+                                     @RequestParam(value = "block",defaultValue = "off") String block, Model model) {
+        MemberDto.Response memberRepDto=memberService.giveWarning(email,warning, block);
+        model.addAttribute("email",memberRepDto.getEmail());
+        model.addAttribute("warningCard",memberRepDto.getWarningCard());
+        model.addAttribute("memberStatus",memberRepDto.getMemberStatus());
+        return "member/patch-member";
     }
 
     @GetMapping("/admin/member/search")
@@ -69,6 +89,6 @@ public class MemberController {
 
         List<MemberDto.Response> memberRepDtoList = memberService.searchMember(email);
         model.addAttribute("members", memberRepDtoList);
-        return "member";
+        return "member/member";
     }
 }

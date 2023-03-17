@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import shallwe.movie.member.entity.Member;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
@@ -45,13 +46,16 @@ public class MemberDto {
         private String memberImage;
         private int warningCard;
 
+        private Member.MemberStatus memberStatus;
+
         private LocalDateTime createdAt;
 
         @Builder
-        public Response(String email, String memberImage, int warningCard, LocalDateTime createdAt) {
+        public Response(String email, String memberImage, int warningCard, Member.MemberStatus memberStatus, LocalDateTime createdAt) {
             this.email = email;
             this.memberImage = memberImage;
             this.warningCard = warningCard;
+            this.memberStatus = memberStatus;
             this.createdAt = createdAt;
         }
     }

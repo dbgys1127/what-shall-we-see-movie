@@ -5,6 +5,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -18,26 +20,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @TestConfiguration
+@EnableJpaAuditing
 public class TestConfig {
     @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    MemberRepository memberRepository;
+    private EntityManager em;
 
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
-        return new JPAQueryFactory(entityManager);
+        return new JPAQueryFactory(em);
     }
 
     @Bean
     public QuerydslRepositoryImpl querydslOrderRepository(){
         return new QuerydslRepositoryImpl(jpaQueryFactory());
-    }
-
-    @Bean
-    public MemberService memberService() {
-        return new MemberService(memberRepository, PasswordEncoderFactories.createDelegatingPasswordEncoder(),new CustomAuthorityUtils(),new S3UploadService(new AmazonS3Client()));
     }
 
     @Bean
