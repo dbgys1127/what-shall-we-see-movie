@@ -8,7 +8,7 @@
 </head>
 <body>
     <h2> 개인회원 </h2>
-    <form action = "/admin/member/patch-member?email=${email}" method="post">
+    <form action = "/admin/member/warning?email=${email}" method="post">
         <table style="border: 1px solid black;" >
             <th>이메일</th>
             <th>경고수</th>

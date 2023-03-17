@@ -16,7 +16,7 @@
         <th>회원상태</th>
         <c:forEach var="member" items="${members}">
             <tr>
-                <td> <a href="/admin/member/patch-member?email=${member.email}">${member.email}</a></td>
+                <td> <a href="/admin/member/warning?email=${member.email}">${member.email}</a></td>
                 <td>${member.createdAt}</td>
                 <td>${member.warningCard}</td>
                 <td>${member.memberStatus}</td>

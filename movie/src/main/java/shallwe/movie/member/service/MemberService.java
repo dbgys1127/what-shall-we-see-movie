@@ -2,10 +2,14 @@ package shallwe.movie.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
 import shallwe.movie.member.dto.MemberDto;
@@ -63,7 +67,17 @@ public class MemberService {
 
         return memberRepDto;
     }
+    public PagingResponseDto<MemberDto.Response> findAllMember(int page, int size, String sort) {
+        Page<Member> pageInfo = memberRepository.findAll(PageRequest.of(page, size, Sort.by(sort).descending()));
+        List<Member> allMember = pageInfo.getContent();
+        List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
+        for (Member member : allMember) {
+            MemberDto.Response memberRepDto = getRepDto(member);
+            memberRepDtoList.add(memberRepDto);
+        }
 
+        return new PagingResponseDto<>(memberRepDtoList,pageInfo);
+    }
     public MemberDto.Response pickMember(String email) {
         Member member = is_exist_member(email);
         MemberDto.Response memberRepDto = getRepDto(member);
@@ -122,4 +136,7 @@ public class MemberService {
                 .build();
         return memberRepDto;
     }
+
+
+
 }

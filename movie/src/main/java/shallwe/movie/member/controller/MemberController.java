@@ -3,6 +3,7 @@ package shallwe.movie.member.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
@@ -64,29 +66,37 @@ public class MemberController {
         return "member/mypage";
     }
 
-    @GetMapping("/admin/member/patch-member")
-    public String adminPatchMember(@RequestParam("email") String email, Model model) {
+    @GetMapping("/admin/member/warning")
+    public String adminGetWarning(@RequestParam("email") String email, Model model) {
         MemberDto.Response memberRepDto=memberService.pickMember(email);
         model.addAttribute("email", memberRepDto.getEmail());
         model.addAttribute("warningCard", memberRepDto.getWarningCard());
         model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
-        return "member/patch-member";
+        return "member/warning";
     }
 
-    @PostMapping("/admin/member/patch-member")
-    public String adminWarningMember(@RequestParam("email") String email,
+    @PostMapping("/admin/member/warning")
+    public String adminPatchWarning(@RequestParam("email") String email,
                                      @RequestParam(value = "warning",defaultValue = "off") String warning,
                                      @RequestParam(value = "block",defaultValue = "off") String block, Model model) {
         MemberDto.Response memberRepDto=memberService.giveWarning(email,warning, block);
         model.addAttribute("email",memberRepDto.getEmail());
         model.addAttribute("warningCard",memberRepDto.getWarningCard());
         model.addAttribute("memberStatus",memberRepDto.getMemberStatus());
-        return "member/patch-member";
+        return "member/warning";
+    }
+
+    @GetMapping("/admin/members")
+    public String adminGetMembers(@RequestParam("page") int page,
+                                  @RequestParam("size") int size,
+                                  @RequestParam("sort") String sort, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, size, sort);
+
+        return "/member/member";
     }
 
     @GetMapping("/admin/member/search")
-    public String getMemberBySearch(@RequestParam("email") String email,Model model) {
-
+    public String getMemberBySearch(@RequestParam("email") String email, Model model) {
         List<MemberDto.Response> memberRepDtoList = memberService.searchMember(email);
         model.addAttribute("members", memberRepDtoList);
         return "member/member";
