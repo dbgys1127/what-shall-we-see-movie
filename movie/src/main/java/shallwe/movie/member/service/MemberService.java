@@ -68,13 +68,16 @@ public class MemberService {
         return memberRepDto;
     }
     public PagingResponseDto<MemberDto.Response> findAllMember(int page, int size, String sort) {
-        Page<Member> pageInfo = memberRepository.findAll(PageRequest.of(page, size, Sort.by(sort).descending()));
+        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(PageRequest.of(page, size, Sort.by(sort).descending()));
         List<Member> allMember = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : allMember) {
+            log.info("memberEmail = {}",member.getEmail());
             MemberDto.Response memberRepDto = getRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
+        log.info("memberRepDtoList = {}",memberRepDtoList);
+        log.info("pageInfo {},{},{},{}",pageInfo.getNumber(),pageInfo.getSize(),pageInfo.getTotalElements(),pageInfo.getTotalPages());
 
         return new PagingResponseDto<>(memberRepDtoList,pageInfo);
     }

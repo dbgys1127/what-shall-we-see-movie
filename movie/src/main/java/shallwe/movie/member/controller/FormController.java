@@ -57,9 +57,9 @@ public class FormController {
         log.info("now port {}",port);
         return "member/admin";
     }
-
-    @GetMapping("/admin/member")
-    public String adminMemberPage() {
-        return "member/member";
-    }
+//
+//    @GetMapping("/admin/member")
+//    public String adminMemberPage() {
+//        return "member/member";
+//    }
 }

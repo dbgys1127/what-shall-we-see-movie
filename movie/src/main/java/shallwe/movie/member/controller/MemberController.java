@@ -86,12 +86,16 @@ public class MemberController {
         return "member/warning";
     }
 
-    @GetMapping("/admin/members")
+    @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam("page") int page,
                                   @RequestParam("size") int size,
                                   @RequestParam("sort") String sort, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, size, sort);
-
+        model.addAttribute("members",pageRepDto.getData());
+        model.addAttribute("page", pageRepDto.getPage());
+        model.addAttribute("size", pageRepDto.getSize());
+        model.addAttribute("totalElements", pageRepDto.getTotalElements());
+        model.addAttribute("totalPages", pageRepDto.getTotalPages());
         return "/member/member";
     }
 

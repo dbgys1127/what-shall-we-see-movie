@@ -55,9 +55,8 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2:1.4.200'
-
-	//runtimeOnly 'mysql:mysql-connector-java:8.0.28'
+//	runtimeOnly 'com.h2database:h2:1.4.200'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

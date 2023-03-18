@@ -1,16 +1,24 @@
 package shallwe.movie.dto;
 
+import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+@Getter
 public class PagingResponseDto<T> {
     private List<T> data;
 
-    private PageInfo pageInfo;
+    private int page;
+    private int size;
+    private long totalElements;
+    private int totalPages;
 
     public PagingResponseDto(List<T> data, Page page) {
         this.data = data;
-        this.pageInfo = new PageInfo(page.getNumber()+1, pageInfo.getSize(), page.getTotalElements(), pageInfo.getTotalPages());
+        this.page = page.getNumber()+1;
+        this.size = page.getSize();
+        this.totalElements = page.getTotalElements();
+        this.totalPages = page.getTotalPages();
     }
 }
