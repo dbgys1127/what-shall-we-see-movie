@@ -88,18 +88,9 @@ public class MemberController {
 
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam("page") int page,
-                                  @RequestParam("size") int size,
-                                  @RequestParam("sort") String sort, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, size, sort);
-        model.addAttribute("members",pageRepDto.getData());
-        model.addAttribute("page", pageRepDto.getPage());
-        model.addAttribute("size", pageRepDto.getSize());
-        model.addAttribute("totalElements", pageRepDto.getTotalElements());
-        model.addAttribute("totalPages", pageRepDto.getTotalPages());
-        log.info("page = {}",pageRepDto.getPage());
-        log.info("size = {}",pageRepDto.getSize());
-        log.info("totalElements = {}",pageRepDto.getTotalElements());
-        log.info("totalPages = {}",pageRepDto.getTotalPages());
+                                  @RequestParam(value = "sort", defaultValue = "createdAt") String sort, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, 10, sort);
+        model.addAttribute("pageData", pageRepDto);
         return "/member/member";
     }
 

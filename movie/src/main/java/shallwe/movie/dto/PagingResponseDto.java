@@ -9,16 +9,24 @@ import java.util.List;
 public class PagingResponseDto<T> {
     private List<T> data;
 
-    private int page;
-    private int size;
-    private long totalElements;
-    private int totalPages;
+    private int startPage;
+    private int endPage;
+    private int nowPage;
+    private boolean prev, next;
+
 
     public PagingResponseDto(List<T> data, Page page) {
         this.data = data;
-        this.page = page.getNumber()+1;
-        this.size = page.getSize();
-        this.totalElements = page.getTotalElements();
-        this.totalPages = page.getTotalPages();
+        this.nowPage = page.getNumber()+1;
+        this.endPage = (int)(Math.ceil(nowPage/10.0))*10;
+        this.startPage = this.endPage-9;
+
+        int realEnd = page.getTotalPages();
+
+        if (realEnd < this.endPage) {
+            this.endPage = realEnd;
+        }
+        this.prev = this.startPage>1;
+        this.next = this.endPage < realEnd;
     }
 }
