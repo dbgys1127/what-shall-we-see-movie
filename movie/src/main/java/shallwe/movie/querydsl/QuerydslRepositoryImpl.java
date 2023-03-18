@@ -33,6 +33,10 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return new PageImpl<>(content,pageable,content.size());
+
+        long total = queryFactory.selectFrom(member)
+                .where(member.roles.size().eq(1))
+                .fetchCount();
+        return new PageImpl<>(content,pageable,total);
     }
 }

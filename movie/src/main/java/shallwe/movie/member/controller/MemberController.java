@@ -96,6 +96,10 @@ public class MemberController {
         model.addAttribute("size", pageRepDto.getSize());
         model.addAttribute("totalElements", pageRepDto.getTotalElements());
         model.addAttribute("totalPages", pageRepDto.getTotalPages());
+        log.info("page = {}",pageRepDto.getPage());
+        log.info("size = {}",pageRepDto.getSize());
+        log.info("totalElements = {}",pageRepDto.getTotalElements());
+        log.info("totalPages = {}",pageRepDto.getTotalPages());
         return "/member/member";
     }
 

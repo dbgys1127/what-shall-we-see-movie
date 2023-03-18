@@ -23,6 +23,18 @@
             </tr>
         </c:forEach>
     </table>
+    <table style="border: 1px solid black;">
+        <th>page</th>
+        <th>size</th>
+        <th>totalElements</th>
+        <th>totalPages</th>
+        <tr>
+            <td>${page}</td>
+            <td>${size}</td>
+            <td>${totalElements}</td>
+            <td>${totalPages}</td>
+        </tr>
+    </table>
     <input type = "text" name="email" placeholder = "검색할 회원을 입력하세요."/>
     <button type="submit">검색</button>
 </form>
