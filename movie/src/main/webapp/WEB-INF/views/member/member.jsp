@@ -9,12 +9,20 @@
 
 <style>
     .pagination li{display:inline-block;}
+    .sort li{display: inline-block;}
     .active a{color:red;}
 
 </style>
 <body>
 <h2> 전체회원 </h2>
+
 <form action = "/admin/member/search" method="get">
+    <ul class="sort">
+        <li><a href="/admin/member?page=1&sort=memberId">가입일</a></li>
+        <li><a href="">시청한 영화수</a></li>
+        <li><a href="/admin/member?page=1&sort=warningCard">경고수</a></li>
+        <li><a href="/admin/member?page=1&sort=memberStatus">차단멤버</a></li>
+    </ul>
     <table style="border: 1px solid black;" >
         <th>이메일</th>
         <th>생성일</th>

@@ -1,5 +1,7 @@
 package shallwe.movie.querydsl;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         List<Member> content = queryFactory
                 .selectFrom(member)
                 .where(member.roles.size().eq(1))
+                .orderBy(queryDslSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -38,5 +41,23 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .where(member.roles.size().eq(1))
                 .fetchCount();
         return new PageImpl<>(content,pageable,total);
+    }
+
+    private OrderSpecifier<?> queryDslSort(Pageable page) {
+        if (!page.getSort().isEmpty()) {
+            for (Sort.Order order : page.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch (order.getProperty()) {
+                    case "memberId":
+                        return new OrderSpecifier(direction, member.memberId);
+                    case "warningCard":
+                        return new OrderSpecifier(direction, member.warningCard);
+                    case "memberStatus":
+                        return new OrderSpecifier(Order.ASC, member.memberStatus);
+                }
+            }
+        }
+        return null;
     }
 }

@@ -88,7 +88,8 @@ public class MemberController {
 
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam("page") int page,
-                                  @RequestParam(value = "sort", defaultValue = "createdAt") String sort, Model model) {
+                                  @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
+
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, 10, sort);
         model.addAttribute("pageData", pageRepDto);
         return "/member/member";
