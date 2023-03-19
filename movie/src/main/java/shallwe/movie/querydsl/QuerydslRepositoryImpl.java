@@ -19,7 +19,7 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Member> findMemberBySearch(String email) {
+    public List<Member> findMemberBySearch(String email,Pageable pageable) {
         return queryFactory
                 .selectFrom(member)
                 .where(member.email.contains(email)
@@ -28,17 +28,19 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
     }
 
     @Override
-    public Page<Member> findAllMemberWithPaging(Pageable pageable) {
+    public Page<Member> findAllMemberWithPaging(String email,Pageable pageable) {
         List<Member> content = queryFactory
                 .selectFrom(member)
-                .where(member.roles.size().eq(1))
+                .where(member.email.contains(email)
+                                .and(member.roles.size().eq(1)))
                 .orderBy(queryDslSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         long total = queryFactory.selectFrom(member)
-                .where(member.roles.size().eq(1))
+                .where(member.email.contains(email)
+                                .and(member.roles.size().eq(1)))
                 .fetchCount();
         return new PageImpl<>(content,pageable,total);
     }

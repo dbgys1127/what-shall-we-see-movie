@@ -42,9 +42,7 @@ public class MemberService {
         Member member = Member.builder().email(memberDto.getEmail()).password(encryptedPassword).roles(roles).build();
         Member savedMember = memberRepository.save(member);
 
-        MemberDto.Response memberRepDto = MemberDto.Response.builder()
-                .memberImage(member.getMemberImage())
-                .email(member.getEmail()).build();
+        MemberDto.Response memberRepDto = getMemberRepDto(savedMember);
 
         return memberRepDto;
     }
@@ -52,45 +50,45 @@ public class MemberService {
     public MemberDto.Response updateMemberImage(MultipartFile multipartFile, String email) throws IOException {
         Member findMember = is_exist_member(email);
         isUpdateImage(multipartFile, findMember);
-        MemberDto.Response memberRepDto = MemberDto.Response.builder()
-                .memberImage(findMember.getMemberImage())
-                .build();
+        MemberDto.Response memberRepDto = getMemberRepDto(findMember);
 
         return memberRepDto;
     }
     public MemberDto.Response updateMemberPassword(MemberDto.Patch memberDto, String email) {
         Member findMember = is_exist_member(email);
         findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
-        MemberDto.Response memberRepDto = MemberDto.Response.builder()
-                .memberImage(findMember.getMemberImage())
-                .build();
+        MemberDto.Response memberRepDto = getMemberRepDto(findMember);
 
         return memberRepDto;
     }
+
     public PagingResponseDto<MemberDto.Response> findAllMember(int page, int size, String sort) {
-        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(PageRequest.of(page, size, Sort.by(sort).descending()));
+        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging("@",PageRequest.of(page, size, Sort.by(sort).descending()));
         List<Member> allMember = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : allMember) {
-            MemberDto.Response memberRepDto = getRepDto(member);
+            MemberDto.Response memberRepDto = getAdminRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
         return new PagingResponseDto<>(memberRepDtoList,pageInfo);
     }
     public MemberDto.Response pickMember(String email) {
         Member member = is_exist_member(email);
-        MemberDto.Response memberRepDto = getRepDto(member);
+        MemberDto.Response memberRepDto = getAdminRepDto(member);
         return memberRepDto;
     }
 
-    public List<MemberDto.Response> searchMember(String email) {
-        List<Member> members = memberRepository.findMemberBySearch(email);
+    public PagingResponseDto<MemberDto.Response> searchMember(String email,int page) {
+        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by("memberId").descending()));
+        List<Member> members = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : members) {
-            MemberDto.Response memberRepDto = getRepDto(member);
+            MemberDto.Response memberRepDto = getAdminRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
-        return memberRepDtoList;
+        log.info("realEndPage = {}",pageInfo.getTotalPages());
+        log.info("contentSize={}",pageInfo.getContent().size());
+        return new PagingResponseDto<>(memberRepDtoList,pageInfo,email);
     }
 
     public MemberDto.Response giveWarning(String email,String warning, String block) {
@@ -103,7 +101,7 @@ public class MemberService {
         } else {
             member.setMemberStatus(Member.MemberStatus.활성);
         }
-        MemberDto.Response memberRepDto = getRepDto(member);
+        MemberDto.Response memberRepDto = getAdminRepDto(member);
         return memberRepDto;
     }
     private void verifyExistsEmail(String email) {
@@ -125,8 +123,16 @@ public class MemberService {
             findMember.setMemberImage(url);
         }
     }
-
-    private static MemberDto.Response getRepDto(Member member) {
+    // 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
+    private static MemberDto.Response getMemberRepDto(Member findMember) {
+        MemberDto.Response memberRepDto = MemberDto.Response.builder()
+                .memberImage(findMember.getMemberImage())
+                .email(findMember.getEmail())
+                .build();
+        return memberRepDto;
+    }
+    // 관리자 회원의 회원정보에 대한 응답용 Dto 생성 메서드
+    private static MemberDto.Response getAdminRepDto(Member member) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .email(member.getEmail())
                 .createdAt(member.getCreatedAt())

@@ -14,15 +14,9 @@
 
 </style>
 <body>
-<h2> 전체회원 </h2>
+<h2> 검색된 회원 </h2>
 
 <form action = "/admin/member/search" method="get">
-    <ul class="sort">
-        <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/member?page=1&sort=memberId">가입일</a></li>
-        <li><a href="">시청한 영화수</a></li>
-        <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/member?page=1&sort=warningCard">경고수</a></li>
-        <li class="${pageData.sort eq 'memberStatus' ? 'active':''}"><a href="/admin/member?page=1&sort=memberStatus">차단멤버</a></li>
-    </ul>
     <table style="border: 1px solid black;" >
         <th>이메일</th>
         <th>생성일</th>
@@ -40,17 +34,17 @@
     <div class="pull-right">
         <ul class="pagination">
                 <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/admin/member?page=${pageData.startPage-1}&sort=${pageData.sort}">Prev</a></li>
+                    <li class="paginate_button previous"><a href="/admin/member/search?page=${pageData.startPage-1}&email=${pageData.target}">Prev</a></li>
                 </c:if>
 
                 <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
                     <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/admin/member?page=${num}&sort=${pageData.sort}">${num}</a>
+                        <a href="/admin/member/search?page=${num}&email=${pageData.target}">${num}</a>
                     </li>
                 </c:forEach>
 
                 <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/admin/member?page=${pageData.endPage+1}&sort=${pageData.sort}">Next</a></li>
+                    <li class="paginate_button next"><a href="/admin/member/search?page=${pageData.endPage+1}&email=${pageData.target}">Next</a></li>
                 </c:if>
         </ul>
     </div>
