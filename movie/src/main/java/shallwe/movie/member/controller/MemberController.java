@@ -91,6 +91,7 @@ public class MemberController {
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
 
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, 10, sort);
+        log.info("db sort = {}",pageRepDto.getSort());
         model.addAttribute("pageData", pageRepDto);
         return "/member/member";
     }

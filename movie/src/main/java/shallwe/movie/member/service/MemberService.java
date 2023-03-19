@@ -75,9 +75,6 @@ public class MemberService {
             MemberDto.Response memberRepDto = getRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
-        log.info("sort = {}",pageInfo.getSort());
-        log.info("first member  = {}",allMember.get(0).getEmail());
-        log.info("first dto = {}",memberRepDtoList.get(0).getEmail());
         return new PagingResponseDto<>(memberRepDtoList,pageInfo);
     }
     public MemberDto.Response pickMember(String email) {

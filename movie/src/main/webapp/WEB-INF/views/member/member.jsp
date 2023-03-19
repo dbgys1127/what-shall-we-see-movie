@@ -39,19 +39,53 @@
     </table>
     <div class="pull-right">
         <ul class="pagination">
-            <c:if test="${pageData.prev}">
-                <li class="paginate_button previous"><a href="/admin/member?page=${pageData.startPage-1}">Prev</a></li>
-            </c:if>
+        <c:choose>
+            <c:when test="${pageData.sort eq 'warningCard'}">
+                <c:if test="${pageData.prev}">
+                    <li class="paginate_button previous"><a href="/admin/member?page=${pageData.startPage-1}&sort=warningCard">Prev</a></li>
+                </c:if>
 
-            <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
-                <li class = "${pageData.nowPage eq num ? 'active':''}">
-                    <a href="/admin/member?page=${num}">${num}</a>
-                </li>
-            </c:forEach>
+                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
+                    <li class = "${pageData.nowPage eq num ? 'active':''}">
+                        <a href="/admin/member?page=${num}&sort=warningCard">${num}</a>
+                    </li>
+                </c:forEach>
 
-            <c:if test="${pageData.next}">
-                <li class="paginate_button next"><a href="/admin/member?page=${pageData.endPage+1}">Next</a></li>
-            </c:if>
+                <c:if test="${pageData.next}">
+                    <li class="paginate_button next"><a href="/admin/member?page=${pageData.endPage+1}&sort=warningCard">Next</a></li>
+                </c:if>
+            </c:when>
+            <c:when test="${pageData.sort eq 'memberStatus'}">
+                <c:if test="${pageData.prev}">
+                    <li class="paginate_button previous"><a href="/admin/member?page=${pageData.startPage-1}&sort=memberStatus">Prev</a></li>
+                </c:if>
+    
+                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
+                    <li class = "${pageData.nowPage eq num ? 'active':''}">
+                        <a href="/admin/member?page=${num}&sort=memberStatus">${num}</a>
+                    </li>
+                </c:forEach>
+    
+                <c:if test="${pageData.next}">
+                    <li class="paginate_button next"><a href="/admin/member?page=${pageData.endPage+1}&sort=memberStatus">Next</a></li>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${pageData.prev}">
+                    <li class="paginate_button previous"><a href="/admin/member?page=${pageData.startPage-1}">Prev</a></li>
+                </c:if>
+    
+                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
+                    <li class = "${pageData.nowPage eq num ? 'active':''}">
+                        <a href="/admin/member?page=${num}">${num}</a>
+                    </li>
+                </c:forEach>
+    
+                <c:if test="${pageData.next}">
+                    <li class="paginate_button next"><a href="/admin/member?page=${pageData.endPage+1}">Next</a></li>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
         </ul>
     </div>
 

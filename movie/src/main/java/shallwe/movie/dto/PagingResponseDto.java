@@ -13,7 +13,7 @@ public class PagingResponseDto<T> {
     private int endPage;
     private int nowPage;
     private boolean prev, next;
-
+    private String sort;
 
     public PagingResponseDto(List<T> data, Page page) {
         this.data = data;
@@ -28,5 +28,7 @@ public class PagingResponseDto<T> {
         }
         this.prev = this.startPage>1;
         this.next = this.endPage < realEnd;
+        String originStr = page.getSort().toString();
+        this.sort = originStr.substring(0,originStr.indexOf(":"));
     }
 }
