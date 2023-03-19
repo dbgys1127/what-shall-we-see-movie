@@ -62,32 +62,19 @@ public class MemberService {
         return memberRepDto;
     }
 
-    public PagingResponseDto<MemberDto.Response> findAllMember(int page, int size, String sort) {
-        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging("@",PageRequest.of(page, size, Sort.by(sort).descending()));
-        List<Member> allMember = pageInfo.getContent();
-        List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
-        for (Member member : allMember) {
-            MemberDto.Response memberRepDto = getAdminRepDto(member);
-            memberRepDtoList.add(memberRepDto);
-        }
-        return new PagingResponseDto<>(memberRepDtoList,pageInfo);
-    }
     public MemberDto.Response pickMember(String email) {
         Member member = is_exist_member(email);
         MemberDto.Response memberRepDto = getAdminRepDto(member);
         return memberRepDto;
     }
-
-    public PagingResponseDto<MemberDto.Response> searchMember(String email,int page) {
-        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by("memberId").descending()));
+    public PagingResponseDto<MemberDto.Response> searchMember(String email,int page,String sort) {
+        Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : members) {
             MemberDto.Response memberRepDto = getAdminRepDto(member);
             memberRepDtoList.add(memberRepDto);
         }
-        log.info("realEndPage = {}",pageInfo.getTotalPages());
-        log.info("contentSize={}",pageInfo.getContent().size());
         return new PagingResponseDto<>(memberRepDtoList,pageInfo,email);
     }
 

@@ -89,7 +89,7 @@ public class MemberController {
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam("page") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.findAllMember(page - 1, 10, sort);
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@",page - 1, sort);
         model.addAttribute("pageData", pageRepDto);
         return "/member/member";
     }
@@ -97,9 +97,8 @@ public class MemberController {
     @GetMapping("/admin/member/search")
     public String getMemberBySearch(@RequestParam(value = "page",defaultValue = "1") int page,
                                     @RequestParam(value = "email",required = false) String email, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email,page-1);
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email,page-1,"memberId");
         model.addAttribute("pageData", pageRepDto);
-        log.info("tmpEndPage = {}",pageRepDto.getEndPage());
         return "member/memberSearchResult";
     }
 }
