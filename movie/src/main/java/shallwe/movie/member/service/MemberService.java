@@ -34,6 +34,9 @@ public class MemberService {
     private final CustomAuthorityUtils authorityUtils;
     private final S3UploadService s3UploadService;
 
+    // ============================ 일반 유저 요청 처리 메소드 ==============================
+
+    // 1. 회원가입 처리 메소드
     public MemberDto.Response createMember(MemberDto.Post memberDto) {
         verifyExistsEmail(memberDto.getEmail());
         String encryptedPassword = passwordEncoder.encode(memberDto.getPassword());//aop로 관심사 분리 필요
@@ -47,6 +50,7 @@ public class MemberService {
         return memberRepDto;
     }
 
+    // 2. 회원 개인 이미지 수정시 메소드
     public MemberDto.Response updateMemberImage(MultipartFile multipartFile, String email) throws IOException {
         Member findMember = is_exist_member(email);
         isUpdateImage(multipartFile, findMember);
@@ -54,6 +58,8 @@ public class MemberService {
 
         return memberRepDto;
     }
+
+    // 3. 회원 비밀번호 수정시 메소드
     public MemberDto.Response updateMemberPassword(MemberDto.Patch memberDto, String email) {
         Member findMember = is_exist_member(email);
         findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
@@ -62,11 +68,17 @@ public class MemberService {
         return memberRepDto;
     }
 
-    public MemberDto.Response pickMember(String email) {
-        Member member = is_exist_member(email);
-        MemberDto.Response memberRepDto = getAdminRepDto(member);
-        return memberRepDto;
-    }
+
+    // ============================ 관리자 요청 처리 메소드 ==============================
+
+    /** 1. 회원 목록 조회
+     * [검색이 없는 회원 목록 조회 시]
+     * email -> 전체 검색 가능 하도록 "@"를 전달 받음
+     * sort -> 가입일, 시청영화순, 경고수, 차단여부
+     * [검색이 있는 회원 목록 조회 시]
+     * email -> 검색된 회원만 조회 하도록 직접 입력 받음
+     * sort -> 가입일 순
+      */
     public PagingResponseDto<MemberDto.Response> searchMember(String email,int page,String sort) {
         Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();
@@ -78,6 +90,14 @@ public class MemberService {
         return new PagingResponseDto<>(memberRepDtoList,pageInfo,email);
     }
 
+    // 2. 관리자가 관리하고 싶은 회원을 선택할때 사용됨
+    public MemberDto.Response pickMember(String email) {
+        Member member = is_exist_member(email);
+        MemberDto.Response memberRepDto = getAdminRepDto(member);
+        return memberRepDto;
+    }
+
+    // 3. 댓글 신고가 접수된 회원을 admin이 경고를 주거나 차단하는 메서드
     public MemberDto.Response giveWarning(String email,String warning, String block) {
         Member member = is_exist_member(email);
         if (warning.equals("on")) {
@@ -91,6 +111,10 @@ public class MemberService {
         MemberDto.Response memberRepDto = getAdminRepDto(member);
         return memberRepDto;
     }
+
+    //================================= 중복 제거용 메소드 ================================
+
+    //1. 회원 가입시 동일 이메일 중복 가입 방지용 메서드
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()) {
@@ -98,19 +122,22 @@ public class MemberService {
         }
     }
 
+
+    //2. 회원 단건 조회 용
     private Member is_exist_member(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email); // DB에서 회원 조회
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_CANNOT_FIND));
         return findMember;
     }
 
+    //3. 회원이 개인정보 수정시 이미지를 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
     private void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
         String url = s3UploadService.upload(multipartFile);
         if (!url.equals("")) {
             findMember.setMemberImage(url);
         }
     }
-    // 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
+    //4. 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
     private static MemberDto.Response getMemberRepDto(Member findMember) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .memberImage(findMember.getMemberImage())
@@ -118,7 +145,7 @@ public class MemberService {
                 .build();
         return memberRepDto;
     }
-    // 관리자 회원의 회원정보에 대한 응답용 Dto 생성 메서드
+    //5. 관리자 회원의 회원정보에 대한 응답용 Dto 생성 메서드
     private static MemberDto.Response getAdminRepDto(Member member) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .email(member.getEmail())
@@ -128,7 +155,4 @@ public class MemberService {
                 .build();
         return memberRepDto;
     }
-
-
-
 }
