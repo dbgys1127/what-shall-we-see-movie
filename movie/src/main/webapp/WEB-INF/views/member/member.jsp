@@ -30,7 +30,7 @@
         <th>회원상태</th>
         <c:forEach var="member" items="${pageData.data}">
             <tr>
-                <td> <a href="/admin/member/warning?email=${member.email}">${member.email}</a></td>
+                <td> <a href="/admin/member/warning-page?email=${member.email}">${member.email}</a></td>
                 <td>${member.createdAt}</td>
                 <td>${member.warningCard}</td>
                 <td>${member.memberStatus}</td>

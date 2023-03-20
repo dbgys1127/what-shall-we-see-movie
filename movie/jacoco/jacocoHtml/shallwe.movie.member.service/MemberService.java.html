@@ -52,11 +52,11 @@ public class MemberService {
 
     // 2. 회원 개인 이미지 수정시 메소드
     public MemberDto.Response updateMemberImage(MultipartFile multipartFile, String email) throws IOException {
-<span class="nc" id="L55">        Member findMember = is_exist_member(email);</span>
-<span class="nc" id="L56">        isUpdateImage(multipartFile, findMember);</span>
-<span class="nc" id="L57">        MemberDto.Response memberRepDto = getMemberRepDto(findMember);</span>
+<span class="fc" id="L55">        Member findMember = is_exist_member(email);</span>
+<span class="fc" id="L56">        isUpdateImage(multipartFile, findMember);</span>
+<span class="fc" id="L57">        MemberDto.Response memberRepDto = getMemberRepDto(findMember);</span>
 
-<span class="nc" id="L59">        return memberRepDto;</span>
+<span class="fc" id="L59">        return memberRepDto;</span>
     }
 
     // 3. 회원 비밀번호 수정시 메소드
@@ -132,11 +132,11 @@ public class MemberService {
 
     //3. 회원이 개인정보 수정시 이미지를 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
     public void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
-<span class="nc" id="L135">        String url = s3UploadService.upload(multipartFile);</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
-<span class="nc" id="L137">            findMember.setMemberImage(url);</span>
+<span class="fc" id="L135">        String url = s3UploadService.upload(multipartFile);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L137">            findMember.setMemberImage(url);</span>
         }
-<span class="nc" id="L139">    }</span>
+<span class="fc" id="L139">    }</span>
     //4. 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
     public static MemberDto.Response getMemberRepDto(Member findMember) {
 <span class="fc" id="L142">        MemberDto.Response memberRepDto = MemberDto.Response.builder()</span>

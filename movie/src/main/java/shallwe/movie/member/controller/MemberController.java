@@ -66,7 +66,7 @@ public class MemberController {
         return "member/mypage";
     }
 
-    @GetMapping("/admin/member/warning")
+    @GetMapping("/admin/member/warning-page")
     public String adminGetWarning(@RequestParam("email") String email, Model model) {
         MemberDto.Response memberRepDto=memberService.pickMember(email);
         model.addAttribute("email", memberRepDto.getEmail());
@@ -91,7 +91,7 @@ public class MemberController {
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@",page - 1, sort);
         model.addAttribute("pageData", pageRepDto);
-        return "/member/member";
+        return "member/member";
     }
 
     @GetMapping("/admin/member/search")

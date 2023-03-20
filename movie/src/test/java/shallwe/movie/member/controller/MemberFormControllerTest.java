@@ -7,6 +7,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import shallwe.movie.member.entity.Member;
+import shallwe.movie.member.repository.MemberRepository;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -16,6 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberFormControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     @DisplayName("1.login-form으로 접근시 login.jsp로 흘러간다.")
     @Test
@@ -90,5 +97,25 @@ public class MemberFormControllerTest {
     void Authorized_member_can_access_some_page() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(view().name("member/admin"));
+    }
+
+    @DisplayName("11.회원을 선택하면 회원에게 경고나 차단을 줄 수 있는 페이지가 나온다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminGetWarningPage() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("dbgys@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER"))
+                .build();
+        memberRepository.save(member);
+
+        String email = "dbgys@gmail.com";
+
+        //when
+        mockMvc.perform(get("/admin/member/warning-page")
+                .param("email", email)).andExpect(view().name("member/warning"));
     }
 }

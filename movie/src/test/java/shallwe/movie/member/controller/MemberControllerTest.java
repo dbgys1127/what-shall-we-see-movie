@@ -8,26 +8,35 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
 
+import javax.xml.stream.events.Comment;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
@@ -46,34 +55,19 @@ public class MemberControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
     @BeforeEach
     void init_data() {
-        for (int i = 1; i <= 10; i++) {
             Member member = Member.builder()
-                    .email("test" + i + "@gmail.com")
+                    .email("test1@gmail.com")
                     .password("1234!abc")
-                    .warningCard(21 - i)
+                    .warningCard(0)
                     .roles(List.of("USER"))
                     .build();
             memberRepository.save(member);
-        }
-        for (int i = 11; i <= 21; i++) {
-            Member member = Member.builder()
-                    .email("test" + i + "@gmail.com")
-                    .password("1234!abc")
-                    .warningCard(21 - i)
-                    .roles(List.of("USER"))
-                    .build();
-            member.setMemberStatus(Member.MemberStatus.차단);
-            memberRepository.save(member);
-        }
-        Member member = Member.builder()
-                .email("admin@gmail.com")
-                .password("1234!abc")
-                .warningCard(0)
-                .roles(List.of("USER", "ADMIN"))
-                .build();
-        memberRepository.save(member);
+
     }
 
     @AfterEach
@@ -226,20 +220,26 @@ public class MemberControllerTest {
     }
 
     @DisplayName("10.회원 이미지는 수정될 수 있다.")
-    @WithMockUser(username = "test1@gmail.com",roles = "USER")
+    @WithMockUser(username = "test1@gmail.com",roles = "USER",password = "1234!abc")
     @Test
     void patchMyImage() throws Exception {
         //given
-        MockMultipartFile file = new MockMultipartFile("image",
+        MockMultipartFile file = new MockMultipartFile("myImage",
                 "test.png",
-                "image/png",
-                new FileInputStream("/Users/kim/Desktop/USER/김유현) 증명사진.png"));
+                "text/plain",
+                "MyImage".getBytes());
 
-        RequestBuilder request = MockMvcRequestBuilders.multipart("/my-info/myImage")
-                .file(file);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Member member = new Member();
+        member.setEmail(email);
 
         //when
-        mockMvc.perform(request);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/my-info/myImage")
+                .file(file)
+                .flashAttr("member",member);
+
+        mockMvc.perform(request).andExpect(status().isOk());
     }
-    
+
 }
