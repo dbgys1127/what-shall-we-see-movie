@@ -43,6 +43,7 @@ public class MemberDto {
     @Setter
     public static class Response {
         private String email;
+        private String password;
         private String memberImage;
         private int warningCard;
 
@@ -51,8 +52,9 @@ public class MemberDto {
         private LocalDateTime createdAt;
 
         @Builder
-        public Response(String email, String memberImage, int warningCard, Member.MemberStatus memberStatus, LocalDateTime createdAt) {
+        public Response(String email, String password, String memberImage, int warningCard, Member.MemberStatus memberStatus, LocalDateTime createdAt) {
             this.email = email;
+            this.password = password;
             this.memberImage = memberImage;
             this.warningCard = warningCard;
             this.memberStatus = memberStatus;

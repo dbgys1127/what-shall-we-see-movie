@@ -115,7 +115,7 @@ public class MemberService {
     //================================= 중복 제거용 메소드 ================================
 
     //1. 회원 가입시 동일 이메일 중복 가입 방지용 메서드
-    private void verifyExistsEmail(String email) {
+    public void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()) {
             throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_YOUR_EMAIL);
@@ -124,29 +124,31 @@ public class MemberService {
 
 
     //2. 회원 단건 조회 용
-    private Member is_exist_member(String email) {
+    public Member is_exist_member(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email); // DB에서 회원 조회
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_CANNOT_FIND));
         return findMember;
     }
 
     //3. 회원이 개인정보 수정시 이미지를 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
-    private void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
+    public void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
         String url = s3UploadService.upload(multipartFile);
         if (!url.equals("")) {
             findMember.setMemberImage(url);
         }
     }
     //4. 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
-    private static MemberDto.Response getMemberRepDto(Member findMember) {
+    public static MemberDto.Response getMemberRepDto(Member findMember) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .memberImage(findMember.getMemberImage())
                 .email(findMember.getEmail())
+                .password(findMember.getPassword())
                 .build();
+
         return memberRepDto;
     }
     //5. 관리자 회원의 회원정보에 대한 응답용 Dto 생성 메서드
-    private static MemberDto.Response getAdminRepDto(Member member) {
+    public static MemberDto.Response getAdminRepDto(Member member) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .email(member.getEmail())
                 .createdAt(member.getCreatedAt())

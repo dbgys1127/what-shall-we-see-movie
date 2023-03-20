@@ -8,12 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import shallwe.movie.member.dto.MemberDto;
+import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
+
+import java.io.FileInputStream;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -35,15 +43,44 @@ public class MemberControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void init_data() {
-
+        for (int i = 1; i <= 10; i++) {
+            Member member = Member.builder()
+                    .email("test" + i + "@gmail.com")
+                    .password("1234!abc")
+                    .warningCard(21 - i)
+                    .roles(List.of("USER"))
+                    .build();
+            memberRepository.save(member);
+        }
+        for (int i = 11; i <= 21; i++) {
+            Member member = Member.builder()
+                    .email("test" + i + "@gmail.com")
+                    .password("1234!abc")
+                    .warningCard(21 - i)
+                    .roles(List.of("USER"))
+                    .build();
+            member.setMemberStatus(Member.MemberStatus.차단);
+            memberRepository.save(member);
+        }
+        Member member = Member.builder()
+                .email("admin@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER", "ADMIN"))
+                .build();
+        memberRepository.save(member);
     }
 
     @AfterEach
     void delete_data() {
         memberRepository.deleteAll();
     }
+
     @DisplayName("1.회원 가입시 이메일과 비밀번호를 공란으로 두면 예외 발생")
     @Test
     void email_and_password_cannot_be_blanked() throws Exception {
@@ -158,7 +195,6 @@ public class MemberControllerTest {
         mockMvc.perform(formLogin("/process_login").user("test@gmail.com").password("1234!abc"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
-
     }
 
     @DisplayName("8.틀린 회원정보 입력시 인증 실패")
@@ -169,12 +205,41 @@ public class MemberControllerTest {
         mockMvc.perform(formLogin("/process_login").user("test1@gmail.com").password("1234!abc"))
                 .andExpect(unauthenticated())
                 .andExpect(redirectedUrl("/login-form?error"));
-
     }
 
+    @DisplayName("9.회원 비밀번호는 수정될 수 있다.")
+    @WithMockUser(username = "test1@gmail.com",roles = "USER",password = "1234!abc")
+    @Test
+    void patchMyPassword() throws Exception {
+        //given
+        MemberDto.Patch memberPatchDto = new MemberDto.Patch();
+        memberPatchDto.setPassword("abc!1234");
 
+        //when
+        MvcResult result = mockMvc.perform(post("/my-info/myPassword")
+                .param("password", memberPatchDto.getPassword())).andReturn();
 
+        Member member=memberService.is_exist_member("test1@gmail.com");
 
+        //then
+        assertThat(passwordEncoder.matches("abc!1234", member.getPassword())).isTrue();
+    }
 
+    @DisplayName("10.회원 이미지는 수정될 수 있다.")
+    @WithMockUser(username = "test1@gmail.com",roles = "USER")
+    @Test
+    void patchMyImage() throws Exception {
+        //given
+        MockMultipartFile file = new MockMultipartFile("image",
+                "test.png",
+                "image/png",
+                new FileInputStream("/Users/kim/Desktop/USER/김유현) 증명사진.png"));
 
+        RequestBuilder request = MockMvcRequestBuilders.multipart("/my-info/myImage")
+                .file(file);
+
+        //when
+        mockMvc.perform(request);
+    }
+    
 }

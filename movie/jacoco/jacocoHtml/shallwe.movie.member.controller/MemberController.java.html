@@ -59,11 +59,11 @@ public class MemberController {
     public String patchMyPassword(@ModelAttribute @Valid MemberDto.Patch memberDto,
                               Authentication authentication,
                               Model model) throws IOException {
-<span class="nc" id="L62">        String email = authentication.getName();</span>
-<span class="nc" id="L63">        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto,email);</span>
-<span class="nc" id="L64">        model.addAttribute(&quot;memberImage&quot;, patchMember.getMemberImage());</span>
-<span class="nc" id="L65">        model.addAttribute(&quot;email&quot;, email);</span>
-<span class="nc" id="L66">        return &quot;member/mypage&quot;;</span>
+<span class="fc" id="L62">        String email = authentication.getName();</span>
+<span class="fc" id="L63">        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto,email);</span>
+<span class="fc" id="L64">        model.addAttribute(&quot;memberImage&quot;, patchMember.getMemberImage());</span>
+<span class="fc" id="L65">        model.addAttribute(&quot;email&quot;, email);</span>
+<span class="fc" id="L66">        return &quot;member/mypage&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/member/warning&quot;)

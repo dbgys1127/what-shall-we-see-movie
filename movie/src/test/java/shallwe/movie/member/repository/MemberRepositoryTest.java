@@ -60,41 +60,57 @@ public class MemberRepositoryTest {
     @DisplayName("1. email을 통해 해당 멤버를 가져올 수 있다.")
     @Test
     void find_member_by_email() {
+        //given
+        //when
         Optional<Member> optionalMember = memberRepository.findByEmail("test1@gmail.com");
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_CANNOT_FIND));
+
+        //then
         Assertions.assertThat(findMember.getEmail()).isEqualTo("test1@gmail.com");
     }
 
     @DisplayName("2. 전체 회원조회 시 가입최신순으로 적용되어 데이터를 불러올 수 있다.")
     @Test
     void get_member_pagination_sortBy_memberId() {
+        //given
+        //when
         Page<Member> pageInfo = memberRepository
                 .findAllMemberWithPaging("@", PageRequest.of(0,10, Sort.by("memberId").descending()));
 
+        //then
         Assertions.assertThat(pageInfo.getContent().get(0).getEmail()).isEqualTo("test21@gmail.com");
     }
 
     @DisplayName("3. 전체 회원조회 시 경고 개수 기준 오름차순으로 적용되어 데이터를 불러올 수 있다.")
     @Test
     void get_member_pagination_sortBy_warningCard() {
+        //given
+        //when
         Page<Member> pageInfo = memberRepository
                 .findAllMemberWithPaging("@", PageRequest.of(0,10, Sort.by("warningCard").descending()));
 
+        //then
         Assertions.assertThat(pageInfo.getContent().get(0).getWarningCard()).isEqualTo(20);
     }
 
     @DisplayName("4. 전체 회원조회 시 회원 차단 여부로 적용되어 데이터를 불러올 수 있다.")
     @Test
     void get_member_pagination_sortBy_memberStatus() {
+        //given
+        //when
         Page<Member> pageInfo = memberRepository
                 .findAllMemberWithPaging("@", PageRequest.of(0,10, Sort.by("memberStatus").descending()));
 
+        //then
         Assertions.assertThat(pageInfo.getContent().get(0).getMemberStatus()).isEqualTo(Member.MemberStatus.차단);
     }
 
     @DisplayName("5. 정렬기준이 없으면 NullPointException 발생")
     @Test
     void without_sort_NullPointException() {
+        //given
+        //when
+        //then
         Assertions.assertThatThrownBy(()->memberRepository
                         .findAllMemberWithPaging("@", PageRequest.of(0, 10, Sort.by("m").descending())))
                 .isInstanceOf(NullPointerException.class);
@@ -103,9 +119,12 @@ public class MemberRepositoryTest {
     @DisplayName("6. email로 검색 될때도 해당 멤버들이 페이지네이션 적용된다.")
     @Test
     void search_member_by_email_with_pagination() {
+        //given
+        //when
         Page<Member> pageInfo = memberRepository
                 .findAllMemberWithPaging("test2", PageRequest.of(0,10, Sort.by("memberId").descending()));
 
+        //then
         Assertions.assertThat(pageInfo.getTotalPages()).isEqualTo(1);
         Assertions.assertThat(pageInfo.getTotalElements()).isEqualTo(3);
         Assertions.assertThat(pageInfo.getContent().get(0).getEmail()).isEqualTo("test21@gmail.com");
