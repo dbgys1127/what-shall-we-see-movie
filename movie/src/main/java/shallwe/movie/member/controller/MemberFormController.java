@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @Controller
-public class FormController {
+public class MemberFormController {
     @Value("${server.port}")
     private String port;
 
@@ -57,9 +57,5 @@ public class FormController {
         log.info("now port {}",port);
         return "member/admin";
     }
-//
-//    @GetMapping("/admin/member")
-//    public String adminMemberPage() {
-//        return "member/member";
-//    }
+
 }

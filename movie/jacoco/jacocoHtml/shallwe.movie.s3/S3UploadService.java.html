@@ -3,6 +3,7 @@
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-<span class="fc" id="L14">@RequiredArgsConstructor</span>
+<span class="fc" id="L15">@Slf4j</span>
+<span class="fc" id="L16">@RequiredArgsConstructor</span>
 public class S3UploadService {
     @Value(&quot;${cloud.aws.s3.bucket}&quot;)
     private String bucket;
@@ -19,18 +21,23 @@ public class S3UploadService {
     private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile) throws IOException {
+        //확장자 확인
+<span class="nc" id="L25">        String originFile = multipartFile.getOriginalFilename();</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (originFile.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L27">            return &quot;&quot;;</span>
+        }
         //파일이름 중복방지
-<span class="nc" id="L23">        String s3FileName = UUID.randomUUID() + &quot;-&quot; + multipartFile.getOriginalFilename();</span>
+<span class="nc" id="L30">        String s3FileName = UUID.randomUUID() + &quot;-&quot; + originFile;</span>
 
         //S3에 파일의 사이즈를 알려주는 용도
-<span class="nc" id="L26">        ObjectMetadata objMeta = new ObjectMetadata();</span>
-<span class="nc" id="L27">        objMeta.setContentLength(multipartFile.getInputStream().available());</span>
+<span class="nc" id="L33">        ObjectMetadata objMeta = new ObjectMetadata();</span>
+<span class="nc" id="L34">        objMeta.setContentLength(multipartFile.getInputStream().available());</span>
 
         //S3 파일 업로드
-<span class="nc" id="L30">        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);</span>
+<span class="nc" id="L37">        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);</span>
 
         //DB 저장용 URL
-<span class="nc" id="L33">        return amazonS3.getUrl(bucket, s3FileName).toString();</span>
+<span class="nc" id="L40">        return amazonS3.getUrl(bucket, s3FileName).toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

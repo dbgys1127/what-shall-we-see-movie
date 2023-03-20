@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagingResponseDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.dto</a> &gt; <span class="el_source">PagingResponseDto.java</span></div><h1>PagingResponseDto.java</h1><pre class="source lang-java linenums">package shallwe.movie.dto;
+
+import lombok.Getter;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+@Getter
+public class PagingResponseDto&lt;T&gt; {
+<span class="nc" id="L10">    private List&lt;T&gt; data;</span>
+
+<span class="nc" id="L12">    private int startPage;</span>
+<span class="nc" id="L13">    private int endPage;</span>
+<span class="nc" id="L14">    private int nowPage;</span>
+<span class="nc" id="L15">    private boolean prev, next;</span>
+<span class="nc" id="L16">    private String sort;</span>
+<span class="nc" id="L17">    private String target;</span>
+
+<span class="nc" id="L19">    public PagingResponseDto(List&lt;T&gt; data, Page page) {</span>
+<span class="nc" id="L20">        this.data = data;</span>
+<span class="nc" id="L21">        this.nowPage = page.getNumber()+1;</span>
+<span class="nc" id="L22">        this.endPage = (int)(Math.ceil(nowPage/10.0))*10;</span>
+<span class="nc" id="L23">        this.startPage = this.endPage-9;</span>
+
+<span class="nc" id="L25">        int realEnd = page.getTotalPages();</span>
+
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        if (realEnd &lt; this.endPage) {</span>
+<span class="nc" id="L28">            this.endPage = realEnd;</span>
+        }
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        this.prev = this.startPage&gt;1;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        this.next = this.endPage &lt; realEnd;</span>
+<span class="nc" id="L32">        String originStr = page.getSort().toString();</span>
+<span class="nc" id="L33">        this.sort = originStr.substring(0,originStr.indexOf(&quot;:&quot;));</span>
+<span class="nc" id="L34">    }</span>
+<span class="nc" id="L35">    public PagingResponseDto(List&lt;T&gt; data, Page page,String target) {</span>
+<span class="nc" id="L36">        this.data = data;</span>
+<span class="nc" id="L37">        this.nowPage = page.getNumber()+1;</span>
+<span class="nc" id="L38">        this.endPage = (int)(Math.ceil(nowPage/10.0))*10;</span>
+<span class="nc" id="L39">        this.startPage = this.endPage-9;</span>
+
+<span class="nc" id="L41">        int realEnd = page.getTotalPages();</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (realEnd &lt; this.endPage) {</span>
+<span class="nc" id="L44">            this.endPage = realEnd;</span>
+        }
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        this.prev = this.startPage&gt;1;</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        this.next = this.endPage &lt; realEnd;</span>
+<span class="nc" id="L48">        String originStr = page.getSort().toString();</span>
+<span class="nc" id="L49">        this.sort = originStr.substring(0,originStr.indexOf(&quot;:&quot;));</span>
+<span class="nc" id="L50">        this.target = target;</span>
+<span class="nc" id="L51">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

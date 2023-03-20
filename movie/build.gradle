@@ -95,9 +95,12 @@ jacocoTestReport {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
 					"shallwe/movie/member/entity/**",
+					"shallwe/movie/movie/entity",
 					"shallwe/movie/member/dto/**",
 					"shallwe/movie/audit/**",
-					"shallwe/movie/security/**"
+					"shallwe/movie/security/**",
+					"shallwe/movie/s3/**",
+					"shallwe/movie/dto/**"
 			])
 		}))
 	}

@@ -1,10 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuerydslRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.querydsl</a> &gt; <span class="el_source">QuerydslRepositoryImpl.java</span></div><h1>QuerydslRepositoryImpl.java</h1><pre class="source lang-java linenums">package shallwe.movie.querydsl;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import shallwe.movie.member.entity.Member;
 
-<span class="fc" id="L6">@RequiredArgsConstructor</span>
+import java.util.List;
+
+import static shallwe.movie.member.entity.QMember.member;
+
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
 public class QuerydslRepositoryImpl implements QuerydslRepository{
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory queryFactory;
+    @Override
+    public Page&lt;Member&gt; findAllMemberWithPaging(String email,Pageable pageable) {
+<span class="fc" id="L22">        List&lt;Member&gt; content = queryFactory</span>
+<span class="fc" id="L23">                .selectFrom(member)</span>
+<span class="fc" id="L24">                .where(member.email.contains(email)</span>
+<span class="fc" id="L25">                                .and(member.roles.size().eq(1)))</span>
+<span class="fc" id="L26">                .orderBy(queryDslSort(pageable))</span>
+<span class="fc" id="L27">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L28">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L29">                .fetch();</span>
+
+<span class="fc" id="L31">        long total = queryFactory.selectFrom(member)</span>
+<span class="fc" id="L32">                .where(member.email.contains(email)</span>
+<span class="fc" id="L33">                                .and(member.roles.size().eq(1)))</span>
+<span class="fc" id="L34">                .fetchCount();</span>
+<span class="fc" id="L35">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
+    }
+
+    private OrderSpecifier&lt;?&gt; queryDslSort(Pageable page) {
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+
+<span class="fc bfc" id="L43" title="All 4 branches covered.">                switch (order.getProperty()) {</span>
+                    case &quot;memberId&quot;:
+<span class="fc" id="L45">                        return new OrderSpecifier(direction, member.memberId);</span>
+                    case &quot;warningCard&quot;:
+<span class="fc" id="L47">                        return new OrderSpecifier(direction, member.warningCard);</span>
+                    case &quot;memberStatus&quot;:
+<span class="fc" id="L49">                        return new OrderSpecifier(Order.ASC, member.memberStatus);</span>
+                }
+<span class="fc" id="L51">            }</span>
+        }
+<span class="fc" id="L53">        return null;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
