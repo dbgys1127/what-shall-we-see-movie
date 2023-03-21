@@ -62,6 +62,7 @@ public class MemberService {
     public MemberDto.Response updateMemberPassword(MemberDto.Patch memberDto, String email) {
         Member findMember = is_exist_member(email);
         findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+        Member member = memberRepository.save(findMember);
         MemberDto.Response memberRepDto = getMemberRepDto(findMember);
 
         return memberRepDto;

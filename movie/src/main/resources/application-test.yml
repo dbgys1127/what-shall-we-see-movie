@@ -1,0 +1,81 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  # H2 Setting Info
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # Database Setting Info
+  datasource:
+    driver-class-name: org.h2.Driver
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:tcp://localhost/~/test
+#    url: jdbc:mysql://127.0.0.1:3306/movieTest?allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: sa
+    password:
+
+  # Jpa setting
+  jpa:
+    show_sql: true
+    open-in-view: true
+#    database: mysql
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+#        show-sql: true
+        format_sql: true
+        generate-ddl: true
+
+  # redis setting
+  redis:
+    host: localhost
+    port: 6379
+  session:
+    store-type: redis
+
+  # view setting
+  mvc:
+    view:
+      prefix : /WEB-INF/views/
+      suffix : .jsp
+
+#https setting
+server:
+  servlet:
+    session:
+      timeout: 10m
+      cookie:
+        max-age: 10m
+        http-only: true
+  port: 3000
+#admin setting
+mail:
+  address:
+    admin: admin@gmail.com
+
+handlebars:
+  expose-session-attributes: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: movie-project-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

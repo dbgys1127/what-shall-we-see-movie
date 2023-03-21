@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -15,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +26,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
@@ -42,6 +48,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@ActiveProfiles("test")
 public class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -55,8 +63,6 @@ public class MemberControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    WebApplicationContext webApplicationContext;
 
     @BeforeEach
     void init_data() {
@@ -171,14 +177,14 @@ public class MemberControllerTest {
     @Test
     void with_correct_password_email() throws Exception {
         //given
-        MemberDto.Post member = MemberDto.Post.builder().email("dbgys@gmail.com").password("1234!abc").build();
+        MemberDto.Post member = MemberDto.Post.builder().email("dbgys1127@gmail.com").password("1234!abc!").build();
 
         //when
         //then
         mockMvc.perform(post("/join")
                 .param("email",member.getEmail())
                 .param("password",member.getPassword()))
-                .andExpect(model().attribute("email","dbgys@gmail.com"))
+                .andExpect(model().attribute("email","dbgys1127@gmail.com"))
                 .andExpect(view().name("member/join"));
     }
 
@@ -211,7 +217,7 @@ public class MemberControllerTest {
         memberPatchDto.setPassword("abc!1234");
 
         //when
-        MvcResult result = mockMvc.perform(post("/my-info/myPassword")
+        mockMvc.perform(post("/my-info/myPassword")
                 .param("password", memberPatchDto.getPassword())).andReturn();
 
         Member member=memberService.is_exist_member("test1@gmail.com");

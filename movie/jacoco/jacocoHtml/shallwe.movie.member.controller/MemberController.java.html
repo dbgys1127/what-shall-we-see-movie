@@ -106,9 +106,9 @@ public class MemberController {
     @GetMapping(&quot;/admin/administrator/search&quot;)
     public String adminGetAdminsBySearch(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                  @RequestParam(value = &quot;email&quot;,required = false) String email, Model model) {
-<span class="nc" id="L109">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(email,page-1,&quot;memberId&quot;);</span>
-<span class="nc" id="L110">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L111">        return &quot;member/admins&quot;;</span>
+<span class="fc" id="L109">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(email,page-1,&quot;memberId&quot;);</span>
+<span class="fc" id="L110">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L111">        return &quot;member/admins&quot;;</span>
     }
 
     @PostMapping(&quot;/admin/administrator/add&quot;)
@@ -117,6 +117,14 @@ public class MemberController {
 <span class="fc" id="L117">        model.addAttribute(&quot;email&quot;,saveMember.getEmail());</span>
 <span class="fc" id="L118">        model.addAttribute(&quot;memberImage&quot;,saveMember.getMemberImage());</span>
 <span class="fc" id="L119">        return &quot;member/join&quot;;</span>
+    }
+
+    @GetMapping(&quot;/admin/administrator/delete&quot;)
+    public String adminDeleteAdmin(@RequestParam(&quot;email&quot;) String email,Model model) {
+<span class="fc" id="L124">        memberService.deleteAdmin(email);</span>
+<span class="fc" id="L125">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(&quot;@&quot;,0,&quot;memberId&quot;);</span>
+<span class="fc" id="L126">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L127">        return &quot;member/admins&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

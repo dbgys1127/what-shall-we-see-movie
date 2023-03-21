@@ -14,6 +14,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -89,6 +90,7 @@ public class MemberServiceTest {
 
         //stub
         given(memberRepository.findByEmail(email)).willReturn(memberOp);
+        given(memberRepository.save(any())).willReturn(member);
 
         //when
         Member findMember = memberService.is_exist_member("test@gmail.com");
