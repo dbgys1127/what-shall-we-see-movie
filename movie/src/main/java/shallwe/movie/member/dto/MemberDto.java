@@ -64,6 +64,7 @@ public class MemberDto {
             this.warningCard = warningCard;
             this.memberStatus = memberStatus;
             this.createdAt = createdAt;
+            this.roles = roles;
         }
 
     }

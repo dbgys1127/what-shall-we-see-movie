@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
@@ -146,5 +147,24 @@ public class AdminMemberControllerTest {
         mockMvc.perform(get("/admin/administrator")
                         .param("page", "1"))
                 .andExpect(view().name("member/admins"));
+    }
+
+    @DisplayName("6.관리자는 관리자를 추가할 수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminAddAdmin() throws Exception {
+        //given
+        MemberDto.Post memberPostDto = MemberDto.Post.builder()
+                .email("test@gmail.com")
+                .password("1234!abc")
+                .build();
+
+        //when
+        //then
+        mockMvc.perform(post("/admin/administrator/add")
+                        .param("email",memberPostDto.getEmail())
+                        .param("password",memberPostDto.getPassword()))
+                .andExpect(model().attribute("email","test@gmail.com"))
+                .andExpect(view().name("member/join"));
     }
 }

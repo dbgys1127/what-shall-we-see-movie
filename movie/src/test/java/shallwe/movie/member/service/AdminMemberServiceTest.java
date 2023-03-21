@@ -208,6 +208,5 @@ public class AdminMemberServiceTest {
 
         //then
         Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(memberPostDto.getEmail());
-        Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(memberPostDto.getEmail());
     }
 }

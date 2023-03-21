@@ -161,6 +161,7 @@ public class MemberService {
                 .memberImage(findMember.getMemberImage())
                 .email(findMember.getEmail())
                 .password(findMember.getPassword())
+                .roles(findMember.getRoles())
                 .build();
 
         return memberRepDto;
@@ -178,7 +179,7 @@ public class MemberService {
     }
 
     //6. 회원정보에 대해 list로 반환할때 Dto 생성 메서드
-    private static List<MemberDto.Response> getMemberRepList(List<Member> members) {
+    public static List<MemberDto.Response> getMemberRepList(List<Member> members) {
         List<MemberDto.Response> memberRepDtoList = new ArrayList<>();
         for (Member member : members) {
             MemberDto.Response memberRepDto = getAdminRepDto(member);

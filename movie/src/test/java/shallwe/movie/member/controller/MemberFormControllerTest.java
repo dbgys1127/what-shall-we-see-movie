@@ -118,4 +118,12 @@ public class MemberFormControllerTest {
         mockMvc.perform(get("/admin/member/warning-page")
                 .param("email", email)).andExpect(view().name("member/warning"));
     }
+
+    @DisplayName("12.관리자 추가 버튼을 누르면 관리자 추가 양식이 나온다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminGetAddAdminPage() throws Exception {
+        mockMvc.perform(get("/admin/administrator/add-admin-form"))
+                .andExpect(view().name("member/addAdmin"));
+    }
 }

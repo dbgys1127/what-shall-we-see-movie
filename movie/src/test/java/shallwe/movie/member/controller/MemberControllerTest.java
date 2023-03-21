@@ -174,6 +174,7 @@ public class MemberControllerTest {
         MemberDto.Post member = MemberDto.Post.builder().email("dbgys@gmail.com").password("1234!abc").build();
 
         //when
+        //then
         mockMvc.perform(post("/join")
                 .param("email",member.getEmail())
                 .param("password",member.getPassword()))

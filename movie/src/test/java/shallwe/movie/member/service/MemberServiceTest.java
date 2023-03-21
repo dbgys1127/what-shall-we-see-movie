@@ -31,6 +31,8 @@ import shallwe.movie.security.service.CustomAuthorityUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -179,4 +181,25 @@ public class MemberServiceTest {
         Assertions.assertThat(memberRepDto.getMemberStatus()).isEqualTo(Member.MemberStatus.활성);
     }
 
+    @DisplayName("8.관리자 페이징 List로 반환된다")
+    @Test
+    void getMemberRepList() {
+        //given
+        Member member1 = Member.builder().email("test1@gmail.com").build();
+        Member member2 = Member.builder().email("test2@gmail.com").build();
+        Member member3 = Member.builder().email("test3@gmail.com").build();
+
+        List<Member> members = new ArrayList<>();
+
+        members.add(member1);
+        members.add(member2);
+        members.add(member3);
+
+        //stub
+        //when
+        List<MemberDto.Response> memberRepDtoList = MemberService.getMemberRepList(members);
+
+        //then
+        Assertions.assertThat(memberRepDtoList.size()).isEqualTo(3);
+    }
 }
