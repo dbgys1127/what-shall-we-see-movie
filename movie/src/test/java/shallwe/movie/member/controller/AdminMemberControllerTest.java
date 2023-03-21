@@ -167,4 +167,29 @@ public class AdminMemberControllerTest {
                 .andExpect(model().attribute("email","test@gmail.com"))
                 .andExpect(view().name("member/join"));
     }
+
+    @DisplayName("7.관리자는 검색된 관리자 목록을 페이징 처리된 목록으로 볼수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void getAdminBySearch() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/admin/administrator/search")
+                        .param("page", "1")
+                        .param("email","admin"))
+                .andExpect(view().name("member/admins"));
+    }
+
+    @DisplayName("8.관리자는 관리자를 삭제할 수 있다..")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminDeleteAdmin() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/admin/administrator/delete")
+                        .param("email", "test@gmail.com"))
+                .andExpect(view().name("member/admins"));
+    }
 }

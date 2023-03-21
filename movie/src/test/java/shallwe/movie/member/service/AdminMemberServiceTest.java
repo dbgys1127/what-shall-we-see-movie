@@ -209,4 +209,15 @@ public class AdminMemberServiceTest {
         //then
         Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(memberPostDto.getEmail());
     }
+
+    @DisplayName("7.관리자 삭제 테스트")
+    @Test
+    void deleteAdmin() {
+        //given
+        String email = "admin@gmail.com";
+
+        //when
+        //then
+        memberService.deleteAdmin(email);
+    }
 }

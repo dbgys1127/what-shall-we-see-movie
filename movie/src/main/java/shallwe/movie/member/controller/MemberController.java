@@ -103,11 +103,27 @@ public class MemberController {
         return "member/admins";
     }
 
+    @GetMapping("/admin/administrator/search")
+    public String adminGetAdminsBySearch(@RequestParam(value = "page",defaultValue = "1") int page,
+                                 @RequestParam(value = "email",required = false) String email, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin(email,page-1,"memberId");
+        model.addAttribute("pageData", pageRepDto);
+        return "member/admins";
+    }
+
     @PostMapping("/admin/administrator/add")
     public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         MemberDto.Response saveMember=memberService.createAdmin(memberDto);
         model.addAttribute("email",saveMember.getEmail());
         model.addAttribute("memberImage",saveMember.getMemberImage());
         return "member/join";
+    }
+
+    @GetMapping("/admin/administrator/delete")
+    public String adminDeleteAdmin(@RequestParam("email") String email,Model model) {
+        memberService.deleteAdmin(email);
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@",0,"memberId");
+        model.addAttribute("pageData", pageRepDto);
+        return "member/admins";
     }
 }

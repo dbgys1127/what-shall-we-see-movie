@@ -13,14 +13,10 @@ import org.mockito.Mock;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.mock.web.MockMultipartFile;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
-import shallwe.movie.TestConfig;
+
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
@@ -28,9 +24,6 @@ import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

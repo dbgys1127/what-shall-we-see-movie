@@ -129,7 +129,9 @@ public class MemberService {
 
         return memberRepDto;
     }
-
+    public void deleteAdmin(String email) {
+        memberRepository.deleteByEmail(email);
+    }
 
     //================================= 중복 제거용 메소드 ================================
     //1. 회원 가입시 동일 이메일 중복 가입 방지용 메서드
@@ -187,5 +189,6 @@ public class MemberService {
         }
         return memberRepDtoList;
     }
+
 
 }

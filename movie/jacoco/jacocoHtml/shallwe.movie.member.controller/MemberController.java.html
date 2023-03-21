@@ -103,12 +103,20 @@ public class MemberController {
 <span class="fc" id="L103">        return &quot;member/admins&quot;;</span>
     }
 
+    @GetMapping(&quot;/admin/administrator/search&quot;)
+    public String adminGetAdminsBySearch(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
+                                 @RequestParam(value = &quot;email&quot;,required = false) String email, Model model) {
+<span class="nc" id="L109">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(email,page-1,&quot;memberId&quot;);</span>
+<span class="nc" id="L110">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="nc" id="L111">        return &quot;member/admins&quot;;</span>
+    }
+
     @PostMapping(&quot;/admin/administrator/add&quot;)
     public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-<span class="nc" id="L108">        MemberDto.Response saveMember=memberService.createAdmin(memberDto);</span>
-<span class="nc" id="L109">        model.addAttribute(&quot;email&quot;,saveMember.getEmail());</span>
-<span class="nc" id="L110">        model.addAttribute(&quot;memberImage&quot;,saveMember.getMemberImage());</span>
-<span class="nc" id="L111">        return &quot;member/join&quot;;</span>
+<span class="fc" id="L116">        MemberDto.Response saveMember=memberService.createAdmin(memberDto);</span>
+<span class="fc" id="L117">        model.addAttribute(&quot;email&quot;,saveMember.getEmail());</span>
+<span class="fc" id="L118">        model.addAttribute(&quot;memberImage&quot;,saveMember.getMemberImage());</span>
+<span class="fc" id="L119">        return &quot;member/join&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

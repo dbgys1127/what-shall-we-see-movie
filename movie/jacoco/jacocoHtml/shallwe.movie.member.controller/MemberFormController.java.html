@@ -3,60 +3,69 @@
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import shallwe.movie.member.dto.MemberDto;
 
-<span class="fc" id="L8">@Slf4j</span>
+import javax.validation.Valid;
+
+<span class="fc" id="L14">@Slf4j</span>
 @Controller
-<span class="fc" id="L10">public class MemberFormController {</span>
+<span class="fc" id="L16">public class MemberFormController {</span>
     @Value(&quot;${server.port}&quot;)
     private String port;
 
     @GetMapping(&quot;/login-form&quot;)
     public String loginForm() {
-<span class="fc" id="L16">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L17">        return &quot;member/login&quot;;</span>
+<span class="fc" id="L22">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L23">        return &quot;member/login&quot;;</span>
     }
 
     @GetMapping(&quot;/access-denied&quot;)
     public String accessDenied() {
-<span class="fc" id="L22">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L23">        return &quot;member/accessdenied&quot;;</span>
+<span class="fc" id="L28">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L29">        return &quot;member/accessdenied&quot;;</span>
     }
 
     @GetMapping(&quot;/logout-form&quot;)
     public String logoutForm() {
-<span class="fc" id="L28">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L29">        return &quot;member/logout&quot;;</span>
+<span class="fc" id="L34">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L35">        return &quot;member/logout&quot;;</span>
     }
 
     @GetMapping(&quot;/join-form&quot;)
     public String joinForm() {
-<span class="fc" id="L34">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L35">        return &quot;member/join-form&quot;;</span>
+<span class="fc" id="L40">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L41">        return &quot;member/join-form&quot;;</span>
     }
 
     @GetMapping(&quot;/mypage&quot;)
     public String mypage() {
-<span class="fc" id="L40">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L41">        return &quot;member/mypage&quot;;</span>
+<span class="fc" id="L46">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L47">        return &quot;member/mypage&quot;;</span>
     }
     @GetMapping(&quot;/my-info/myImage&quot;)
     public String myImageForm() {
-<span class="fc" id="L45">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L46">        return &quot;member/myImage&quot;;</span>
+<span class="fc" id="L51">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L52">        return &quot;member/myImage&quot;;</span>
     }
 
     @GetMapping(&quot;/my-info/myPassword&quot;)
     public String myPasswordForm() {
-<span class="fc" id="L51">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L52">        return &quot;member/myPassword&quot;;</span>
+<span class="fc" id="L57">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L58">        return &quot;member/myPassword&quot;;</span>
     }
 
     @GetMapping(&quot;/admin&quot;)
     public String adminPage() {
-<span class="fc" id="L57">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L58">        return &quot;member/admin&quot;;</span>
+<span class="fc" id="L63">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L64">        return &quot;member/admin&quot;;</span>
     }
-
+    @GetMapping(&quot;/admin/administrator/add-admin-form&quot;)
+    public String adminAddAdmin() {
+<span class="fc" id="L68">        return &quot;member/addAdmin&quot;;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

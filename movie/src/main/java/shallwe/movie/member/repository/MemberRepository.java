@@ -16,4 +16,5 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member,Long>, QuerydslRepository {
     Optional<Member> findByEmail(String email);
 
+    void deleteByEmail(String email);
 }

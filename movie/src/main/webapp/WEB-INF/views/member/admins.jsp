@@ -22,11 +22,13 @@
     <!-- 표 헤더 -->
         <th>이메일</th>
         <th>생성일</th>
+        <th>관리자 삭제</th>
         <c:forEach var="admin" items="${pageData.data}">
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
                 <td> <a href="">${admin.email}</a></td>
                 <td>${admin.createdAt}</td>
+                <td><button type="button" onclick="location.href='/admin/administrator/delete?email=${admin.email}';">삭제</button></td>
             </tr>
         </c:forEach>
     </table>
