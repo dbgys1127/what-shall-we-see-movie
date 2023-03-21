@@ -130,4 +130,15 @@ public class MemberRepositoryTest {
         Assertions.assertThat(pageInfo.getContent().get(0).getEmail()).isEqualTo("test21@gmail.com");
 
     }
+    @DisplayName("7. 전체 관리자조회 시 가입최신순으로 적용되어 데이터를 불러올 수 있다.")
+    @Test
+    void get_admin_pagination_sortBy_memberId() {
+        //given
+        //when
+        Page<Member> pageInfo = memberRepository
+                .findAllAdminWithPaging("@", PageRequest.of(0,10, Sort.by("memberId").descending()));
+
+        //then
+        Assertions.assertThat(pageInfo.getContent().get(0).getEmail()).isEqualTo("admin@gmail.com");
+    }
 }

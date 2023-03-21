@@ -2,31 +2,24 @@ package shallwe.movie.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
-import shallwe.movie.member.entity.Member;
+
 import shallwe.movie.member.service.MemberService;
-import shallwe.movie.security.service.UserDetailsServiceImpl;
+
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Slf4j
 @Controller
@@ -100,5 +93,21 @@ public class MemberController {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email,page-1,"memberId");
         model.addAttribute("pageData", pageRepDto);
         return "member/memberSearchResult";
+    }
+
+    @GetMapping("/admin/administrator")
+    public String adminGetAdmins(@RequestParam(value = "page",defaultValue = "1") int page,
+                                    @RequestParam(value = "sort",defaultValue = "memberId") String sort, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@",page-1,sort);
+        model.addAttribute("pageData", pageRepDto);
+        return "member/admins";
+    }
+
+    @PostMapping("/admin/administrator/add")
+    public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
+        MemberDto.Response saveMember=memberService.createAdmin(memberDto);
+        model.addAttribute("email",saveMember.getEmail());
+        model.addAttribute("memberImage",saveMember.getMemberImage());
+        return "member/join";
     }
 }

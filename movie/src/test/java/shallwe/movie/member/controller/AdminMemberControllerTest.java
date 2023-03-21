@@ -135,4 +135,16 @@ public class AdminMemberControllerTest {
                         .param("email","test"))
                 .andExpect(view().name("member/memberSearchResult"));
     }
+
+    @DisplayName("5.관리자는 페이징 처리된 관리자 목록을 볼수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminGetAdmin() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/admin/administrator")
+                        .param("page", "1"))
+                .andExpect(view().name("member/admins"));
+    }
 }

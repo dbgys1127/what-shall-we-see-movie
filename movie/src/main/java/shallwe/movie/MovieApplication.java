@@ -9,7 +9,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 300)
 public class MovieApplication extends SpringBootServletInitializer {
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

@@ -32,4 +32,10 @@ public class CustomAuthorityUtils {
         }
         return USER_ROLES_STRING;
     }
+    public List<String> createRoles(boolean isAdmin) {
+        if (isAdmin) {
+            return ADMIN_ROLES_STRING;
+        }
+        return USER_ROLES_STRING;
+    }
 }

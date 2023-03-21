@@ -17,18 +17,21 @@
 <h2> 전체회원 </h2>
 
 <form action = "/admin/member/search" method="get">
+    <!-- 정렬 기준 -->
     <ul class="sort">
         <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/member?page=1&sort=memberId">가입일</a></li>
         <li><a href="">시청한 영화수</a></li>
         <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/member?page=1&sort=warningCard">경고수</a></li>
         <li class="${pageData.sort eq 'memberStatus' ? 'active':''}"><a href="/admin/member?page=1&sort=memberStatus">차단멤버</a></li>
     </ul>
+    <!-- 표 헤드값 -->
     <table style="border: 1px solid black;" >
         <th>이메일</th>
         <th>생성일</th>
         <th>경고수</th>
         <th>회원상태</th>
         <c:forEach var="member" items="${pageData.data}">
+        <!-- 표 안에 보여질 멤버 내용 -->
             <tr>
                 <td> <a href="/admin/member/warning-page?email=${member.email}">${member.email}</a></td>
                 <td>${member.createdAt}</td>
@@ -37,6 +40,7 @@
             </tr>
         </c:forEach>
     </table>
+    <!-- 페이징 단추 -->
     <div class="pull-right">
         <ul class="pagination">
                 <c:if test="${pageData.prev}">

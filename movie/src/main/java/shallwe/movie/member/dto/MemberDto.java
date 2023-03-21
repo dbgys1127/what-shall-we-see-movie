@@ -11,6 +11,7 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MemberDto {
 
@@ -51,8 +52,12 @@ public class MemberDto {
 
         private LocalDateTime createdAt;
 
+        private List<String> roles;
+
         @Builder
-        public Response(String email, String password, String memberImage, int warningCard, Member.MemberStatus memberStatus, LocalDateTime createdAt) {
+        public Response(String email, String password, String memberImage,
+                        int warningCard, Member.MemberStatus memberStatus,
+                        LocalDateTime createdAt,List<String> roles) {
             this.email = email;
             this.password = password;
             this.memberImage = memberImage;
@@ -60,6 +65,7 @@ public class MemberDto {
             this.memberStatus = memberStatus;
             this.createdAt = createdAt;
         }
+
     }
 
 }

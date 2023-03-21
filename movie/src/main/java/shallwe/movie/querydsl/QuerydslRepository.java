@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface QuerydslRepository {
     Page<Member> findAllMemberWithPaging(String email,Pageable pageable);
+    Page<Member> findAllAdminWithPaging(String email,Pageable pageable);
 }

@@ -3,7 +3,13 @@ package shallwe.movie.member.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import shallwe.movie.member.dto.MemberDto;
+
+import javax.validation.Valid;
 
 @Slf4j
 @Controller
@@ -57,5 +63,8 @@ public class MemberFormController {
         log.info("now port {}",port);
         return "member/admin";
     }
-
+    @GetMapping("/admin/administrator/add-admin-form")
+    public String adminAddAdmin() {
+        return "member/addAdmin";
+    }
 }

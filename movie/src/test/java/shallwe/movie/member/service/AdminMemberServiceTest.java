@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +69,13 @@ public class AdminMemberServiceTest {
                     .build();
             members.add(member);
         }
+        Member member = Member.builder()
+                .email("admin@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER", "ADMIN"))
+                .build();
+        members.add(member);
     }
 
     @DisplayName("1.email로 회원을 조회할 수 있다.")
@@ -154,5 +162,52 @@ public class AdminMemberServiceTest {
         //then
         Assertions.assertThat(memberRepDto.getWarningCard()).isEqualTo(0);
         Assertions.assertThat(memberRepDto.getMemberStatus()).isEqualTo(Member.MemberStatus.차단);
+    }
+
+    @DisplayName("5.전체 관리자조회 시 가입최신순으로 적용되어 데이터를 불러올 수 있다.")
+    @Test
+    void searchAdmin() {
+        //given
+        String email = "@";
+        int page = 1;
+        String sort = "memberId";
+        Pageable pageable=PageRequest.of(page-1, 10, Sort.by(sort).descending());
+        Page<Member> pageInfo = new PageImpl<>(members, pageable, members.size());
+
+        //stub
+        given(memberRepository.findAllAdminWithPaging(email, PageRequest.of(page,10, Sort.by(sort).descending()))).willReturn(pageInfo);
+
+        //when
+        PagingResponseDto<MemberDto.Response> pagingResponseDto = memberService.searchAdmin(email, page, sort);
+
+        //then
+        Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
+        Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
+        Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
+        Assertions.assertThat(pagingResponseDto.getData().get(21).getEmail()).isEqualTo(members.get(21).getEmail());
+    }
+
+    @DisplayName("6.관리자 추가 테스트")
+    @Test
+    void addAdmin() {
+        //given
+        MemberDto.Post memberPostDto = MemberDto.Post.builder()
+                .email("test@gmail.com")
+                .password("1234!abc")
+                .build();
+        Member member = Member.builder()
+                .email(memberPostDto.getEmail())
+                .password(memberPostDto.getPassword())
+                .build();
+
+        //stub
+        when(memberRepository.save(any())).thenReturn(member);
+
+        //when
+        MemberDto.Response memberRepDto = memberService.createAdmin(memberPostDto);
+
+        //then
+        Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(memberPostDto.getEmail());
+        Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(memberPostDto.getEmail());
     }
 }

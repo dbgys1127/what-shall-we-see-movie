@@ -35,6 +35,24 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         return new PageImpl<>(content,pageable,total);
     }
 
+    @Override
+    public Page<Member> findAllAdminWithPaging(String email, Pageable pageable) {
+        List<Member> content = queryFactory
+                .selectFrom(member)
+                .where(member.email.contains(email)
+                        .and(member.roles.size().eq(2)))
+                .orderBy(queryDslSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory.selectFrom(member)
+                .where(member.email.contains(email)
+                        .and(member.roles.size().eq(2)))
+                .fetchCount();
+        return new PageImpl<>(content,pageable,total);
+    }
+
     private OrderSpecifier<?> queryDslSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {

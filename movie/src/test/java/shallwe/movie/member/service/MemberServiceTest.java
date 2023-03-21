@@ -178,4 +178,5 @@ public class MemberServiceTest {
         Assertions.assertThat(memberRepDto.getEmail()).isEqualTo("test@gmail.com");
         Assertions.assertThat(memberRepDto.getMemberStatus()).isEqualTo(Member.MemberStatus.활성);
     }
+
 }

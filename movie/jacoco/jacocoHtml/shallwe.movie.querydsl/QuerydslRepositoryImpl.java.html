@@ -35,22 +35,40 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
 <span class="fc" id="L35">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
     }
 
-    private OrderSpecifier&lt;?&gt; queryDslSort(Pageable page) {
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
-<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+    @Override
+    public Page&lt;Member&gt; findAllAdminWithPaging(String email, Pageable pageable) {
+<span class="fc" id="L40">        List&lt;Member&gt; content = queryFactory</span>
+<span class="fc" id="L41">                .selectFrom(member)</span>
+<span class="fc" id="L42">                .where(member.email.contains(email)</span>
+<span class="fc" id="L43">                        .and(member.roles.size().eq(2)))</span>
+<span class="fc" id="L44">                .orderBy(queryDslSort(pageable))</span>
+<span class="fc" id="L45">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L46">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L47">                .fetch();</span>
 
-<span class="fc bfc" id="L43" title="All 4 branches covered.">                switch (order.getProperty()) {</span>
+<span class="fc" id="L49">        long total = queryFactory.selectFrom(member)</span>
+<span class="fc" id="L50">                .where(member.email.contains(email)</span>
+<span class="fc" id="L51">                        .and(member.roles.size().eq(2)))</span>
+<span class="fc" id="L52">                .fetchCount();</span>
+<span class="fc" id="L53">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
+    }
+
+    private OrderSpecifier&lt;?&gt; queryDslSort(Pageable page) {
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+
+<span class="fc bfc" id="L61" title="All 4 branches covered.">                switch (order.getProperty()) {</span>
                     case &quot;memberId&quot;:
-<span class="fc" id="L45">                        return new OrderSpecifier(direction, member.memberId);</span>
+<span class="fc" id="L63">                        return new OrderSpecifier(direction, member.memberId);</span>
                     case &quot;warningCard&quot;:
-<span class="fc" id="L47">                        return new OrderSpecifier(direction, member.warningCard);</span>
+<span class="fc" id="L65">                        return new OrderSpecifier(direction, member.warningCard);</span>
                     case &quot;memberStatus&quot;:
-<span class="fc" id="L49">                        return new OrderSpecifier(Order.ASC, member.memberStatus);</span>
+<span class="fc" id="L67">                        return new OrderSpecifier(Order.ASC, member.memberStatus);</span>
                 }
-<span class="fc" id="L51">            }</span>
+<span class="fc" id="L69">            }</span>
         }
-<span class="fc" id="L53">        return null;</span>
+<span class="fc" id="L71">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
