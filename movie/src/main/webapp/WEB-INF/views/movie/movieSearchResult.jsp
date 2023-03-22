@@ -19,7 +19,7 @@
 <form action = "/admin/movie/search" method="get">
 <!-- 정렬 기준 -->
 <ul class="sort">
-    <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
+    <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/movie?page=1&sort=xxx">등록일</a></li>
     <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/movie?page=1&sort=xxx">평균 시청순</a></li>
 </ul>
     <table style="border: 1px solid black;" >
@@ -27,6 +27,7 @@
         <th>영화제목</th>
         <th>등록일</th>
         <th>평균 시청수</th>
+        <th>영화 삭제</th>
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
@@ -41,22 +42,22 @@
     <div class="pull-right">
         <ul class="pagination">
                 <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/admin/movie?page=${pageData.startPage-1}&sort=${pageData.sort}">Prev</a></li>
+                    <li class="paginate_button previous"><a href="/admin/movie/search?page=${pageData.startPage-1}&sort=${pageData.sort}&title=${pageData.target}">Prev</a></li>
                 </c:if>
 
                 <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
                     <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/admin/movie?page=${num}&sort=${pageData.sort}">${num}</a>
+                        <a href="/admin/movie/search?page=${num}&sort=${pageData.sort}&title=${pageData.target}">${num}</a>
                     </li>
                 </c:forEach>
 
                 <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/admin/movie?page=${pageData.endPage+1}&sort=${pageData.sort}">Next</a></li>
+                    <li class="paginate_button next"><a href="/admin/movie/search?page=${pageData.endPage+1}&sort=${pageData.sort}&title=${pageData.target}">Next</a></li>
                 </c:if>
         </ul>
     </div>
 
-    <input type = "text" name="title" placeholder = "검색할 영화를 입력하세요."/>
+    <input type = "text" name="movie" placeholder = "검색할 영화를 입력하세요."/>
     <button type="submit">검색</button>
 </form>
 <button type="button" onclick="location.href='/admin/movie/add-movie-form';">영화 추가</button>

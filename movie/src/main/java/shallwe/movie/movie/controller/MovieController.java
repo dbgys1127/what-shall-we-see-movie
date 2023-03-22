@@ -17,7 +17,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    /** 영화 목록 조회 메서드
+    /** 관리자 영화 목록 조회 메서드
      * Param page -> 관리자가 화면에서 선택한 페이지가 출력된다.
      * Param sort -> 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
       */
@@ -25,8 +25,20 @@ public class MovieController {
     public String adminGetMovies(@RequestParam("page") int page,
                                   @RequestParam(value = "sort",defaultValue = "movieId") String sort, Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page, sort);
-        log.info("MO_startPage={}",pageRepDto.getStartPage());
         model.addAttribute("pageData", pageRepDto);
         return "movie/movie";
+    }
+
+    /** 관리자 영화 검색 메서드
+     * Param page -> 관리자가 화면에서 선택한 페이지가 출력된다.
+     * Param sort -> 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
+     */
+    @GetMapping("/admin/movie/search")
+    public String adminSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
+                                    @RequestParam(value = "title",required = false) String title, Model model) {
+        log.info("title={}",title);
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.adminSearchMovie(title, page - 1, "movieId");
+        model.addAttribute("pageData", pageRepDto);
+        return "movie/movieSearchResult";
     }
 }

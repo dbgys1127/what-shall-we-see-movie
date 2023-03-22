@@ -29,5 +29,20 @@ public class MovieController {
 <span class="fc" id="L29">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
 <span class="fc" id="L30">        return &quot;movie/movie&quot;;</span>
     }
+
+    /** 영화 검색 메서드
+     * Param page -&gt; 관리자가 화면에서 선택한 페이지가 출력된다.
+     * Param sort -&gt; 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
+     */
+    @GetMapping(&quot;/admin/movie/search&quot;)
+    public String adminSearchMovies(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
+                                 @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;movieId&quot;) String sort,
+                                    @RequestParam(value = &quot;title&quot;,required = false) String title,
+                                    Model model) {
+<span class="nc" id="L42">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
+<span class="nc" id="L43">        log.info(&quot;MO_startPage={}&quot;,pageRepDto.getStartPage());</span>
+<span class="nc" id="L44">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="nc" id="L45">        return &quot;movie/movie&quot;;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

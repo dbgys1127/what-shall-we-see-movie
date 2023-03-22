@@ -9,10 +9,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import shallwe.movie.member.entity.Member;
+import shallwe.movie.movie.entity.Movie;
 
 import java.util.List;
 
 import static shallwe.movie.member.entity.QMember.member;
+import static shallwe.movie.movie.entity.QMovie.movie;
 
 @RequiredArgsConstructor
 public class QuerydslRepositoryImpl implements QuerydslRepository{
@@ -23,7 +25,7 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .selectFrom(member)
                 .where(member.email.contains(email)
                                 .and(member.roles.size().eq(1)))
-                .orderBy(queryDslSort(pageable))
+                .orderBy(memberSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -41,7 +43,7 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .selectFrom(member)
                 .where(member.email.contains(email)
                         .and(member.roles.size().eq(2)))
-                .orderBy(queryDslSort(pageable))
+                .orderBy(memberSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -53,7 +55,37 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         return new PageImpl<>(content,pageable,total);
     }
 
-    private OrderSpecifier<?> queryDslSort(Pageable page) {
+    @Override
+    public Page<Movie> findMovieByTitleWithPaging(String title, Pageable pageable) {
+        List<Movie> content = queryFactory
+                .selectFrom(movie)
+                .where(movie.movieTitle.contains(title))
+                .orderBy(movieSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory.selectFrom(movie)
+                .where(movie.movieTitle.contains(title))
+                .fetchCount();
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private OrderSpecifier<?> movieSort(Pageable page) {
+        if (!page.getSort().isEmpty()) {
+            for (Sort.Order order : page.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch (order.getProperty()) {
+                    case "movieId":
+                        return new OrderSpecifier(direction, movie.movieId);
+                }
+            }
+        }
+        return null;
+    }
+
+    private OrderSpecifier<?> memberSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
