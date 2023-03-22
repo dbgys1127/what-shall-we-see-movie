@@ -83,6 +83,7 @@ public class MemberController {
     public String adminGetMembers(@RequestParam("page") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@",page - 1, sort);
+        log.info("MEM_startPage={}",pageRepDto.getStartPage());
         model.addAttribute("pageData", pageRepDto);
         return "member/member";
     }

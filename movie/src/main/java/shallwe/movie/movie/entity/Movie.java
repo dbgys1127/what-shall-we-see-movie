@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Movie extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long movieId;
 
     @Column(nullable = false,length = 20)
     private String movieTitle;
@@ -30,6 +30,7 @@ public class Movie extends TimeAudit {
     private int movieRunningTime;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MovieGenre movieGenre;
 
     @Column(nullable = false)

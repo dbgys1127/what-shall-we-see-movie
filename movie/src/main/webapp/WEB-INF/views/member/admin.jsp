@@ -10,6 +10,8 @@
     <h3>회원관리</h3>
     <a href="/admin/member?page=1">사용자</a>
     <a href="/admin/administrator?page=1">관리자</a>
+    <h3>영화 관리</h3>
+    <a href="/admin/movie?page=1">영화</a>
 <form>
 
 </form>
