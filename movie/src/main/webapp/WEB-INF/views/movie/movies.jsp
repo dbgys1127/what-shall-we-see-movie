@@ -18,12 +18,15 @@
 
 <form action = "/admin/movie/search" method="get">
 <!-- 정렬 기준 -->
+<ul class="sort">
+    <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
+    <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/movie?page=1&sort=xxx">평균 시청순</a></li>
+</ul>
     <table style="border: 1px solid black;" >
     <!-- 표 헤더 -->
         <th>영화제목</th>
         <th>등록일</th>
         <th>평균 시청수</th>
-        <th>영화 삭제</th>
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
@@ -38,17 +41,17 @@
     <div class="pull-right">
         <ul class="pagination">
                 <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/admin/movie/search?page=${pageData.startPage-1}&sort=${pageData.sort}&movieTitle=${pageData.target}">Prev</a></li>
+                    <li class="paginate_button previous"><a href="/admin/movie?page=${pageData.startPage-1}&sort=${pageData.sort}">Prev</a></li>
                 </c:if>
 
                 <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
                     <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/admin/movie/search?page=${num}&sort=${pageData.sort}&movieTitle=${pageData.target}">${num}</a>
+                        <a href="/admin/movie?page=${num}&sort=${pageData.sort}">${num}</a>
                     </li>
                 </c:forEach>
 
                 <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/admin/movie/search?page=${pageData.endPage+1}&sort=${pageData.sort}&movieTitle=${pageData.target}">Next</a></li>
+                    <li class="paginate_button next"><a href="/admin/movie?page=${pageData.endPage+1}&sort=${pageData.sort}">Next</a></li>
                 </c:if>
         </ul>
     </div>

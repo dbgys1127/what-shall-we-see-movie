@@ -1,64 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ taglib prefix = "c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
-
-<style>
-    .pagination li{display:inline-block;}
-    .sort li{display: inline-block;}
-    .active a{color:red;}
-
-</style>
 <body>
-<h2> 영화 </h2>
-
-<form action = "/admin/movie/search" method="get">
-<!-- 정렬 기준 -->
-<ul class="sort">
-    <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
-    <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/movie?page=1&sort=xxx">평균 시청순</a></li>
+<h2> 영화생성 성공 화면 </h2>
+<ul>
+    <img src="${movie.moviePoster}" />
+    <li>영화제목: ${movie.movieTitle}</li>
+    <li>상영시간: ${movie.movieRunningTime}</li>
+    <li>개봉일: ${movie.movieOpenDate}</li>
+    <li>장르: ${movie.movieGenre}</li>
+    <li>영화 설명: ${movie.movieDescription}</li>
+    <button type="button"><a href="/">메인</a></button>
 </ul>
-    <table style="border: 1px solid black;" >
-    <!-- 표 헤더 -->
-        <th>영화제목</th>
-        <th>등록일</th>
-        <th>평균 시청수</th>
-        <c:forEach var="movie" items="${pageData.data}">
-            <tr>
-            <!-- 표안에 보여질 관리자 정보 -->
-                <td> <a href="">${movie.title}</a></td>
-                <td>${movie.createdAt}</td>
-                <td>평균시청순</td>
-                <td><button type="button" onclick="location.href='/admin/movie/delete?title=${movie.title}';">삭제</button></td>
-            </tr>
-        </c:forEach>
-    </table>
-    <!-- 페이징 단추 -->
-    <div class="pull-right">
-        <ul class="pagination">
-                <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/admin/movie?page=${pageData.startPage-1}&sort=${pageData.sort}">Prev</a></li>
-                </c:if>
-
-                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
-                    <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/admin/movie?page=${num}&sort=${pageData.sort}">${num}</a>
-                    </li>
-                </c:forEach>
-
-                <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/admin/movie?page=${pageData.endPage+1}&sort=${pageData.sort}">Next</a></li>
-                </c:if>
-        </ul>
-    </div>
-
-    <input type = "text" name="title" placeholder = "검색할 영화를 입력하세요."/>
-    <button type="submit">검색</button>
-</form>
-<button type="button" onclick="location.href='/admin/movie/add-movie-form';">영화 추가</button>
 </body>
 </html>

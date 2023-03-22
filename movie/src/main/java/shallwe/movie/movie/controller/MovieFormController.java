@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MovieFormController {
 
-
     @GetMapping("/admin/movie/add-movie-form")
     public String adminAddMovie() {
         return "movie/addMovie";
     }
+
 }

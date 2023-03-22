@@ -16,6 +16,7 @@ import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.repository.MovieRepository;
+import shallwe.movie.s3.S3UploadService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +30,36 @@ import java.util.Optional;
 public class MovieService {
     private final MovieRepository movieRepository;
 
+    private final S3UploadService s3UploadService;
+
+    // ============================ 일반 유저 요청 처리 메소드 ==============================
+
+
+
+
     // ============================ 관리자 요청 처리 메소드 ==============================
+    public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
+        Movie movie = Movie.builder()
+                .movieTitle(movieDto.getMovieTitle())
+                .moviePoster(s3UploadService.upload(multipartFile))
+                .movieRunningTime(movieDto.getMovieRunningTime())
+                .movieDescription(movieDto.getMovieDescription())
+                .movieGenre(movieDto.getMovieGenre())
+                .movieOpenDate(movieDto.getMovieOpenDate())
+                .build();
+
+        Movie savedMovie = movieRepository.save(movie);
+
+        MovieDto.Response movieRepDto = MovieDto.Response.builder()
+                .movieTitle(savedMovie.getMovieTitle())
+                .moviePoster(savedMovie.getMoviePoster())
+                .movieRunningTime(savedMovie.getMovieRunningTime())
+                .movieOpenDate(savedMovie.getMovieOpenDate())
+                .movieGenre(savedMovie.getMovieGenre())
+                .movieDescription(savedMovie.getMovieDescription())
+                .build();
+        return movieRepDto;
+    }
     /** 1.관리자 영화 목록 조회
      * sort -> 가입일, 시청영화순, 경고수, 차단여부
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
@@ -59,11 +89,19 @@ public class MovieService {
         List<MovieDto.Response> movieRepDtoList = new ArrayList<>();
         for (Movie movie : movies) {
             MovieDto.Response movieRepDto = MovieDto.Response.builder()
-                    .title(movie.getMovieTitle())
+                    .movieTitle(movie.getMovieTitle())
                     .createdAt(movie.getCreatedAt())
                     .build();
             movieRepDtoList.add(movieRepDto);
         }
         return movieRepDtoList;
     }
+    //3. 영화 수정시 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
+    public void isUpdateImage(MultipartFile multipartFile, Movie findMovie) throws IOException {
+        String url = s3UploadService.upload(multipartFile);
+        if (!url.equals("")) {
+            findMovie.setMoviePoster(url);
+        }
+    }
+
 }
