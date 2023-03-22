@@ -11,24 +11,21 @@ import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.service.MovieService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
-<span class="fc" id="L15">@Slf4j</span>
+<span class="fc" id="L16">@Slf4j</span>
 @Controller
-<span class="fc" id="L17">@RequiredArgsConstructor</span>
+<span class="fc" id="L18">@RequiredArgsConstructor</span>
 public class MovieController {
 
     private final MovieService movieService;
 
-    @PostMapping(&quot;admin/movie&quot;)
+    @PostMapping(&quot;/admin/movie&quot;)
     public String postMovie(@RequestPart(&quot;moviePoster&quot;) MultipartFile multipartFile,
-                            @ModelAttribute @Valid MovieDto.Post movieDto, Model model) {
-<span class="nc" id="L25">        log.info(&quot;movieTitle = {}&quot;,movieDto.getMovieTitle());</span>
-<span class="nc" id="L26">        log.info(&quot;moviePoster = {}&quot;,multipartFile.isEmpty());</span>
-<span class="nc" id="L27">        log.info(&quot;movieOpenDate={}&quot;, movieDto.getMovieOpenDate());</span>
-<span class="nc" id="L28">        log.info(&quot;movieRunningTime={}&quot;, movieDto.getMovieRunningTime());</span>
-<span class="nc" id="L29">        log.info(&quot;movieGenre={}&quot;, movieDto.getMovieGenre());</span>
-<span class="nc" id="L30">        log.info(&quot;movieDescription ={}&quot;,movieDto.getMovieDescription());</span>
-<span class="nc" id="L31">        return &quot;&quot;;</span>
+                            @ModelAttribute @Valid MovieDto.Post movieDto, Model model) throws IOException {
+<span class="fc" id="L26">        MovieDto.Response savedMovie = movieService.createMovie(multipartFile, movieDto);</span>
+<span class="fc" id="L27">        model.addAttribute(&quot;movie&quot;, savedMovie);</span>
+<span class="fc" id="L28">        return &quot;movie/movie&quot;;</span>
     }
 
     /** 관리자 영화 목록 조회 메서드
@@ -38,9 +35,9 @@ public class MovieController {
     @GetMapping(&quot;/admin/movie&quot;)
     public String adminGetMovies(@RequestParam(&quot;page&quot;) int page,
                                   @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;movieId&quot;) String sort, Model model) {
-<span class="fc" id="L41">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
-<span class="fc" id="L42">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L43">        return &quot;movie/movie&quot;;</span>
+<span class="fc" id="L38">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
+<span class="fc" id="L39">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L40">        return &quot;movie/movies&quot;;</span>
     }
 
     /** 관리자 영화 검색 메서드
@@ -49,11 +46,11 @@ public class MovieController {
      */
     @GetMapping(&quot;/admin/movie/search&quot;)
     public String adminSearchMovies(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
-                                    @RequestParam(value = &quot;title&quot;,required = false) String title, Model model) {
-<span class="fc" id="L53">        log.info(&quot;title={}&quot;,title);</span>
-<span class="fc" id="L54">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.adminSearchMovie(title, page - 1, &quot;movieId&quot;);</span>
-<span class="fc" id="L55">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L56">        return &quot;movie/movieSearchResult&quot;;</span>
+                                    @RequestParam(value = &quot;movieTitle&quot;,required = false) String movieTitle, Model model) {
+<span class="fc" id="L50">        log.info(&quot;title={}&quot;,movieTitle);</span>
+<span class="fc" id="L51">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.adminSearchMovie(movieTitle, page - 1, &quot;movieId&quot;);</span>
+<span class="fc" id="L52">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L53">        return &quot;movie/movieSearchResult&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

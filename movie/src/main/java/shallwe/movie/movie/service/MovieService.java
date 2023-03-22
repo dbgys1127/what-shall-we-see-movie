@@ -39,6 +39,7 @@ public class MovieService {
 
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
+        verifyExistsTitle(movieDto.getMovieTitle());
         Movie movie = Movie.builder()
                 .movieTitle(movieDto.getMovieTitle())
                 .moviePoster(s3UploadService.upload(multipartFile))
@@ -50,16 +51,12 @@ public class MovieService {
 
         Movie savedMovie = movieRepository.save(movie);
 
-        MovieDto.Response movieRepDto = MovieDto.Response.builder()
-                .movieTitle(savedMovie.getMovieTitle())
-                .moviePoster(savedMovie.getMoviePoster())
-                .movieRunningTime(savedMovie.getMovieRunningTime())
-                .movieOpenDate(savedMovie.getMovieOpenDate())
-                .movieGenre(savedMovie.getMovieGenre())
-                .movieDescription(savedMovie.getMovieDescription())
-                .build();
+        MovieDto.Response movieRepDto = getMovieRepDto(savedMovie);
         return movieRepDto;
     }
+
+
+
     /** 1.관리자 영화 목록 조회
      * sort -> 가입일, 시청영화순, 경고수, 차단여부
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
@@ -84,6 +81,13 @@ public class MovieService {
     }
 
     //================================= 중복 제거용 메소드 ================================
+
+    public void verifyExistsTitle(String movieTitle) {
+        Optional<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
+        if (movie.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);
+        }
+    }
     private static List<MovieDto.Response> getMovieListAdmin(Page<Movie> pageInfo) {
         List<Movie> movies = pageInfo.getContent();
         List<MovieDto.Response> movieRepDtoList = new ArrayList<>();
@@ -96,6 +100,19 @@ public class MovieService {
         }
         return movieRepDtoList;
     }
+
+    private static MovieDto.Response getMovieRepDto(Movie savedMovie) {
+        MovieDto.Response movieRepDto = MovieDto.Response.builder()
+                .movieTitle(savedMovie.getMovieTitle())
+                .moviePoster(savedMovie.getMoviePoster())
+                .movieRunningTime(savedMovie.getMovieRunningTime())
+                .movieOpenDate(savedMovie.getMovieOpenDate())
+                .movieGenre(savedMovie.getMovieGenre())
+                .movieDescription(savedMovie.getMovieDescription())
+                .build();
+        return movieRepDto;
+    }
+
     //3. 영화 수정시 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
     public void isUpdateImage(MultipartFile multipartFile, Movie findMovie) throws IOException {
         String url = s3UploadService.upload(multipartFile);

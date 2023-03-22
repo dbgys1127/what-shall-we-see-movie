@@ -90,14 +90,14 @@ public class MemberServiceTest {
 
         //stub
         given(memberRepository.findByEmail(email)).willReturn(memberOp);
+        given(passwordEncoder.encode(any())).willReturn("1234!abc");
         given(memberRepository.save(any())).willReturn(member);
 
         //when
-        Member findMember = memberService.is_exist_member("test@gmail.com");
         MemberDto.Response memberRepDto = memberService.updateMemberPassword(memberPatchDto, email);
 
         //then
-        Assertions.assertThat(memberRepDto.getPassword()).isEqualTo(findMember.getPassword());
+        Assertions.assertThat(memberRepDto.getPassword()).isEqualTo("1234!abc");
     }
 
 

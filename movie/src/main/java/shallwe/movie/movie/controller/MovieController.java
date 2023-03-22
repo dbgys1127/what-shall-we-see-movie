@@ -20,15 +20,9 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    @PostMapping("admin/movie")
+    @PostMapping("/admin/movie")
     public String postMovie(@RequestPart("moviePoster") MultipartFile multipartFile,
                             @ModelAttribute @Valid MovieDto.Post movieDto, Model model) throws IOException {
-        log.info("movieTitle = {}",movieDto.getMovieTitle());
-        log.info("moviePoster = {}",multipartFile.isEmpty());
-        log.info("movieOpenDate={}", movieDto.getMovieOpenDate());
-        log.info("movieRunningTime={}", movieDto.getMovieRunningTime());
-        log.info("movieGenre={}", movieDto.getMovieGenre());
-        log.info("movieDescription ={}",movieDto.getMovieDescription());
         MovieDto.Response savedMovie = movieService.createMovie(multipartFile, movieDto);
         model.addAttribute("movie", savedMovie);
         return "movie/movie";
