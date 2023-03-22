@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MovieController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.movie.controller</a> &gt; <span class="el_source">MovieController.java</span></div><h1>MovieController.java</h1><pre class="source lang-java linenums">package shallwe.movie.movie.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import shallwe.movie.dto.PagingResponseDto;
+import shallwe.movie.movie.dto.MovieDto;
+import shallwe.movie.movie.service.MovieService;
+
+<span class="fc" id="L13">@Slf4j</span>
+@Controller
+<span class="fc" id="L15">@RequiredArgsConstructor</span>
+public class MovieController {
+
+    private final MovieService movieService;
+
+    /** 영화 목록 조회 메서드
+     * Param page -&gt; 관리자가 화면에서 선택한 페이지가 출력된다.
+     * Param sort -&gt; 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
+      */
+    @GetMapping(&quot;/admin/movie&quot;)
+    public String adminGetMovies(@RequestParam(&quot;page&quot;) int page,
+                                  @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;movieId&quot;) String sort, Model model) {
+<span class="fc" id="L27">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
+<span class="fc" id="L28">        log.info(&quot;MO_startPage={}&quot;,pageRepDto.getStartPage());</span>
+<span class="fc" id="L29">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L30">        return &quot;movie/movie&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

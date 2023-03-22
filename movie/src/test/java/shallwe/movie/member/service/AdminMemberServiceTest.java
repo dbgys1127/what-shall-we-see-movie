@@ -117,7 +117,6 @@ public class AdminMemberServiceTest {
         //then
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
         Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
-        Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
         Assertions.assertThat(pagingResponseDto.getData().get(0).getEmail()).isEqualTo(members.get(0).getEmail());
     }
 
@@ -140,6 +139,7 @@ public class AdminMemberServiceTest {
         //then
         Assertions.assertThat(memberRepDto.getWarningCard()).isEqualTo(1);
         Assertions.assertThat(memberRepDto.getMemberStatus()).isEqualTo(Member.MemberStatus.활성);
+
 
     }
 

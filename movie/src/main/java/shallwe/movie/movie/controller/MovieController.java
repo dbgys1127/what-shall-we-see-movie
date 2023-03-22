@@ -17,6 +17,10 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    /** 영화 목록 조회 메서드
+     * Param page -> 관리자가 화면에서 선택한 페이지가 출력된다.
+     * Param sort -> 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
+      */
     @GetMapping("/admin/movie")
     public String adminGetMovies(@RequestParam("page") int page,
                                   @RequestParam(value = "sort",defaultValue = "movieId") String sort, Model model) {

@@ -1,5 +1,6 @@
 package shallwe.movie.movie.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,5 +40,15 @@ public class Movie extends TimeAudit {
 
     public enum MovieGenre {
         코미디, 액션, 범죄, 드라마, SF, 공포, 로맨스;
+    }
+
+    @Builder
+    public Movie(String movieTitle, String moviePoster, String movieDescription, int movieRunningTime, MovieGenre movieGenre, LocalDate movieOpenDate) {
+        this.movieTitle = movieTitle;
+        this.moviePoster = moviePoster;
+        this.movieDescription = movieDescription;
+        this.movieRunningTime = movieRunningTime;
+        this.movieGenre = movieGenre;
+        this.movieOpenDate = movieOpenDate;
     }
 }
