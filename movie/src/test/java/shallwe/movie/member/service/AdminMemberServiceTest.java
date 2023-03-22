@@ -98,7 +98,7 @@ public class AdminMemberServiceTest {
         Assertions.assertThat(memberRepDto.getEmail()).isEqualTo(email);
     }
 
-    @DisplayName("2.전체 회원조회 시 가입최신순으로 적용되어 데이터를 불러올 수 있다.")
+    @DisplayName("2.전체 회원조회 시 가입최신순으로 페이징 처리된 데이터를 불러올 수 있다.")
     @Test
     void searchMember() {
         //given
@@ -164,7 +164,7 @@ public class AdminMemberServiceTest {
         Assertions.assertThat(memberRepDto.getMemberStatus()).isEqualTo(Member.MemberStatus.차단);
     }
 
-    @DisplayName("5.전체 관리자조회 시 가입최신순으로 적용되어 데이터를 불러올 수 있다.")
+    @DisplayName("5.전체 관리자조회 시 가입최신순으로 페이징 처리된 데이터를 불러올 수 있다.")
     @Test
     void searchAdmin() {
         //given
@@ -182,7 +182,6 @@ public class AdminMemberServiceTest {
 
         //then
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
-        Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
         Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo("memberId");
         Assertions.assertThat(pagingResponseDto.getData().get(21).getEmail()).isEqualTo(members.get(21).getEmail());
     }

@@ -17,7 +17,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    /** 영화 목록 조회 메서드
+    /** 관리자 영화 목록 조회 메서드
      * Param page -&gt; 관리자가 화면에서 선택한 페이지가 출력된다.
      * Param sort -&gt; 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
       */
@@ -25,24 +25,21 @@ public class MovieController {
     public String adminGetMovies(@RequestParam(&quot;page&quot;) int page,
                                   @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;movieId&quot;) String sort, Model model) {
 <span class="fc" id="L27">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
-<span class="fc" id="L28">        log.info(&quot;MO_startPage={}&quot;,pageRepDto.getStartPage());</span>
-<span class="fc" id="L29">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L30">        return &quot;movie/movie&quot;;</span>
+<span class="fc" id="L28">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L29">        return &quot;movie/movie&quot;;</span>
     }
 
-    /** 영화 검색 메서드
+    /** 관리자 영화 검색 메서드
      * Param page -&gt; 관리자가 화면에서 선택한 페이지가 출력된다.
      * Param sort -&gt; 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
      */
     @GetMapping(&quot;/admin/movie/search&quot;)
     public String adminSearchMovies(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
-                                 @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;movieId&quot;) String sort,
-                                    @RequestParam(value = &quot;title&quot;,required = false) String title,
-                                    Model model) {
-<span class="nc" id="L42">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page, sort);</span>
-<span class="nc" id="L43">        log.info(&quot;MO_startPage={}&quot;,pageRepDto.getStartPage());</span>
-<span class="nc" id="L44">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L45">        return &quot;movie/movie&quot;;</span>
+                                    @RequestParam(value = &quot;title&quot;,required = false) String title, Model model) {
+<span class="fc" id="L39">        log.info(&quot;title={}&quot;,title);</span>
+<span class="fc" id="L40">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.adminSearchMovie(title, page - 1, &quot;movieId&quot;);</span>
+<span class="fc" id="L41">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L42">        return &quot;movie/movieSearchResult&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

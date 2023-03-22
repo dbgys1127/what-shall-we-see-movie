@@ -46,7 +46,7 @@ public class AdminMovieServiceTest {
         }
     }
 
-    @DisplayName("영화 목록 조회시 영화를 등록한 순으로 정렬된 데이터를 불러온다.")
+    @DisplayName("영화 목록 조회시 영화를 등록한 순으로 페이징 처리된 데이터를 불러온다.")
     @Test
     void findAllMovie() {
         //given
@@ -60,6 +60,27 @@ public class AdminMovieServiceTest {
 
         //when
         PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.findAllMovie(page, sort);
+
+        //then
+        Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
+        Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo(sort);
+        Assertions.assertThat(pagingResponseDto.getEndPage()).isEqualTo(4);
+    }
+
+    @DisplayName("영화 검색시 영화를 등록한 순으로 페이징 처리된 데이터를 불러온다.")
+    @Test
+    void adminSearchMovie() {
+        //given
+        int page = 0;
+        String sort = "movieId";
+        String title = "movie1";
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
+        pageInfo = new PageImpl<>(movies, pageable, movies.size());
+
+        //stub
+        given(movieRepository.findMovieByTitleWithPaging(title,pageable)).willReturn(pageInfo);
+        //when
+        PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.adminSearchMovie(title,page, sort);
 
         //then
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);

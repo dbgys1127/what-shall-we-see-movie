@@ -30,4 +30,17 @@ public class AdminMovieControllerTest {
                         .param("page", "1"))
                 .andExpect(view().name("movie/movie"));
     }
+
+    @DisplayName("관리자는 페이징 처리된 영화검색 목록을 볼수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void getMemberBySearch() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/admin/movie/search")
+                        .param("title","movie")
+                        .param("page", "1"))
+                .andExpect(view().name("movie/movieSearchResult"));
+    }
 }

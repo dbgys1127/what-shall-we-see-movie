@@ -30,26 +30,41 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
     // ============================ 관리자 요청 처리 메소드 ==============================
-    /** 1. 영화 목록 조회
+    /** 1.관리자 영화 목록 조회
      * sort -&gt; 가입일, 시청영화순, 경고수, 차단여부
      * page -&gt; 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
     public PagingResponseDto&lt;MovieDto.Response&gt; findAllMovie(int page, String sort) {
 <span class="fc" id="L38">        Page&lt;Movie&gt; pageInfo = movieRepository.findAll(PageRequest.of(page-1,10,Sort.by(sort).descending()));</span>
-<span class="fc" id="L39">        List&lt;Movie&gt; movies = pageInfo.getContent();</span>
-<span class="fc" id="L40">        List&lt;MovieDto.Response&gt; movieRepDtoList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (Movie movie : movies) {</span>
-<span class="fc" id="L42">            MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
-<span class="fc" id="L43">                    .title(movie.getMovieTitle())</span>
-<span class="fc" id="L44">                    .createdAt(movie.getCreatedAt())</span>
-<span class="fc" id="L45">                    .build();</span>
-<span class="fc" id="L46">            movieRepDtoList.add(movieRepDto);</span>
-<span class="fc" id="L47">        }</span>
+<span class="fc" id="L39">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieListAdmin(pageInfo);</span>
 
-<span class="fc" id="L49">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo);</span>
+<span class="fc" id="L41">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo);</span>
+    }
+
+    /** 2. 관리자 영화 검색 조회
+     * title -&gt; 관리자의 검색 대상
+     * sort -&gt; 등록일 평균 시청횟수순 정렬
+     * page -&gt; 화면에서 회원이 선택한 페이지가 넘어 온다.
+     */
+    public PagingResponseDto&lt;MovieDto.Response&gt; adminSearchMovie(String title, int page, String sort) {
+<span class="fc" id="L50">        Page&lt;Movie&gt; pageInfo = movieRepository.findMovieByTitleWithPaging(title,PageRequest.of(page,10, Sort.by(sort).descending()));</span>
+<span class="fc" id="L51">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieListAdmin(pageInfo);</span>
+
+<span class="fc" id="L53">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo,title);</span>
     }
 
     //================================= 중복 제거용 메소드 ================================
-
+    private static List&lt;MovieDto.Response&gt; getMovieListAdmin(Page&lt;Movie&gt; pageInfo) {
+<span class="fc" id="L58">        List&lt;Movie&gt; movies = pageInfo.getContent();</span>
+<span class="fc" id="L59">        List&lt;MovieDto.Response&gt; movieRepDtoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Movie movie : movies) {</span>
+<span class="fc" id="L61">            MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
+<span class="fc" id="L62">                    .title(movie.getMovieTitle())</span>
+<span class="fc" id="L63">                    .createdAt(movie.getCreatedAt())</span>
+<span class="fc" id="L64">                    .build();</span>
+<span class="fc" id="L65">            movieRepDtoList.add(movieRepDto);</span>
+<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">        return movieRepDtoList;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
