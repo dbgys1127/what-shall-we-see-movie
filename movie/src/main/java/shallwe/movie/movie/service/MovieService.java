@@ -80,6 +80,18 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title);
     }
 
+    public MovieDto.Response pickMovie(String movieTitle) {
+        Movie movie = is_exist_movie(movieTitle);
+        MovieDto.Response movieRepDto = getMovieRepDto(movie);
+        return movieRepDto;
+    }
+
+    public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
+        movieRepository.deleteByMovieTitle(movieTitle);
+        return findAllMovie(0, "movieId");
+    }
+
+
 
     //================================= 중복 제거용 메소드 ================================
 
@@ -89,6 +101,13 @@ public class MovieService {
             throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);
         }
     }
+
+    public Movie is_exist_movie(String movieTitle) {
+        Optional<Movie> optionalMovie = movieRepository.findByMovieTitle(movieTitle); // DB에서 회원 조회
+        Movie findMovie = optionalMovie.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MOVIE_CANNOT_FIND));
+        return findMovie;
+    }
+
     private static List<MovieDto.Response> getMovieListAdmin(Page<Movie> pageInfo) {
         List<Movie> movies = pageInfo.getContent();
         List<MovieDto.Response> movieRepDtoList = new ArrayList<>();
@@ -121,8 +140,5 @@ public class MovieService {
             findMovie.setMoviePoster(url);
         }
     }
-    public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
-        movieRepository.deleteByMovieTitle(movieTitle);
-        return findAllMovie(0, "movieId");
-    }
+
 }

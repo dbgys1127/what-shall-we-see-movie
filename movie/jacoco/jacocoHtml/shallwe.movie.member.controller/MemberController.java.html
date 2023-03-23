@@ -122,10 +122,9 @@ public class MemberController {
 
     @GetMapping(&quot;/admin/administrator/delete&quot;)
     public String adminDeleteAdmin(@RequestParam(&quot;email&quot;) String email,Model model) {
-<span class="fc" id="L125">        memberService.deleteAdmin(email);</span>
-<span class="fc" id="L126">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(&quot;@&quot;,0,&quot;memberId&quot;);</span>
-<span class="fc" id="L127">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L128">        return &quot;member/admins&quot;;</span>
+<span class="fc" id="L125">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto=memberService.deleteAdmin(email);</span>
+<span class="fc" id="L126">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L127">        return &quot;member/admins&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

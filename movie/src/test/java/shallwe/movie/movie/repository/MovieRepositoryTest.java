@@ -1,6 +1,7 @@
 package shallwe.movie.movie.repository;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -40,6 +42,10 @@ public class MovieRepositoryTest {
                     .build();
             movieRepository.save(movie);
         }
+    }
+    @AfterEach
+    void deleteData() {
+        movieRepository.deleteAll();
     }
     @DisplayName("전체 영화조회 시 등록일순으로 적용되어 데이터를 불러올 수 있다.")
     @Test
@@ -68,6 +74,33 @@ public class MovieRepositoryTest {
         //then
         Assertions.assertThat(pageInfo.getContent().get(0).getMovieTitle()).isEqualTo("movie20");
         Assertions.assertThat(pageInfo.getContent().size()).isEqualTo(2);
+    }
+
+    @DisplayName("영화 제목을 기준으로 데이터를 불러올 수 있다.")
+    @Test
+    void findMovieByMovieTitle() {
+        //given
+        String title = "movie1";
+
+        //when
+        Optional<Movie> movieOptional = movieRepository.findByMovieTitle(title);
+
+        //then
+        Assertions.assertThat(movieOptional).isPresent();
+    }
+
+    @DisplayName("영화 제목을 기준으로 데이터를 삭제할 수 있다.")
+    @Test
+    void deleteByMovieTitle() {
+        //given
+        String title = "movie1";
+
+        //when
+        movieRepository.deleteByMovieTitle(title);
+        Optional<Movie> movieOptional = movieRepository.findByMovieTitle(title);
+
+        //then
+        Assertions.assertThat(movieOptional).isEmpty();
     }
 
     @DisplayName("정렬기준이 없으면 NullPointException 발생")

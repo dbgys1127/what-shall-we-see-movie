@@ -166,4 +166,21 @@ public class AdminMovieServiceTest {
         Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo(sort);
         Assertions.assertThat(pagingResponseDto.getEndPage()).isEqualTo(4);
     }
+
+    @DisplayName("영화 제목으로 데이터를 불러올 수 있다.")
+    @Test
+    void pickMovie() {
+        //given
+        String title = "movie1";
+        Optional<Movie> movieOptional = Optional.of(movies.get(0));
+
+        //stub
+        given(movieRepository.findByMovieTitle(any())).willReturn(movieOptional);
+
+        //when
+        MovieDto.Response movieRepDto = movieService.pickMovie(title);
+
+        //then
+        Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movie1");
+    }
 }

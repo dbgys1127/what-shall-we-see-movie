@@ -30,7 +30,7 @@
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
-                <td> <a href="/admin/patch-movie-form?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                <td> <a href="/admin/movie/patch?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
                 <td>${movie.createdAt}</td>
                 <td>평균시청순</td>
                 <td><button type="button" onclick="location.href='/admin/movie/delete?movieTitle=${movie.movieTitle}';">삭제</button></td>

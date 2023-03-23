@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.dto.PagingResponseDto;
+import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.service.MovieService;
 
@@ -51,6 +52,14 @@ public class MovieController {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.adminSearchMovie(movieTitle, page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
         return "movie/movieSearchResult";
+    }
+
+    // 수정할 영화 페이지 가져오기
+    @GetMapping("/admin/movie/patch")
+    public String adminGetMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
+        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);
+        model.addAttribute("movie", movieRepDto);
+        return "movie/moviePatch";
     }
 
     // 영화 삭제 메서드

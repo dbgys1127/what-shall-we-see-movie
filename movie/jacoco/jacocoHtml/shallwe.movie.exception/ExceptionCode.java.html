@@ -6,16 +6,17 @@ import lombok.Getter;
 <span class="fc" id="L6">    ALREADY_EXISTS_YOUR_EMAIL(404,&quot;Already exists your email&quot;),</span>
 <span class="fc" id="L7">    MEMBER_CANNOT_FIND(404,&quot;Member can't find&quot;),</span>
 
-<span class="fc" id="L9">    ALREADY_EXISTS_THIS_MOVIE(404,&quot;Already exists this movie&quot;);</span>
-<span class="nc" id="L10">    @Getter</span>
+<span class="fc" id="L9">    ALREADY_EXISTS_THIS_MOVIE(404,&quot;Already exists this movie&quot;),</span>
+<span class="fc" id="L10">    MOVIE_CANNOT_FIND(404,&quot;Movie can't find&quot;);</span>
+<span class="nc" id="L11">    @Getter</span>
     private int code;
 
-<span class="fc" id="L13">    @Getter</span>
+<span class="fc" id="L14">    @Getter</span>
     private String message;
 
-<span class="fc" id="L16">    ExceptionCode(int code, String message) {</span>
-<span class="fc" id="L17">        this.code = code;</span>
-<span class="fc" id="L18">        this.message = message;</span>
-<span class="fc" id="L19">    }</span>
+<span class="fc" id="L17">    ExceptionCode(int code, String message) {</span>
+<span class="fc" id="L18">        this.code = code;</span>
+<span class="fc" id="L19">        this.message = message;</span>
+<span class="fc" id="L20">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
