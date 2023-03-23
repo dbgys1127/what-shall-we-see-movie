@@ -63,7 +63,7 @@ public class MovieService {
      */
     public PagingResponseDto<MovieDto.Response> findAllMovie(int page, String sort) {
         Page<Movie> pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));
-        List<MovieDto.Response> movieRepDtoList = getMovieListAdmin(pageInfo);
+        List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
 
         return new PagingResponseDto<>(movieRepDtoList,pageInfo);
     }
@@ -73,9 +73,9 @@ public class MovieService {
      * sort -> 등록일 평균 시청횟수순 정렬
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
-    public PagingResponseDto<MovieDto.Response> adminSearchMovie(String title, int page, String sort) {
+    public PagingResponseDto<MovieDto.Response> searchMovie(String title, int page, String sort) {
         Page<Movie> pageInfo = movieRepository.findMovieByTitleWithPaging(title,PageRequest.of(page,10, Sort.by(sort).descending()));
-        List<MovieDto.Response> movieRepDtoList = getMovieListAdmin(pageInfo);
+        List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
 
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title);
     }
@@ -85,7 +85,17 @@ public class MovieService {
         MovieDto.Response movieRepDto = getMovieRepDto(movie);
         return movieRepDto;
     }
+    public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
+        Movie movie = is_exist_movie(movieDto.getMovieTitle());
+        isUpdateImage(multipartFile,movie);
+        movie.setMovieTitle(movieDto.getMovieTitle());
+        movie.setMovieRunningTime(movieDto.getMovieRunningTime());
+        movie.setMovieOpenDate(movieDto.getMovieOpenDate());
+        movie.setMovieGenre(movieDto.getMovieGenre());
+        movie.setMovieDescription(movieDto.getMovieDescription());
 
+        return getMovieRepDto(movie);
+    }
     public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
         movieRepository.deleteByMovieTitle(movieTitle);
         return findAllMovie(0, "movieId");
@@ -108,13 +118,17 @@ public class MovieService {
         return findMovie;
     }
 
-    private static List<MovieDto.Response> getMovieListAdmin(Page<Movie> pageInfo) {
+    private static List<MovieDto.Response> getMovieList(Page<Movie> pageInfo) {
         List<Movie> movies = pageInfo.getContent();
         List<MovieDto.Response> movieRepDtoList = new ArrayList<>();
         for (Movie movie : movies) {
             MovieDto.Response movieRepDto = MovieDto.Response.builder()
                     .movieTitle(movie.getMovieTitle())
-                    .createdAt(movie.getCreatedAt())
+                    .moviePoster(movie.getMoviePoster())
+                    .movieRunningTime(movie.getMovieRunningTime())
+                    .movieOpenDate(movie.getMovieOpenDate())
+                    .movieGenre(movie.getMovieGenre())
+                    .movieDescription(movie.getMovieDescription())
                     .build();
             movieRepDtoList.add(movieRepDto);
         }
@@ -141,24 +155,5 @@ public class MovieService {
         }
     }
 
-    public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
-        Movie movie = is_exist_movie(movieDto.getMovieTitle());
-        isUpdateImage(multipartFile,movie);
-        Optional.ofNullable(movieDto.getMovieTitle())
-                .ifPresent(movie::setMovieTitle);
 
-        Optional.ofNullable(movieDto.getMovieRunningTime())
-                .ifPresent(movie::setMovieRunningTime);
-
-        Optional.ofNullable(movieDto.getMovieOpenDate())
-                .ifPresent(movie::setMovieOpenDate);
-
-        Optional.ofNullable(movieDto.getMovieGenre())
-                .ifPresent(movie::setMovieGenre);
-
-        Optional.ofNullable(movieDto.getMovieDescription())
-                .ifPresent(movie::setMovieDescription);
-
-        return getMovieRepDto(movie);
-    }
 }

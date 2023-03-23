@@ -200,4 +200,53 @@ public class AdminMovieControllerTest {
                 .andExpect(view().name("movie/moviePatch"))
                 .andExpect(model().attribute("movie", movieRepDto));
     }
+
+    @DisplayName("관리자는 영화를 수정할 수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminPatchMovie() throws Exception {
+        //given
+        String movieTitle = "movieUpdate";
+        String movieRunningTime = "90";
+        String movieDescription = "영화 설명";
+        String movieGenre = "드라마";
+        String movieOpenDate = "2023-01-01";
+
+        Movie movie = Movie.builder()
+                .movieTitle("movie")
+                .moviePoster("moviePoster")
+                .movieRunningTime(90)
+                .movieGenre(Movie.MovieGenre.드라마)
+                .movieDescription(movieDescription)
+                .movieOpenDate(LocalDate.of(2023, 1, 1)).build();
+
+        MovieDto.Response movieRepDto = MovieDto.Response.builder()
+                .movieTitle(movieTitle)
+                .moviePoster("moviePoster")
+                .movieRunningTime(90)
+                .movieGenre(Movie.MovieGenre.드라마)
+                .movieDescription(movieDescription)
+                .movieOpenDate(LocalDate.of(2023, 1, 1)).build();
+
+        MockMultipartFile file = new MockMultipartFile("moviePoster",
+                "test.png",
+                "text/plain",
+                "MyImage".getBytes());
+
+        //stub
+        given(movieRepository.findByMovieTitle(any())).willReturn(Optional.of(movie));
+        given(movieService.updateMovie(any(), any())).willReturn(movieRepDto);
+
+        //when
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/admin/movie/patch")
+                .file(file)
+                .param("movieTitle", movieTitle)
+                .param("movieRunningTime", movieRunningTime)
+                .param("movieDescription", movieDescription)
+                .param("movieGenre", movieGenre)
+                .param("movieOpenDate", movieOpenDate);
+
+        //then
+        mockMvc.perform(request).andExpect(view().name("movie/movie"));
+    }
 }

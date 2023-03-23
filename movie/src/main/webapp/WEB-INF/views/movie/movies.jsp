@@ -14,12 +14,12 @@
 
 </style>
 <body>
-<h2> 영화 </h2>
+<h2>관리자 영화 메인페이지</h2>
 
 <form action = "/admin/movie/search" method="get">
 <!-- 정렬 기준 -->
 <ul class="sort">
-    <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
+    <li class="${pageData.sort eq 'movieId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
     <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/movie?page=1&sort=xxx">평균 시청순</a></li>
 </ul>
     <table style="border: 1px solid black;" >
@@ -29,7 +29,6 @@
         <th>평균 시청수</th>
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
-            <!-- 표안에 보여질 관리자 정보 -->
                 <td> <a href="/admin/movie/patch?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
                 <td>${movie.createdAt}</td>
                 <td>평균시청순</td>

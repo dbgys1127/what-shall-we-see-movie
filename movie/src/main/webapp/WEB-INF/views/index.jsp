@@ -12,7 +12,7 @@
     <h2> war 덮어쓰기 확인 </h2>
 
     <li><a href="/">홈 화면 </a></li>
-    <li><a href="/movie">영화 </a></li>
+    <li><a href="/movie?page=1">영화 </a></li>
     <li><a href="/inquiry">문의 </a></li>
     <li><a href="/mypage">마이 페이지 </a></li>
     <li><a href="/admin">관리자 화면 </a></li>

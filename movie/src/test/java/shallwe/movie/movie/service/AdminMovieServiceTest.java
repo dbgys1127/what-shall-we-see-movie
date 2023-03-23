@@ -159,7 +159,7 @@ public class AdminMovieServiceTest {
         given(movieRepository.findMovieByTitleWithPaging(title,pageable)).willReturn(pageInfo);
 
         //when
-        PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.adminSearchMovie(title,page, sort);
+        PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.searchMovie(title,page, sort);
 
         //then
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
@@ -197,5 +197,39 @@ public class AdminMovieServiceTest {
         //when
         //then
         Assertions.assertThatThrownBy(()->movieService.pickMovie(title)).isInstanceOf(BusinessLogicException.class);
+    }
+
+    @DisplayName("영화 속성을 수정할 수 있다.")
+    @Test
+    void updateMovie() throws IOException {
+        //given
+        MovieDto.Patch moviePatchDto = MovieDto.Patch.builder()
+                .movieTitle("movieUpdate")
+                .movieRunningTime(90)
+                .movieDescription("description")
+                .movieGenre(Movie.MovieGenre.드라마)
+                .movieOpenDate(LocalDate.of(2023,1,1))
+                .build();
+        Movie movie = Movie.builder()
+                .movieTitle("movie")
+                .moviePoster("이미지")
+                .movieRunningTime(moviePatchDto.getMovieRunningTime())
+                .movieDescription(moviePatchDto.getMovieDescription())
+                .movieGenre(moviePatchDto.getMovieGenre())
+                .movieOpenDate(moviePatchDto.getMovieOpenDate())
+                .build();
+        Optional<Movie> movieOptional = Optional.of(movie);
+        MockMultipartFile multipartFile = new MockMultipartFile("movie", "test.png", "text/plain", "movie".getBytes());
+
+        //stub
+        given(movieRepository.findByMovieTitle(any())).willReturn(movieOptional);
+        given(s3UploadService.upload(any())).willReturn("movie");
+
+        //when
+        MovieDto.Response movieRepDto = movieService.updateMovie(multipartFile,moviePatchDto);
+
+        //then
+        Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movieUpdate");
+        Assertions.assertThat(movieRepDto.getMovieRunningTime()).isEqualTo(90);
     }
 }

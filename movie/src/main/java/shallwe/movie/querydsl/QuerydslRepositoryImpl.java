@@ -79,6 +79,8 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 switch (order.getProperty()) {
                     case "movieId":
                         return new OrderSpecifier(direction, movie.movieId);
+                    case "movieOpenDate":
+                        return new OrderSpecifier<>(direction, movie.movieOpenDate);
                 }
             }
         }

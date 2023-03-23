@@ -21,6 +21,35 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    //==========================사용자 화면 컨트롤러=========================
+
+    @GetMapping("/movie")
+    public String getMovies(@RequestParam("page") int page,
+                            @RequestParam(value = "sort", defaultValue = "movieOpenDate") String sort, Model model) {
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page - 1, sort);
+        model.addAttribute("pageData", pageRepDto);
+        return "movie/allMovie";
+    }
+
+    @GetMapping("/movie/search")
+    public String getSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
+                                    @RequestParam(value = "movieTitle",required = false) String movieTitle, Model model) {
+        log.info("page1={}",page);
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle, page - 1, "movieOpenDate");
+        log.info("page2 ={}",pageRepDto.getNowPage());
+        model.addAttribute("pageData", pageRepDto);
+        return "movie/memberMovieSearchResult";
+    }
+
+    @GetMapping("/movie/detail")
+    public String getMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
+        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);
+        model.addAttribute("movie", movieRepDto);
+        return "movie/movieDetail";
+    }
+
+    //==========================관리자 화면 컨트롤러=========================
+
     @PostMapping("/admin/movie")
     public String postMovie(@RequestPart("moviePoster") MultipartFile multipartFile,
                             @ModelAttribute @Valid MovieDto.Post movieDto, Model model) throws IOException {
@@ -48,8 +77,7 @@ public class MovieController {
     @GetMapping("/admin/movie/search")
     public String adminSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
                                     @RequestParam(value = "movieTitle",required = false) String movieTitle, Model model) {
-        log.info("title={}",movieTitle);
-        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.adminSearchMovie(movieTitle, page - 1, "movieId");
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle, page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
         return "movie/movieSearchResult";
     }

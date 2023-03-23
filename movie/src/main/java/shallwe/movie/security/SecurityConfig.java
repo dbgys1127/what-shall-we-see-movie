@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login-form")
                 .and()
                 .authorizeHttpRequests(authorize->authorize
+                        .antMatchers("/movie/search/**").hasRole("USER")
+                        .antMatchers("/movie/detail/**").hasRole("USER")
                         .antMatchers("/mypage/**").hasRole("USER")
                         .antMatchers("/inquiry/**").hasRole("USER")
                         .antMatchers("/admin/**").hasRole("ADMIN")
