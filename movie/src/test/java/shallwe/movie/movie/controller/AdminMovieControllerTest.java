@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Slf4j
@@ -48,8 +49,6 @@ public class AdminMovieControllerTest {
 
     @MockBean
     MovieRepository movieRepository;
-
-
 
     @DisplayName("관리자는 영화를 등록할 수 있다.")
     @Test
@@ -175,5 +174,30 @@ public class AdminMovieControllerTest {
                         .param("movieTitle","movie")
                         .param("page", "1"))
                 .andExpect(view().name("movie/movieSearchResult"));
+    }
+
+    @DisplayName("관리자는 영화제목을 통해 영화 수정 페이지에 접근할 수 있다.")
+    @Test
+    @WithMockUser(username = "test",roles = "ADMIN")
+    void adminGetMovie() throws Exception {
+        //given
+        String title = "movie1";
+        MovieDto.Response movieRepDto = MovieDto.Response.builder()
+                .movieTitle(title)
+                .moviePoster("moviePoster")
+                .movieRunningTime(90)
+                .movieGenre(Movie.MovieGenre.드라마)
+                .movieDescription("movieDescription")
+                .movieOpenDate(LocalDate.of(2023, 1, 1)).build();
+
+        //stub
+        given(movieService.pickMovie(title)).willReturn(movieRepDto);
+
+        //when
+        //then
+        mockMvc.perform(get("/admin/movie/patch")
+                        .param("movieTitle", title))
+                .andExpect(view().name("movie/moviePatch"))
+                .andExpect(model().attribute("movie", movieRepDto));
     }
 }

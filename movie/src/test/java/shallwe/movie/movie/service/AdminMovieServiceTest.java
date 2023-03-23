@@ -183,4 +183,19 @@ public class AdminMovieServiceTest {
         //then
         Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movie1");
     }
+
+    @DisplayName("영화 제목으로 검색된 결과가 없으면 예외가 발생한다.")
+    @Test
+    void pickNoMovie() {
+        //given
+        String title = "영화";
+        Optional<Movie> movieOptional = Optional.of(movies.get(0));
+
+        //stub
+        given(movieRepository.findByMovieTitle(any())).willReturn(Optional.empty());
+
+        //when
+        //then
+        Assertions.assertThatThrownBy(()->movieService.pickMovie(title)).isInstanceOf(BusinessLogicException.class);
+    }
 }
