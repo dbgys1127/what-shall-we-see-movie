@@ -62,7 +62,7 @@ public class MovieService {
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
     public PagingResponseDto<MovieDto.Response> findAllMovie(int page, String sort) {
-        Page<Movie> pageInfo = movieRepository.findAll(PageRequest.of(page-1,10,Sort.by(sort).descending()));
+        Page<Movie> pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));
         List<MovieDto.Response> movieRepDtoList = getMovieListAdmin(pageInfo);
 
         return new PagingResponseDto<>(movieRepDtoList,pageInfo);
@@ -79,6 +79,7 @@ public class MovieService {
 
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title);
     }
+
 
     //================================= 중복 제거용 메소드 ================================
 
@@ -120,5 +121,8 @@ public class MovieService {
             findMovie.setMoviePoster(url);
         }
     }
-
+    public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
+        movieRepository.deleteByMovieTitle(movieTitle);
+        return findAllMovie(0, "movieId");
+    }
 }

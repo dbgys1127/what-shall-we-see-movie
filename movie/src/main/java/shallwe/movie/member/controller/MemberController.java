@@ -122,8 +122,7 @@ public class MemberController {
 
     @GetMapping("/admin/administrator/delete")
     public String adminDeleteAdmin(@RequestParam("email") String email,Model model) {
-        memberService.deleteAdmin(email);
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@",0,"memberId");
+        PagingResponseDto<MemberDto.Response> pageRepDto=memberService.deleteAdmin(email);
         model.addAttribute("pageData", pageRepDto);
         return "member/admins";
     }

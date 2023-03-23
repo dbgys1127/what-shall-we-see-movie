@@ -133,7 +133,7 @@ public class AdminMovieServiceTest {
         pageInfo = new PageImpl<>(movies, pageable, movies.size());
 
         //stub
-        given(movieRepository.findAll(PageRequest.of(page - 1, 10, Sort.by(sort).descending()))).willReturn(pageInfo);
+        given(movieRepository.findAll(PageRequest.of(page, 10, Sort.by(sort).descending()))).willReturn(pageInfo);
 
 
         //when

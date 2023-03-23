@@ -86,6 +86,7 @@ public class AdminMovieControllerTest {
         //stub
         given(movieRepository.save(any())).willReturn(movie);
         given(movieRepository.findByMovieTitle(any())).willReturn(Optional.empty());
+        given(movieService.createMovie(any(), any())).willReturn(movieRepDto);
 
         //when
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/admin/movie")
@@ -135,6 +136,7 @@ public class AdminMovieControllerTest {
         //stub
         given(movieRepository.save(any())).willReturn(movie);
         given(movieRepository.findByMovieTitle(any())).willReturn(Optional.empty());
+        given(movieService.createMovie(any(), any())).willReturn(movieRepDto);
 
         //when
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/admin/movie")

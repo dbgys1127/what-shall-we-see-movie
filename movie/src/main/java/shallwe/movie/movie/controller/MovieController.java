@@ -35,7 +35,7 @@ public class MovieController {
     @GetMapping("/admin/movie")
     public String adminGetMovies(@RequestParam("page") int page,
                                   @RequestParam(value = "sort",defaultValue = "movieId") String sort, Model model) {
-        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page, sort);
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page-1, sort);
         model.addAttribute("pageData", pageRepDto);
         return "movie/movies";
     }
@@ -51,5 +51,13 @@ public class MovieController {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.adminSearchMovie(movieTitle, page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
         return "movie/movieSearchResult";
+    }
+
+    // 영화 삭제 메서드
+    @GetMapping("/admin/movie/delete")
+    public String adminDeleteMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
+        PagingResponseDto<MovieDto.Response> pageRepDto=movieService.deleteMovie(movieTitle);
+        model.addAttribute("pageData", pageRepDto);
+        return "movie/movies";
     }
 }

@@ -130,8 +130,9 @@ public class MemberService {
 
         return memberRepDto;
     }
-    public void deleteAdmin(String email) {
+    public PagingResponseDto<MemberDto.Response> deleteAdmin(String email) {
         memberRepository.deleteByEmail(email);
+        return searchAdmin("@",0,"memberId");
     }
 
     //================================= 중복 제거용 메소드 ================================

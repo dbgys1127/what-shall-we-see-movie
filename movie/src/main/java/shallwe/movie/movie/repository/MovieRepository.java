@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie,Long>, QuerydslRepository {
     Optional<Movie> findByMovieTitle(String movieTitle);
+
+    void deleteByMovieTitle(String movieTitle);
 }
