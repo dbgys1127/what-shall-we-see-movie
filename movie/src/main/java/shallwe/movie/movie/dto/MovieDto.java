@@ -48,6 +48,42 @@ public class MovieDto {
         }
     }
 
+    @Getter
+    @Setter
+    public static class Patch {
+
+        @NotNull
+        @Size(max=20)
+        private String movieTitle;
+
+        @NotNull
+        @Size(max=300)
+        private String movieDescription;
+
+        @NotNull
+        @Positive
+        private int movieRunningTime;
+
+        @NotNull
+        private Movie.MovieGenre movieGenre;
+
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate movieOpenDate;
+
+        @Builder
+        public Patch(String movieTitle, String movieDescription,
+                     int movieRunningTime, Movie.MovieGenre movieGenre,
+                     LocalDate movieOpenDate) {
+            this.movieTitle = movieTitle;
+            this.movieDescription = movieDescription;
+            this.movieRunningTime = movieRunningTime;
+            this.movieGenre = movieGenre;
+            this.movieOpenDate = movieOpenDate;
+        }
+    }
+
+
 
     @Getter
     @Setter

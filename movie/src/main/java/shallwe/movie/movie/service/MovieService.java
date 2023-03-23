@@ -141,4 +141,24 @@ public class MovieService {
         }
     }
 
+    public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
+        Movie movie = is_exist_movie(movieDto.getMovieTitle());
+        isUpdateImage(multipartFile,movie);
+        Optional.ofNullable(movieDto.getMovieTitle())
+                .ifPresent(movie::setMovieTitle);
+
+        Optional.ofNullable(movieDto.getMovieRunningTime())
+                .ifPresent(movie::setMovieRunningTime);
+
+        Optional.ofNullable(movieDto.getMovieOpenDate())
+                .ifPresent(movie::setMovieOpenDate);
+
+        Optional.ofNullable(movieDto.getMovieGenre())
+                .ifPresent(movie::setMovieGenre);
+
+        Optional.ofNullable(movieDto.getMovieDescription())
+                .ifPresent(movie::setMovieDescription);
+
+        return getMovieRepDto(movie);
+    }
 }

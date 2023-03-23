@@ -57,17 +57,25 @@ public class MovieController {
     // 수정할 영화 페이지 가져오기
     @GetMapping(&quot;/admin/movie/patch&quot;)
     public String adminGetMovie(@RequestParam(&quot;movieTitle&quot;) String movieTitle, Model model) {
-<span class="nc" id="L60">        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);</span>
-<span class="nc" id="L61">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
-<span class="nc" id="L62">        return &quot;member/moviePatch&quot;;</span>
+<span class="fc" id="L60">        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);</span>
+<span class="fc" id="L61">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
+<span class="fc" id="L62">        return &quot;movie/moviePatch&quot;;</span>
+    }
+
+    // 영화 내용 수정
+    @PostMapping(&quot;/admin/movie/patch&quot;)
+    public String adminPatchMovie(@RequestPart(&quot;moviePoster&quot;) MultipartFile multipartFile,
+                                  @ModelAttribute @Valid MovieDto.Patch movieDto, Model model) throws IOException {
+<span class="nc" id="L69">        MovieDto.Response movieRepDto = movieService.updateMovie(multipartFile, movieDto);</span>
+<span class="nc" id="L70">        return &quot;movie/movie&quot;;</span>
     }
 
     // 영화 삭제 메서드
     @GetMapping(&quot;/admin/movie/delete&quot;)
     public String adminDeleteMovie(@RequestParam(&quot;movieTitle&quot;) String movieTitle, Model model) {
-<span class="nc" id="L68">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto=movieService.deleteMovie(movieTitle);</span>
-<span class="nc" id="L69">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L70">        return &quot;movie/movies&quot;;</span>
+<span class="nc" id="L76">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto=movieService.deleteMovie(movieTitle);</span>
+<span class="nc" id="L77">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="nc" id="L78">        return &quot;movie/movies&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

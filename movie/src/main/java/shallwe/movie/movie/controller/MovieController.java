@@ -62,6 +62,15 @@ public class MovieController {
         return "movie/moviePatch";
     }
 
+    // 영화 내용 수정
+    @PostMapping("/admin/movie/patch")
+    public String adminPatchMovie(@RequestPart(value = "moviePoster",required = false) MultipartFile multipartFile,
+                                  @ModelAttribute @Valid MovieDto.Patch movieDto, Model model) throws IOException {
+        MovieDto.Response movieRepDto = movieService.updateMovie(multipartFile, movieDto);
+        model.addAttribute("movie", movieRepDto);
+        return "movie/movie";
+    }
+
     // 영화 삭제 메서드
     @GetMapping("/admin/movie/delete")
     public String adminDeleteMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
