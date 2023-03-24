@@ -27,8 +27,8 @@
     <li>장르별</li>
     <form action = "/movie/search" method="get">
         <li>        
-            <select name="movieGenre" >
-                <option value="none">=== 선택 ===</option>
+            <select name="movieGenre">
+                <option value="">=== 선택 ===</option>
                 <option value="코미디">코미디</option>
                 <option value="액션">액션</option>
                 <option value="범죄">범죄</option>
@@ -38,6 +38,7 @@
                 <option value="로맨스">로맨스</option>
             </select>
         </li>
+        <button type="submit">적용</button>
     </form>
 </ul>
     <table style="border: 1px solid black;" >

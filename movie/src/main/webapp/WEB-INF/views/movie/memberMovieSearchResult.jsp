@@ -26,8 +26,8 @@
     <li>장르별</li>
     <form>
         <li>        
-            <select name="movieGenre" >
-                <option onclick="location.href='/admin/movie/add-movie-form';" value="none">=== 선택 ===</option>
+            <select name="movieGenre">
+                <option value="none">=== 선택 ===</option>
                 <option value="코미디">코미디</option>
                 <option value="액션">액션</option>
                 <option value="범죄">범죄</option>
@@ -37,6 +37,7 @@
                 <option value="로맨스">로맨스</option>
             </select>
         </li>
+        <button type="submit">적용</button>
     </form>
 </ul>
     <table style="border: 1px solid black;" >
@@ -46,8 +47,8 @@
         <th>평균 시청수</th>
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
-                <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
-                <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
+                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
                 <td>평균시청순</td>
             </tr>
         </c:forEach>

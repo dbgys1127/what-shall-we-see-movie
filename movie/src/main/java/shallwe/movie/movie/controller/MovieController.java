@@ -33,10 +33,10 @@ public class MovieController {
 
     @GetMapping("/movie/search")
     public String getSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
-                                    @RequestParam(value = "movieTitle",required = false) String movieTitle, Model model) {
-        log.info("page1={}",page);
-        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle, page - 1, "movieOpenDate");
-        log.info("page2 ={}",pageRepDto.getNowPage());
+                                  @RequestParam(value = "movieTitle",required = false) String movieTitle,
+                                  @RequestParam(value="movieGenre", required=false) String movieGenre,
+                                  Model model) {
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle,movieGenre,page - 1, "movieOpenDate");
         model.addAttribute("pageData", pageRepDto);
         return "movie/memberMovieSearchResult";
     }
@@ -76,8 +76,9 @@ public class MovieController {
      */
     @GetMapping("/admin/movie/search")
     public String adminSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
-                                    @RequestParam(value = "movieTitle",required = false) String movieTitle, Model model) {
-        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle, page - 1, "movieId");
+                                    @RequestParam(value = "movieTitle",required = false) String movieTitle,
+                                    Model model) {
+        PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovie(movieTitle, "", page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
         return "movie/movieSearchResult";
     }

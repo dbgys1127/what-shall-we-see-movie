@@ -71,6 +71,22 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public Page<Movie> findMovieByGenreWithPaging(String movieGenre, Pageable pageable) {
+        List<Movie> content = queryFactory
+                .selectFrom(movie)
+                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))
+                .orderBy(movieSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long total = queryFactory.selectFrom(movie)
+                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))
+                .fetchCount();
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private OrderSpecifier<?> movieSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {

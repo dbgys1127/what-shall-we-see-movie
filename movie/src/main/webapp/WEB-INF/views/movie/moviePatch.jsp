@@ -16,15 +16,16 @@
     <li>개봉일: <input type="text" name="movieOpenDate" value="${movie.movieOpenDate}"></li>
     <li>영화 장르:         
         <select name="movieGenre" >
-        <option value="${movie.movieGenre}">현재 장르 : ${movie.movieGenre}</option>
-        <option value="코미디">코미디</option>
-        <option value="액션">액션</option>
-        <option value="범죄">범죄</option>
-        <option value="드라마">드라마</option>
-        <option value="SF">SF</option>
-        <option value="공포">공포</option>
-        <option value="로맨스">로맨스</option>
-      </select></li>
+            <option value="${movie.movieGenre}">현재 장르 : ${movie.movieGenre}</option>
+            <option value="코미디">코미디</option>
+            <option value="액션">액션</option>
+            <option value="범죄">범죄</option>
+            <option value="드라마">드라마</option>
+            <option value="SF">SF</option>
+            <option value="공포">공포</option>
+            <option value="로맨스">로맨스</option>
+        </select>
+    </li>
     <li>영화 설명: <input type="text" name="movieDescription" value="${movie.movieDescription}"></li>
 </ul>
 <button type="submit">영화 수정</button>
