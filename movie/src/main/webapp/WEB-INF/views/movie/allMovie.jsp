@@ -25,7 +25,7 @@
     <li class="${pageData.sort eq 'movieId' ? 'active':''}"><a href="/movie?page=1&sort=movieId">평균 시청순</a></li>
     <li class="${pageData.sort eq 'movieOpenDate' ? 'active':''}" ><a href="/movie?page=1&sort=movieOpenDate">상영일자순</a></li>
     <li>장르별</li>
-    <form action = "/movie/search" method="get">
+    <form action = "/movie/search/genre" method="get">
         <li>        
             <select name="movieGenre">
                 <option value="">=== 선택 ===</option>

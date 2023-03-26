@@ -16,23 +16,19 @@ public class PagingResponseDto<T> {
     private String sort;
     private String target;
 
+    private String genre;
+
     public PagingResponseDto(List<T> data, Page page) {
-        this.data = data;
-        this.nowPage = page.getNumber()+1;
-        this.endPage = (int)(Math.ceil(nowPage/10.0))*10;
-        this.startPage = this.endPage-9;
-
-        int realEnd = page.getTotalPages();
-
-        if (realEnd < this.endPage) {
-            this.endPage = realEnd;
-        }
-        this.prev = this.startPage>1;
-        this.next = this.endPage < realEnd;
-        String originStr = page.getSort().toString();
-        this.sort = originStr.substring(0,originStr.indexOf(":"));
+        getPageInfo(data, page);
     }
-    public PagingResponseDto(List<T> data, Page page,String target) {
+
+    public PagingResponseDto(List<T> data, Page page,String target, String genre) {
+        getPageInfo(data, page);
+        this.target = target;
+        this.genre = genre;
+    }
+
+    private void getPageInfo(List<T> data, Page page) {
         this.data = data;
         this.nowPage = page.getNumber()+1;
         this.endPage = (int)(Math.ceil(nowPage/10.0))*10;
@@ -47,6 +43,5 @@ public class PagingResponseDto<T> {
         this.next = this.endPage < realEnd;
         String originStr = page.getSort().toString();
         this.sort = originStr.substring(0,originStr.indexOf(":"));
-        this.target = target;
     }
 }

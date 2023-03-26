@@ -82,7 +82,7 @@ public class MemberService {
         Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = getMemberRepList(members);
-        return new PagingResponseDto<>(memberRepDtoList,pageInfo,email);
+        return new PagingResponseDto<>(memberRepDtoList,pageInfo,email,"");
     }
 
     /** 2. 관리자 목록 조회
@@ -92,7 +92,7 @@ public class MemberService {
         Page<Member> pageInfo = memberRepository.findAllAdminWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();
         List<MemberDto.Response> memberRepDtoList = getMemberRepList(members);
-        return new PagingResponseDto<>(memberRepDtoList,pageInfo,email);
+        return new PagingResponseDto<>(memberRepDtoList,pageInfo,email,"");
     }
 
     // 2. 관리자가 관리하고 싶은 회원을 선택할때 사용됨

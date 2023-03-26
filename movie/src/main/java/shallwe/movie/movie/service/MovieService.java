@@ -74,18 +74,18 @@ public class MovieService {
      * sort -> 등록일 평균 시청횟수순 정렬
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
-    public PagingResponseDto<MovieDto.Response> searchMovie(String title, String movieGenre, int page, String sort) {
+    public PagingResponseDto<MovieDto.Response> searchMovieByTitle(String title, int page, String sort) {
 
-        Page<Movie> pageInfo;
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
-        if (Optional.ofNullable(movieGenre).isEmpty()) {
-            pageInfo = movieRepository.findMovieByTitleWithPaging(title, pageable);
-        } else {
-            pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
-        }
+        Page<Movie> pageInfo = movieRepository.findMovieByTitleWithPaging(title, pageable);
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
-
-        return new PagingResponseDto<>(movieRepDtoList,pageInfo,title);
+        return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
+    }
+    public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
+        Page<Movie> pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
+        List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
+        return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
 
     public MovieDto.Response pickMovie(String movieTitle) {
@@ -162,6 +162,7 @@ public class MovieService {
             findMovie.setMoviePoster(url);
         }
     }
+
 
 
 }
