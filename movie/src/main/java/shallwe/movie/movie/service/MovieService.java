@@ -34,8 +34,12 @@ public class MovieService {
     private final S3UploadService s3UploadService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
-
-
+    public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
+        Page<Movie> pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
+        List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
+        return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
+    }
 
 
     // ============================ 관리자 요청 처리 메소드 ==============================
@@ -55,7 +59,6 @@ public class MovieService {
         MovieDto.Response movieRepDto = getMovieRepDto(savedMovie);
         return movieRepDto;
     }
-
 
 
     /** 1.관리자 영화 목록 조회
@@ -81,12 +84,7 @@ public class MovieService {
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
     }
-    public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
-        Page<Movie> pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
-        List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
-        return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
-    }
+
 
     public MovieDto.Response pickMovie(String movieTitle) {
         Movie movie = is_exist_movie(movieTitle);
