@@ -159,7 +159,7 @@ public class AdminMovieServiceTest {
         given(movieRepository.findMovieByTitleWithPaging(title,pageable)).willReturn(pageInfo);
 
         //when
-        PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.searchMovie(title,page, sort);
+        PagingResponseDto<MovieDto.Response> pagingResponseDto = movieService.searchMovieByTitle(title,page, sort);
 
         //then
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);

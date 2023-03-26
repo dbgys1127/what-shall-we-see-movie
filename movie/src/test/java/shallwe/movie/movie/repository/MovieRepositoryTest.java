@@ -42,16 +42,27 @@ public class MovieRepositoryTest {
                     .build();
             movieRepository.save(movie);
         }
+        for (int i = 21; i < 31; i++) {
+            Movie movie = Movie.builder()
+                    .movieTitle("movie" + i)
+                    .moviePoster("image")
+                    .movieDescription("movie description" + i)
+                    .movieOpenDate(LocalDate.of(2023, 1, i))
+                    .movieGenre(Movie.MovieGenre.코미디)
+                    .movieRunningTime(90)
+                    .build();
+            movieRepository.save(movie);
+        }
     }
     @AfterEach
     void deleteData() {
         movieRepository.deleteAll();
     }
-    @DisplayName("전체 영화조회 시 등록일순으로 적용되어 데이터를 불러올 수 있다.")
+    @DisplayName("전체 영화조회 시 개봉일순으로 적용되어 데이터를 불러올 수 있다.")
     @Test
     void get_movie_pagination_sortBy_movieId() {
         //given
-        String title = "movie20";
+        String title = "movie30";
 
         //when
         Page<Movie> pageInfo = movieRepository
@@ -61,7 +72,7 @@ public class MovieRepositoryTest {
         Assertions.assertThat(pageInfo.getContent().get(0).getMovieTitle()).isEqualTo(title);
     }
 
-    @DisplayName("영화조회 검색 시 등록일순으로 적용되어 데이터를 불러올 수 있다.")
+    @DisplayName("영화 검색 시 등록일순으로 적용되어 데이터를 불러올 수 있다.")
     @Test
     void search_movie_by_title_with_pagination() {
         //given
@@ -69,11 +80,27 @@ public class MovieRepositoryTest {
 
         //when
         Page<Movie> pageInfo = movieRepository
-                .findMovieByTitleWithPaging(title,PageRequest.of(0,10, Sort.by("movieId").descending()));
+                .findMovieByTitleWithPaging(title,PageRequest.of(0,10, Sort.by("movieOpenDate").descending()));
 
         //then
-        Assertions.assertThat(pageInfo.getContent().get(0).getMovieTitle()).isEqualTo("movie20");
-        Assertions.assertThat(pageInfo.getContent().size()).isEqualTo(2);
+        Assertions.assertThat(pageInfo.getContent().get(0).getMovieTitle()).isEqualTo("movie29");
+        Assertions.assertThat(pageInfo.getContent().size()).isEqualTo(10);
+    }
+
+    @DisplayName("영화 장르별로 검색할 수 있다.")
+    @Test
+    void search_movie_by_genre_with_pagination() {
+        //given
+        String genre = "코미디";
+
+        //when
+        Page<Movie> pageInfo = movieRepository
+                .findMovieByGenreWithPaging(genre, PageRequest.of(0, 10, Sort.by("movieId").descending()));
+
+        //then
+        Assertions.assertThat(pageInfo.getContent().get(0).getMovieTitle()).isEqualTo("movie30");
+        Assertions.assertThat(pageInfo.getContent().size()).isEqualTo(10);
+        Assertions.assertThat(pageInfo.getContent().get(0).getMovieGenre()).isEqualTo(Movie.MovieGenre.코미디);
     }
 
     @DisplayName("영화 제목을 기준으로 데이터를 불러올 수 있다.")

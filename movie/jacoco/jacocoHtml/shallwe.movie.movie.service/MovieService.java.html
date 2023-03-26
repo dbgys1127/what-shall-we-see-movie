@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
-<span class="fc" id="L28">@RequiredArgsConstructor</span>
-<span class="fc" id="L29">@Slf4j</span>
+<span class="fc" id="L29">@RequiredArgsConstructor</span>
+<span class="fc" id="L30">@Slf4j</span>
 public class MovieService {
     private final MovieRepository movieRepository;
 
@@ -39,20 +40,20 @@ public class MovieService {
 
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
-<span class="fc" id="L42">        verifyExistsTitle(movieDto.getMovieTitle());</span>
-<span class="fc" id="L43">        Movie movie = Movie.builder()</span>
-<span class="fc" id="L44">                .movieTitle(movieDto.getMovieTitle())</span>
-<span class="fc" id="L45">                .moviePoster(s3UploadService.upload(multipartFile))</span>
-<span class="fc" id="L46">                .movieRunningTime(movieDto.getMovieRunningTime())</span>
-<span class="fc" id="L47">                .movieDescription(movieDto.getMovieDescription())</span>
-<span class="fc" id="L48">                .movieGenre(movieDto.getMovieGenre())</span>
-<span class="fc" id="L49">                .movieOpenDate(movieDto.getMovieOpenDate())</span>
-<span class="fc" id="L50">                .build();</span>
+<span class="fc" id="L43">        verifyExistsTitle(movieDto.getMovieTitle());</span>
+<span class="fc" id="L44">        Movie movie = Movie.builder()</span>
+<span class="fc" id="L45">                .movieTitle(movieDto.getMovieTitle())</span>
+<span class="fc" id="L46">                .moviePoster(s3UploadService.upload(multipartFile))</span>
+<span class="fc" id="L47">                .movieRunningTime(movieDto.getMovieRunningTime())</span>
+<span class="fc" id="L48">                .movieDescription(movieDto.getMovieDescription())</span>
+<span class="fc" id="L49">                .movieGenre(movieDto.getMovieGenre())</span>
+<span class="fc" id="L50">                .movieOpenDate(movieDto.getMovieOpenDate())</span>
+<span class="fc" id="L51">                .build();</span>
 
-<span class="fc" id="L52">        Movie savedMovie = movieRepository.save(movie);</span>
+<span class="fc" id="L53">        Movie savedMovie = movieRepository.save(movie);</span>
 
-<span class="fc" id="L54">        MovieDto.Response movieRepDto = getMovieRepDto(savedMovie);</span>
-<span class="fc" id="L55">        return movieRepDto;</span>
+<span class="fc" id="L55">        MovieDto.Response movieRepDto = getMovieRepDto(savedMovie);</span>
+<span class="fc" id="L56">        return movieRepDto;</span>
     }
 
 
@@ -62,10 +63,10 @@ public class MovieService {
      * page -&gt; 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
     public PagingResponseDto&lt;MovieDto.Response&gt; findAllMovie(int page, String sort) {
-<span class="fc" id="L65">        Page&lt;Movie&gt; pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));</span>
-<span class="fc" id="L66">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieList(pageInfo);</span>
+<span class="fc" id="L66">        Page&lt;Movie&gt; pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));</span>
+<span class="fc" id="L67">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieList(pageInfo);</span>
 
-<span class="fc" id="L68">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo);</span>
+<span class="fc" id="L69">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo);</span>
     }
 
     /** 2. 관리자 영화 검색 조회
@@ -73,32 +74,39 @@ public class MovieService {
      * sort -&gt; 등록일 평균 시청횟수순 정렬
      * page -&gt; 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
-    public PagingResponseDto&lt;MovieDto.Response&gt; adminSearchMovie(String title, int page, String sort) {
-<span class="fc" id="L77">        Page&lt;Movie&gt; pageInfo = movieRepository.findMovieByTitleWithPaging(title,PageRequest.of(page,10, Sort.by(sort).descending()));</span>
-<span class="fc" id="L78">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieList(pageInfo);</span>
+    public PagingResponseDto&lt;MovieDto.Response&gt; searchMovieByTitle(String title, int page, String sort) {
 
-<span class="fc" id="L80">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo,title);</span>
+<span class="fc" id="L79">        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());</span>
+<span class="fc" id="L80">        Page&lt;Movie&gt; pageInfo = movieRepository.findMovieByTitleWithPaging(title, pageable);</span>
+<span class="fc" id="L81">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieList(pageInfo);</span>
+<span class="fc" id="L82">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo,title,&quot;&quot;);</span>
+    }
+    public PagingResponseDto&lt;MovieDto.Response&gt; searchMovieByGenre(String movieGenre, int page, String sort) {
+<span class="nc" id="L85">        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());</span>
+<span class="nc" id="L86">        Page&lt;Movie&gt; pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);</span>
+<span class="nc" id="L87">        List&lt;MovieDto.Response&gt; movieRepDtoList = getMovieList(pageInfo);</span>
+<span class="nc" id="L88">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo,&quot;&quot;,movieGenre);</span>
     }
 
     public MovieDto.Response pickMovie(String movieTitle) {
-<span class="fc" id="L84">        Movie movie = is_exist_movie(movieTitle);</span>
-<span class="fc" id="L85">        MovieDto.Response movieRepDto = getMovieRepDto(movie);</span>
-<span class="fc" id="L86">        return movieRepDto;</span>
+<span class="fc" id="L92">        Movie movie = is_exist_movie(movieTitle);</span>
+<span class="fc" id="L93">        MovieDto.Response movieRepDto = getMovieRepDto(movie);</span>
+<span class="fc" id="L94">        return movieRepDto;</span>
     }
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
-<span class="fc" id="L89">        Movie movie = is_exist_movie(movieDto.getMovieTitle());</span>
-<span class="fc" id="L90">        isUpdateImage(multipartFile,movie);</span>
-<span class="fc" id="L91">        movie.setMovieTitle(movieDto.getMovieTitle());</span>
-<span class="fc" id="L92">        movie.setMovieRunningTime(movieDto.getMovieRunningTime());</span>
-<span class="fc" id="L93">        movie.setMovieOpenDate(movieDto.getMovieOpenDate());</span>
-<span class="fc" id="L94">        movie.setMovieGenre(movieDto.getMovieGenre());</span>
-<span class="fc" id="L95">        movie.setMovieDescription(movieDto.getMovieDescription());</span>
+<span class="fc" id="L97">        Movie movie = is_exist_movie(movieDto.getMovieTitle());</span>
+<span class="fc" id="L98">        isUpdateImage(multipartFile,movie);</span>
+<span class="fc" id="L99">        movie.setMovieTitle(movieDto.getMovieTitle());</span>
+<span class="fc" id="L100">        movie.setMovieRunningTime(movieDto.getMovieRunningTime());</span>
+<span class="fc" id="L101">        movie.setMovieOpenDate(movieDto.getMovieOpenDate());</span>
+<span class="fc" id="L102">        movie.setMovieGenre(movieDto.getMovieGenre());</span>
+<span class="fc" id="L103">        movie.setMovieDescription(movieDto.getMovieDescription());</span>
 
-<span class="fc" id="L97">        return getMovieRepDto(movie);</span>
+<span class="fc" id="L105">        return getMovieRepDto(movie);</span>
     }
     public PagingResponseDto&lt;MovieDto.Response&gt; deleteMovie(String movieTitle) {
-<span class="nc" id="L100">        movieRepository.deleteByMovieTitle(movieTitle);</span>
-<span class="nc" id="L101">        return findAllMovie(0, &quot;movieId&quot;);</span>
+<span class="nc" id="L108">        movieRepository.deleteByMovieTitle(movieTitle);</span>
+<span class="nc" id="L109">        return findAllMovie(0, &quot;movieId&quot;);</span>
     }
 
 
@@ -106,54 +114,55 @@ public class MovieService {
     //================================= 중복 제거용 메소드 ================================
 
     public void verifyExistsTitle(String movieTitle) {
-<span class="fc" id="L109">        Optional&lt;Movie&gt; movie = movieRepository.findByMovieTitle(movieTitle);</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (movie.isPresent()) {</span>
-<span class="fc" id="L111">            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);</span>
+<span class="fc" id="L117">        Optional&lt;Movie&gt; movie = movieRepository.findByMovieTitle(movieTitle);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (movie.isPresent()) {</span>
+<span class="fc" id="L119">            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);</span>
         }
-<span class="fc" id="L113">    }</span>
+<span class="fc" id="L121">    }</span>
 
     public Movie is_exist_movie(String movieTitle) {
-<span class="fc" id="L116">        Optional&lt;Movie&gt; optionalMovie = movieRepository.findByMovieTitle(movieTitle); // DB에서 회원 조회</span>
-<span class="fc" id="L117">        Movie findMovie = optionalMovie.orElseThrow(() -&gt; new BusinessLogicException(ExceptionCode.MOVIE_CANNOT_FIND));</span>
-<span class="fc" id="L118">        return findMovie;</span>
+<span class="fc" id="L124">        Optional&lt;Movie&gt; optionalMovie = movieRepository.findByMovieTitle(movieTitle); // DB에서 회원 조회</span>
+<span class="fc" id="L125">        Movie findMovie = optionalMovie.orElseThrow(() -&gt; new BusinessLogicException(ExceptionCode.MOVIE_CANNOT_FIND));</span>
+<span class="fc" id="L126">        return findMovie;</span>
     }
 
     private static List&lt;MovieDto.Response&gt; getMovieList(Page&lt;Movie&gt; pageInfo) {
-<span class="fc" id="L122">        List&lt;Movie&gt; movies = pageInfo.getContent();</span>
-<span class="fc" id="L123">        List&lt;MovieDto.Response&gt; movieRepDtoList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (Movie movie : movies) {</span>
-<span class="fc" id="L125">            MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
-<span class="fc" id="L126">                    .movieTitle(movie.getMovieTitle())</span>
-<span class="fc" id="L127">                    .moviePoster(movie.getMoviePoster())</span>
-<span class="fc" id="L128">                    .movieRunningTime(movie.getMovieRunningTime())</span>
-<span class="fc" id="L129">                    .movieOpenDate(movie.getMovieOpenDate())</span>
-<span class="fc" id="L130">                    .movieGenre(movie.getMovieGenre())</span>
-<span class="fc" id="L131">                    .movieDescription(movie.getMovieDescription())</span>
-<span class="fc" id="L132">                    .build();</span>
-<span class="fc" id="L133">            movieRepDtoList.add(movieRepDto);</span>
-<span class="fc" id="L134">        }</span>
-<span class="fc" id="L135">        return movieRepDtoList;</span>
+<span class="fc" id="L130">        List&lt;Movie&gt; movies = pageInfo.getContent();</span>
+<span class="fc" id="L131">        List&lt;MovieDto.Response&gt; movieRepDtoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (Movie movie : movies) {</span>
+<span class="fc" id="L133">            MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
+<span class="fc" id="L134">                    .movieTitle(movie.getMovieTitle())</span>
+<span class="fc" id="L135">                    .moviePoster(movie.getMoviePoster())</span>
+<span class="fc" id="L136">                    .movieRunningTime(movie.getMovieRunningTime())</span>
+<span class="fc" id="L137">                    .movieOpenDate(movie.getMovieOpenDate())</span>
+<span class="fc" id="L138">                    .movieGenre(movie.getMovieGenre())</span>
+<span class="fc" id="L139">                    .movieDescription(movie.getMovieDescription())</span>
+<span class="fc" id="L140">                    .build();</span>
+<span class="fc" id="L141">            movieRepDtoList.add(movieRepDto);</span>
+<span class="fc" id="L142">        }</span>
+<span class="fc" id="L143">        return movieRepDtoList;</span>
     }
 
     private static MovieDto.Response getMovieRepDto(Movie savedMovie) {
-<span class="fc" id="L139">        MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
-<span class="fc" id="L140">                .movieTitle(savedMovie.getMovieTitle())</span>
-<span class="fc" id="L141">                .moviePoster(savedMovie.getMoviePoster())</span>
-<span class="fc" id="L142">                .movieRunningTime(savedMovie.getMovieRunningTime())</span>
-<span class="fc" id="L143">                .movieOpenDate(savedMovie.getMovieOpenDate())</span>
-<span class="fc" id="L144">                .movieGenre(savedMovie.getMovieGenre())</span>
-<span class="fc" id="L145">                .movieDescription(savedMovie.getMovieDescription())</span>
-<span class="fc" id="L146">                .build();</span>
-<span class="fc" id="L147">        return movieRepDto;</span>
+<span class="fc" id="L147">        MovieDto.Response movieRepDto = MovieDto.Response.builder()</span>
+<span class="fc" id="L148">                .movieTitle(savedMovie.getMovieTitle())</span>
+<span class="fc" id="L149">                .moviePoster(savedMovie.getMoviePoster())</span>
+<span class="fc" id="L150">                .movieRunningTime(savedMovie.getMovieRunningTime())</span>
+<span class="fc" id="L151">                .movieOpenDate(savedMovie.getMovieOpenDate())</span>
+<span class="fc" id="L152">                .movieGenre(savedMovie.getMovieGenre())</span>
+<span class="fc" id="L153">                .movieDescription(savedMovie.getMovieDescription())</span>
+<span class="fc" id="L154">                .build();</span>
+<span class="fc" id="L155">        return movieRepDto;</span>
     }
 
     //3. 영화 수정시 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
     public void isUpdateImage(MultipartFile multipartFile, Movie findMovie) throws IOException {
-<span class="fc" id="L152">        String url = s3UploadService.upload(multipartFile);</span>
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
-<span class="fc" id="L154">            findMovie.setMoviePoster(url);</span>
+<span class="fc" id="L160">        String url = s3UploadService.upload(multipartFile);</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L162">            findMovie.setMoviePoster(url);</span>
         }
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L164">    }</span>
+
 
 
 }
