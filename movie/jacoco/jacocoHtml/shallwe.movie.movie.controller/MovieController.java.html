@@ -26,34 +26,34 @@ public class MovieController {
     @GetMapping(&quot;/movie&quot;)
     public String getMovies(@RequestParam(&quot;page&quot;) int page,
                             @RequestParam(value = &quot;sort&quot;, defaultValue = &quot;movieOpenDate&quot;) String sort, Model model) {
-<span class="nc" id="L29">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page - 1, sort);</span>
-<span class="nc" id="L30">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L31">        return &quot;movie/allMovie&quot;;</span>
+<span class="fc" id="L29">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.findAllMovie(page - 1, sort);</span>
+<span class="fc" id="L30">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L31">        return &quot;movie/allMovie&quot;;</span>
     }
 
     @GetMapping(&quot;/movie/search/title&quot;)
     public String getSearchByTitleMovies(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                   @RequestParam(value = &quot;movieTitle&quot;,required = false) String movieTitle,
                                   Model model) {
-<span class="nc" id="L38">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.searchMovieByTitle(movieTitle,page - 1, &quot;movieId&quot;);</span>
-<span class="nc" id="L39">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L40">        return &quot;movie/memberMovieSearchResult&quot;;</span>
+<span class="fc" id="L38">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.searchMovieByTitle(movieTitle,page - 1, &quot;movieId&quot;);</span>
+<span class="fc" id="L39">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L40">        return &quot;movie/memberMovieSearchResult&quot;;</span>
     }
 
     @GetMapping(&quot;/movie/search/genre&quot;)
     public String getSearchByGenreMovies(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                          @RequestParam(value=&quot;movieGenre&quot;, required=false) String movieGenre,
                                          Model model) {
-<span class="nc" id="L47">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.searchMovieByGenre(movieGenre,page - 1, &quot;movieId&quot;);</span>
-<span class="nc" id="L48">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="nc" id="L49">        return &quot;movie/memberMovieSearchResult&quot;;</span>
+<span class="fc" id="L47">        PagingResponseDto&lt;MovieDto.Response&gt; pageRepDto = movieService.searchMovieByGenre(movieGenre,page - 1, &quot;movieId&quot;);</span>
+<span class="fc" id="L48">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L49">        return &quot;movie/memberMovieSearchResult&quot;;</span>
     }
 
     @GetMapping(&quot;/movie/detail&quot;)
     public String getMovie(@RequestParam(&quot;movieTitle&quot;) String movieTitle, Model model) {
-<span class="nc" id="L54">        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);</span>
-<span class="nc" id="L55">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
-<span class="nc" id="L56">        return &quot;movie/movieDetail&quot;;</span>
+<span class="fc" id="L54">        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);</span>
+<span class="fc" id="L55">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
+<span class="fc" id="L56">        return &quot;movie/movieDetail&quot;;</span>
     }
 
     //==========================관리자 화면 컨트롤러=========================
