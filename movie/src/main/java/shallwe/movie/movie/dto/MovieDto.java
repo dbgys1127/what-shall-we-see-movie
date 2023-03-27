@@ -104,7 +104,7 @@ public class MovieDto {
         public Response(String movieTitle, String moviePoster,
                         String movieDescription, int movieRunningTime,
                         Movie.MovieGenre movieGenre, LocalDate movieOpenDate,
-                        LocalDateTime createdAt) {
+                        LocalDateTime createdAt, double avgSawCount) {
             this.movieTitle = movieTitle;
             this.moviePoster = moviePoster;
             this.movieDescription = movieDescription;
@@ -112,6 +112,7 @@ public class MovieDto {
             this.movieGenre = movieGenre;
             this.movieOpenDate = movieOpenDate;
             this.createdAt = createdAt;
+            this.avgSawCount = avgSawCount;
         }
     }
 

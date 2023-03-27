@@ -193,4 +193,10 @@ public class MemberService {
     }
 
 
+    public MemberDto.Response getMyInfo(String email) {
+        Member member = is_exist_member(email);
+        MemberDto.Response memberRepDto = getMemberRepDto(member);
+        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
+        return memberRepDto;
+    }
 }

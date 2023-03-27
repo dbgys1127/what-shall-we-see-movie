@@ -108,6 +108,8 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                         return new OrderSpecifier(direction, movie.movieId);
                     case "movieOpenDate":
                         return new OrderSpecifier<>(direction, movie.movieOpenDate);
+                    case "avgSawCount":
+                        return new OrderSpecifier<>(direction, movie.avgSawCount);
                 }
             }
         }

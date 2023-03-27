@@ -20,7 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class SawMovieService {
-    private final MemberService memberService;
     private final SawMovieRepository sawMovieRepository;
     private final MemberRepository memberRepository;
     private final MovieRepository movieRepository;
@@ -36,15 +35,13 @@ public class SawMovieService {
         if (Optional.ofNullable(findMovie).isEmpty()) {
             sawMovie = new SawMovie();
             sawMovie.setMovieSawCount(movieSawCount);
+
         } else {
             sawMovie = findMovie;
             sawMovie.setMovieSawCount(movieSawCount);
         }
         setMemberRelation(member,sawMovie);
         setMovieRelation(movie,sawMovie);
-
-        memberRepository.save(member);
-        movieRepository.save(movie);
         return sawMovieRepository.save(sawMovie);
     }
 
@@ -56,5 +53,10 @@ public class SawMovieService {
     public void setMovieRelation(Movie movie, SawMovie sawMovie) {
         sawMovie.setMovie(movie);
         movie.getSawMovies().add(sawMovie);
+        int sum =0;
+        for (SawMovie updateSawMovie : movie.getSawMovies()) {
+            sum+= updateSawMovie.getMovieSawCount();
+        }
+        movie.setAvgSawCount((double) sum/movie.getSawMovies().size());
     }
 }

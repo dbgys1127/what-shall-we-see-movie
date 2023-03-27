@@ -40,6 +40,8 @@ public class Movie extends TimeAudit {
     @Column(nullable = false)
     private LocalDate movieOpenDate;
 
+    private double avgSawCount;
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<SawMovie> sawMovies = new ArrayList<>();
 
@@ -48,12 +50,15 @@ public class Movie extends TimeAudit {
     }
 
     @Builder
-    public Movie(String movieTitle, String moviePoster, String movieDescription, int movieRunningTime, MovieGenre movieGenre, LocalDate movieOpenDate) {
+    public Movie(String movieTitle, String moviePoster,
+                 String movieDescription, int movieRunningTime,
+                 MovieGenre movieGenre, LocalDate movieOpenDate,double avgSawCount) {
         this.movieTitle = movieTitle;
         this.moviePoster = moviePoster;
         this.movieDescription = movieDescription;
         this.movieRunningTime = movieRunningTime;
         this.movieGenre = movieGenre;
         this.movieOpenDate = movieOpenDate;
+        this.avgSawCount = avgSawCount;
     }
 }

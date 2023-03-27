@@ -22,7 +22,7 @@
 </form>
 <!-- 정렬 기준 -->
 <ul class="sort">
-    <li class="${pageData.sort eq 'movieId' ? 'active':''}"><a href="/movie?page=1&sort=movieId">평균 시청순</a></li>
+    <li class="${pageData.sort eq 'avgSawCount' ? 'active':''}"><a href="/movie?page=1&sort=avgSawCount">평균 시청순</a></li>
     <li class="${pageData.sort eq 'movieOpenDate' ? 'active':''}" ><a href="/movie?page=1&sort=movieOpenDate">상영일자순</a></li>
     <li>장르별</li>
     <form action = "/movie/search/genre" method="get">
@@ -50,7 +50,7 @@
             <tr>
                 <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
                 <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
-                <td>평균시청순</td>
+                <td>${movie.avgSawCount}</td>
             </tr>
         </c:forEach>
     </table>

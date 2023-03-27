@@ -37,6 +37,15 @@ public class MemberController {
         return "member/join";
     }
 
+    @GetMapping("/mypage")
+    public String mypage(Authentication authentication,Model model) {
+        String email = authentication.getName();//aop 필요
+        MemberDto.Response memberRepDto = memberService.getMyInfo(email);
+        log.info("moviePoster ={}",memberRepDto.getSawMovies());
+        model.addAttribute("member", memberRepDto);
+        return "member/mypage";
+    }
+
     @PostMapping("/my-info/myImage")
     public String patchMyImage(@RequestPart("myImage") MultipartFile multipartFile,
                               Authentication authentication,

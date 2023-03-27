@@ -5,14 +5,18 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import shallwe.movie.member.entity.Member;
+import shallwe.movie.sawmovie.entity.SawMovie;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
 public class MemberDto {
 
     @Getter
@@ -54,6 +58,8 @@ public class MemberDto {
 
         private List<String> roles;
 
+        private List<MemberSawMovieResponseDto> sawMovies;
+
         @Builder
         public Response(String email, String password, String memberImage,
                         int warningCard, Member.MemberStatus memberStatus,
@@ -68,5 +74,25 @@ public class MemberDto {
         }
 
     }
+    @Builder
+    @Getter
+    @Setter
+    public static class MemberSawMovieResponseDto {
+        private String moviePoster;
+        private String movieTitle;
+        private double avgSawCount;
+    }
 
+    public static List<MemberSawMovieResponseDto> getMemberSawMovieResponseDtoList(List<SawMovie> sawMovies) {
+        return sawMovies
+                .stream()
+                .sorted(Comparator.comparing(SawMovie::getMovieSawCount).reversed())
+                .map(sawMovie -> MemberSawMovieResponseDto
+                        .builder()
+                        .moviePoster(sawMovie.getMovie().getMoviePoster())
+                        .movieTitle(sawMovie.getMovie().getMovieTitle())
+                        .avgSawCount(sawMovie.getMovie().getAvgSawCount())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

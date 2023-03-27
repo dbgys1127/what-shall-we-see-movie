@@ -41,11 +41,7 @@ public class MemberFormController {
         return "member/join-form";
     }
 
-    @GetMapping("/mypage")
-    public String mypage() {
-        log.info("now port {}",port);
-        return "member/mypage";
-    }
+
     @GetMapping("/my-info/myImage")
     public String myImageForm() {
         log.info("now port {}",port);

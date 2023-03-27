@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
-import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
@@ -94,17 +93,7 @@ public class MovieService {
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
-        MovieDto.Response movieRepDto = getMovieRepDto(findMovie);
-        int sum =0;
-        for (SawMovie updateSawMovie : findMovie.getSawMovies()) {
-            sum+= updateSawMovie.getMovieSawCount();
-        }
-        if (Optional.ofNullable(sawMovie).isPresent()) {
-            movieRepDto.setMemberSawCount(sawMovie.getMovieSawCount());
-        } else {
-            movieRepDto.setMemberSawCount(0);
-        }
-        movieRepDto.setAvgSawCount((double) sum/findMovie.getSawMovies().size());
+        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
         return movieRepDto;
     }
 
@@ -112,13 +101,7 @@ public class MovieService {
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
-        MovieDto.Response movieRepDto = getMovieRepDto(findMovie);
-        int sum =0;
-        for (SawMovie updateSawMovie : findMovie.getSawMovies()) {
-            sum+= updateSawMovie.getMovieSawCount();
-        }
-        movieRepDto.setMemberSawCount(sawMovie.getMovieSawCount());
-        movieRepDto.setAvgSawCount((double) sum/findMovie.getSawMovies().size());
+        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
         return movieRepDto;
     }
 
@@ -166,7 +149,9 @@ public class MovieService {
                     .movieOpenDate(movie.getMovieOpenDate())
                     .movieGenre(movie.getMovieGenre())
                     .movieDescription(movie.getMovieDescription())
+                    .avgSawCount(movie.getAvgSawCount())
                     .build();
+
             movieRepDtoList.add(movieRepDto);
         }
         return movieRepDtoList;
@@ -191,7 +176,14 @@ public class MovieService {
             findMovie.setMoviePoster(url);
         }
     }
-
-
-
+    private static MovieDto.Response getSawCount(Movie findMovie, SawMovie sawMovie) {
+        MovieDto.Response movieRepDto = getMovieRepDto(findMovie);
+        movieRepDto.setAvgSawCount(findMovie.getAvgSawCount());
+        if (Optional.ofNullable(sawMovie).isPresent()) {
+            movieRepDto.setMemberSawCount(sawMovie.getMovieSawCount());
+        } else {
+            movieRepDto.setMemberSawCount(0);
+        }
+        return movieRepDto;
+    }
 }
