@@ -2,6 +2,7 @@ package shallwe.movie.movie.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,20 @@ public class MovieController {
     }
 
     @GetMapping("/movie/detail")
-    public String getMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
-        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);
+    public String getMovie(@RequestParam("movieTitle") String movieTitle,
+                           Authentication authentication,Model model) {
+        String email = authentication.getName();
+        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,email);
+        model.addAttribute("movie", movieRepDto);
+        return "movie/movieDetail";
+    }
+
+    @PostMapping("/saw-movie")
+    public String postSawCount(@RequestParam("movieTitle") String movieTitle,
+                               @RequestParam("movieSawCount") int movieSawCount,
+                               Authentication authentication, Model model) {
+        String email = authentication.getName();
+        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email,movieSawCount);
         model.addAttribute("movie", movieRepDto);
         return "movie/movieDetail";
     }
@@ -94,7 +107,7 @@ public class MovieController {
     // 수정할 영화 페이지 가져오기
     @GetMapping("/admin/movie/patch")
     public String adminGetMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
-        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle);
+        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,"admin");
         model.addAttribute("movie", movieRepDto);
         return "movie/moviePatch";
     }

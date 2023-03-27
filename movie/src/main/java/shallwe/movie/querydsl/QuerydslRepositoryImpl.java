@@ -10,11 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
+import shallwe.movie.sawmovie.entity.SawMovie;
 
 import java.util.List;
 
 import static shallwe.movie.member.entity.QMember.member;
 import static shallwe.movie.movie.entity.QMovie.movie;
+import static shallwe.movie.sawmovie.entity.QSawMovie.sawMovie;
 
 @RequiredArgsConstructor
 public class QuerydslRepositoryImpl implements QuerydslRepository{
@@ -85,6 +87,15 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))
                 .fetchCount();
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public SawMovie findSawMovieByMemberAndMovie(Member member, Movie movie) {
+        return queryFactory
+                .selectFrom(sawMovie)
+                .where(sawMovie.member.eq(member)
+                        .and(sawMovie.movie.eq(movie)))
+                .fetchOne();
     }
 
     private OrderSpecifier<?> movieSort(Pageable page) {

@@ -14,10 +14,13 @@ import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
+import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.service.SawMovieService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,8 +33,10 @@ import java.util.Optional;
 @Slf4j
 public class MovieService {
     private final MovieRepository movieRepository;
-
+    private final SawMovieService sawMovieService;
     private final S3UploadService s3UploadService;
+
+    private final MemberService memberService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
@@ -85,12 +90,38 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
     }
 
-
-    public MovieDto.Response pickMovie(String movieTitle) {
-        Movie movie = is_exist_movie(movieTitle);
-        MovieDto.Response movieRepDto = getMovieRepDto(movie);
+    public MovieDto.Response pickMovie(String movieTitle, String email) {
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
+        MovieDto.Response movieRepDto = getMovieRepDto(findMovie);
+        int sum =0;
+        for (SawMovie updateSawMovie : findMovie.getSawMovies()) {
+            sum+= updateSawMovie.getMovieSawCount();
+        }
+        if (Optional.ofNullable(sawMovie).isPresent()) {
+            movieRepDto.setMemberSawCount(sawMovie.getMovieSawCount());
+        } else {
+            movieRepDto.setMemberSawCount(0);
+        }
+        movieRepDto.setAvgSawCount((double) sum/findMovie.getSawMovies().size());
         return movieRepDto;
     }
+
+    public MovieDto.Response updateSawCount(String movieTitle, String email, int movieSawCount) {
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
+        MovieDto.Response movieRepDto = getMovieRepDto(findMovie);
+        int sum =0;
+        for (SawMovie updateSawMovie : findMovie.getSawMovies()) {
+            sum+= updateSawMovie.getMovieSawCount();
+        }
+        movieRepDto.setMemberSawCount(sawMovie.getMovieSawCount());
+        movieRepDto.setAvgSawCount((double) sum/findMovie.getSawMovies().size());
+        return movieRepDto;
+    }
+
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
         Movie movie = is_exist_movie(movieDto.getMovieTitle());
         isUpdateImage(multipartFile,movie);

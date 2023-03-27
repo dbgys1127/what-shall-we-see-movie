@@ -94,8 +94,11 @@ public class MovieDto {
         private int movieRunningTime;
         private Movie.MovieGenre movieGenre;
         private LocalDate movieOpenDate;
-
         private LocalDateTime createdAt;
+
+        private int memberSawCount;
+
+        private double avgSawCount;
 
         @Builder
         public Response(String movieTitle, String moviePoster,

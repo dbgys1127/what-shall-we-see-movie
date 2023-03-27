@@ -5,9 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shallwe.movie.audit.TimeAudit;
+import shallwe.movie.sawmovie.entity.SawMovie;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,6 +40,8 @@ public class Movie extends TimeAudit {
     @Column(nullable = false)
     private LocalDate movieOpenDate;
 
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    private List<SawMovie> sawMovies = new ArrayList<>();
 
     public enum MovieGenre {
         코미디, 액션, 범죄, 드라마, SF, 공포, 로맨스;

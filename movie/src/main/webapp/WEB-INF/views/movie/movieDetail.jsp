@@ -14,6 +14,11 @@
     <li>개봉일: ${movie.movieOpenDate}</li>
     <li>장르: ${movie.movieGenre}</li>
     <li>영화 설명: ${movie.movieDescription}</li>
+    <form action = "/saw-movie?movieTitle=${movie.movieTitle}" method="post">
+        <li><input type="text" name="movieSawCount" placeholder="${movie.avgSawCount}"></li>
+        <button type="submit">검색</button>
+    </form>
+    <li>나의 시청횟수: ${movie.memberSawCount}</li>
     <button type="button"><a href="/">메인</a></button>
 </ul>
 </body>
