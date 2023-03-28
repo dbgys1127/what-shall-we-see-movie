@@ -18,4 +18,6 @@ public interface QuerydslRepository {
     Page<Movie> findMovieByGenreWithPaging(String movieGenre, Pageable pageable);
 
     SawMovie findSawMovieByMemberAndMovie(Member member, Movie movie);
+
+    Page<SawMovie> findSawMoviesByMemberWithPaging(Member member, Pageable pageable);
 }

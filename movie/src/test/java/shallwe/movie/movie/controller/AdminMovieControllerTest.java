@@ -191,7 +191,7 @@ public class AdminMovieControllerTest {
                 .movieOpenDate(LocalDate.of(2023, 1, 1)).build();
 
         //stub
-        given(movieService.pickMovie(title)).willReturn(movieRepDto);
+        given(movieService.pickMovie(any(),any())).willReturn(movieRepDto);
 
         //when
         //then

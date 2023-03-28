@@ -42,13 +42,13 @@ public class MemberFormController {
     }
 
 
-    @GetMapping("/my-info/myImage")
+    @GetMapping("/mypage/myImage")
     public String myImageForm() {
         log.info("now port {}",port);
         return "member/myImage";
     }
 
-    @GetMapping("/my-info/myPassword")
+    @GetMapping("/mypage/myPassword")
     public String myPasswordForm() {
         log.info("now port {}",port);
         return "member/myPassword";

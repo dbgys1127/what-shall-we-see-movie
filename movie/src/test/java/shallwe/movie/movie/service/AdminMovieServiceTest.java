@@ -178,7 +178,7 @@ public class AdminMovieServiceTest {
         given(movieRepository.findByMovieTitle(any())).willReturn(movieOptional);
 
         //when
-        MovieDto.Response movieRepDto = movieService.pickMovie(title);
+        MovieDto.Response movieRepDto = movieService.pickMovie(title,"test@gmail.com");
 
         //then
         Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movie1");
@@ -196,7 +196,7 @@ public class AdminMovieServiceTest {
 
         //when
         //then
-        Assertions.assertThatThrownBy(()->movieService.pickMovie(title)).isInstanceOf(BusinessLogicException.class);
+        Assertions.assertThatThrownBy(()->movieService.pickMovie(title,"test@gmail.com")).isInstanceOf(BusinessLogicException.class);
     }
 
     @DisplayName("영화 속성을 수정할 수 있다.")

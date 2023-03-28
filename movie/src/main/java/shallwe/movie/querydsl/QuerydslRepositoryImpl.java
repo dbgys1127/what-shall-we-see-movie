@@ -98,6 +98,21 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                 .fetchOne();
     }
 
+    @Override
+    public Page<SawMovie> findSawMoviesByMemberWithPaging(Member member, Pageable pageable) {
+        List<SawMovie> content= queryFactory
+                .selectFrom(sawMovie)
+                .where(sawMovie.member.eq(member))
+                .orderBy(movieSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long total = queryFactory.selectFrom(sawMovie)
+                .where(sawMovie.member.eq(member))
+                .fetchCount();
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private OrderSpecifier<?> movieSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {

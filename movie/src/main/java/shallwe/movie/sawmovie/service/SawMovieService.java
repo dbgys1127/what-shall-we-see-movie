@@ -2,6 +2,8 @@ package shallwe.movie.sawmovie.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shallwe.movie.member.entity.Member;
@@ -58,5 +60,9 @@ public class SawMovieService {
             sum+= updateSawMovie.getMovieSawCount();
         }
         movie.setAvgSawCount((double) sum/movie.getSawMovies().size());
+    }
+
+    public Page<SawMovie> getSawMovieList(Member member, PageRequest pageable) {
+        return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);
     }
 }

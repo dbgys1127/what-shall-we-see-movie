@@ -44,6 +44,7 @@ public class MemberDto {
         private String password;
     }
 
+    @Builder
     @Getter
     @Setter
     public static class Response {
@@ -60,18 +61,7 @@ public class MemberDto {
 
         private List<MemberSawMovieResponseDto> sawMovies;
 
-        @Builder
-        public Response(String email, String password, String memberImage,
-                        int warningCard, Member.MemberStatus memberStatus,
-                        LocalDateTime createdAt,List<String> roles) {
-            this.email = email;
-            this.password = password;
-            this.memberImage = memberImage;
-            this.warningCard = warningCard;
-            this.memberStatus = memberStatus;
-            this.createdAt = createdAt;
-            this.roles = roles;
-        }
+        private int sawMoviesTotalCount;
 
     }
     @Builder
@@ -80,18 +70,19 @@ public class MemberDto {
     public static class MemberSawMovieResponseDto {
         private String moviePoster;
         private String movieTitle;
-        private double avgSawCount;
+        private int sawCount;
     }
 
     public static List<MemberSawMovieResponseDto> getMemberSawMovieResponseDtoList(List<SawMovie> sawMovies) {
         return sawMovies
                 .stream()
                 .sorted(Comparator.comparing(SawMovie::getMovieSawCount).reversed())
+                .limit(10)
                 .map(sawMovie -> MemberSawMovieResponseDto
                         .builder()
                         .moviePoster(sawMovie.getMovie().getMoviePoster())
                         .movieTitle(sawMovie.getMovie().getMovieTitle())
-                        .avgSawCount(sawMovie.getMovie().getAvgSawCount())
+                        .sawCount(sawMovie.getMovieSawCount())
                         .build())
                 .collect(Collectors.toList());
     }

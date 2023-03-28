@@ -2,6 +2,7 @@ package shallwe.movie.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 
 @Slf4j
@@ -26,6 +28,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+
+
+    //==========================사용자 화면 컨트롤러=========================
 
     // 수정할 것
     // 유효성 검증 실패에 대한 내용 view 전달 방법 필요
@@ -41,12 +46,11 @@ public class MemberController {
     public String mypage(Authentication authentication,Model model) {
         String email = authentication.getName();//aop 필요
         MemberDto.Response memberRepDto = memberService.getMyInfo(email);
-        log.info("moviePoster ={}",memberRepDto.getSawMovies());
         model.addAttribute("member", memberRepDto);
         return "member/mypage";
     }
 
-    @PostMapping("/my-info/myImage")
+    @PostMapping("/mypage/myImage")
     public String patchMyImage(@RequestPart("myImage") MultipartFile multipartFile,
                               Authentication authentication,
                               Model model) throws IOException {
@@ -57,7 +61,7 @@ public class MemberController {
         return "member/mypage";
     }
 
-    @PostMapping("/my-info/myPassword")
+    @PostMapping("/mypage/myPassword")
     public String patchMyPassword(@ModelAttribute @Valid MemberDto.Patch memberDto,
                               Authentication authentication,
                               Model model) throws IOException {
@@ -67,6 +71,18 @@ public class MemberController {
         model.addAttribute("email", email);
         return "member/mypage";
     }
+
+    @GetMapping("/mypage/saw-movie")
+    public String getMySawMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   Authentication authentication
+                                   , Model model) {
+        String email = authentication.getName();
+        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);
+        model.addAttribute("pageData", sawMovieResponseDtoList);
+        return "member/sawMovieList";
+    }
+
+    //==========================관리자 화면 컨트롤러=========================
 
     @GetMapping("/admin/member/warning-page")
     public String adminGetWarning(@RequestParam("email") String email, Model model) {

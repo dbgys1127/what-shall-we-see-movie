@@ -205,7 +205,7 @@ public class MemberControllerTest {
         memberPatchDto.setPassword("abc!1234");
 
         //when
-        mockMvc.perform(post("/my-info/myPassword")
+        mockMvc.perform(post("/mypage/myPassword")
                 .param("password", memberPatchDto.getPassword())).andReturn();
 
         Member member=memberService.is_exist_member("test1@gmail.com");

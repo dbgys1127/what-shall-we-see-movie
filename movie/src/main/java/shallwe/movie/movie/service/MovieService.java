@@ -44,8 +44,21 @@ public class MovieService {
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
+    public MovieDto.Response updateSawCount(String movieTitle, String email, int movieSawCount) {
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
+        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
+        return movieRepDto;
+    }
 
-
+    public MovieDto.Response pickMovie(String movieTitle, String email) {
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
+        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
+        return movieRepDto;
+    }
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
         verifyExistsTitle(movieDto.getMovieTitle());
@@ -87,22 +100,6 @@ public class MovieService {
         Page<Movie> pageInfo = movieRepository.findMovieByTitleWithPaging(title, pageable);
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
-    }
-
-    public MovieDto.Response pickMovie(String movieTitle, String email) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
-        SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
-        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
-        return movieRepDto;
-    }
-
-    public MovieDto.Response updateSawCount(String movieTitle, String email, int movieSawCount) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
-        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
-        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
-        return movieRepDto;
     }
 
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {

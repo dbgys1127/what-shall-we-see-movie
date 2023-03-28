@@ -16,6 +16,8 @@ import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.s3.S3UploadService;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
 
 import java.io.IOException;
@@ -33,6 +35,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
     private final S3UploadService s3UploadService;
+    private final SawMovieService sawMovieService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     // 1. 회원가입 처리 메소드
@@ -65,6 +68,13 @@ public class MemberService {
         Member member = memberRepository.save(findMember);
         MemberDto.Response memberRepDto = getMemberRepDto(findMember);
 
+        return memberRepDto;
+    }
+
+    public MemberDto.Response getMyInfo(String email) {
+        Member member = is_exist_member(email);
+        MemberDto.Response memberRepDto = getMemberRepDto(member);
+        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
         return memberRepDto;
     }
 
@@ -166,6 +176,7 @@ public class MemberService {
                 .email(findMember.getEmail())
                 .password(findMember.getPassword())
                 .roles(findMember.getRoles())
+                .sawMoviesTotalCount(findMember.getSawMovies().size())
                 .build();
 
         return memberRepDto;
@@ -193,10 +204,11 @@ public class MemberService {
     }
 
 
-    public MemberDto.Response getMyInfo(String email) {
+    public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
         Member member = is_exist_member(email);
-        MemberDto.Response memberRepDto = getMemberRepDto(member);
-        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
-        return memberRepDto;
+        Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending()));
+        List<SawMovie> sawMovies = pageInfo.getContent();
+        List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
+        return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
     }
 }

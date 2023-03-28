@@ -16,7 +16,7 @@
 <body>
 <h2> 영화 </h2>
 
-<form action = "/movie/search" method="get">
+<form action = "/movie/search/title" method="get">
     <input type = "text" name="movieTitle" placeholder = "검색할 영화를 입력하세요."/>
     <button type="submit">검색</button>
 </form>

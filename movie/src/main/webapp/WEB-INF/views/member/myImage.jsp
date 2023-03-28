@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2> 이미지 수정 </h2>
-<form action="/my-info/myImage" method="post" enctype="multipart/form-data">
+<form action="/mypage/myImage" method="post" enctype="multipart/form-data">
     memberImage: <input type="file" name="myImage" accept=".jpg,.png,.jpeg">
     <br>
     <button type="submit">회원정보수정</button>

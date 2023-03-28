@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2> 비밀번호 수정 </h2>
-<form action="/my-info/myPassword" method="post" enctype="multipart/form-data">
+<form action="/mypage/myPassword" method="post" enctype="multipart/form-data">
     password: <input type="text" name="password" />
     <button type="submit">비밀번호 수정</button>
 </form>

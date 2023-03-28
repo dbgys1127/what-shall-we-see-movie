@@ -77,7 +77,7 @@ public class MemberFormControllerTest {
     @Test
     @WithMockUser(username = "test",roles = "USER")
     void login_member_can_access_myImage_page() throws Exception {
-        mockMvc.perform(get("/my-info/myImage"))
+        mockMvc.perform(get("/mypage/myImage"))
                 .andExpect(view().name("member/myImage"));
     }
 

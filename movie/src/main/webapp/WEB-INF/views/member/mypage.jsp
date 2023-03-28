@@ -10,22 +10,24 @@
 <h2> Mypage </h2>
 <img src="${memberImage}" />
 <br>
-${email}
-<button type="button"><a href="/my-info/myImage">대표 이미지 수정</a></button>
-<button type="button"><a href="/my-info/myPassword">비밀번호 수정</a></button>
-
+<button type="button"><a href="/mypage/myImage">대표 이미지 수정</a></button>
+<button type="button"><a href="/mypage/myPassword">비밀번호 수정</a></button>
+<div>
+    <h3>시청한 총 영화수 : ${member.sawMoviesTotalCount}</h3>
 <table style="border: 1px solid black;" >
     <!-- 표 헤더 -->
         <th>포스터</th>
         <th>영화제목</th>
-        <th>평균 시청수</th>
+        <th>나의 시청횟수</th>
         <c:forEach var="movie" items="${member.sawMovies}">
             <tr>
-                <td><img src="${movie.moviePoster}"/></td>
-                <td>${movie.movieTitle}</td>
-                <td>${movie.avgSawCount}</td>
+                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
+                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                <td>${movie.sawCount}</td>
             </tr>
         </c:forEach>
+        <h3><a href="/mypage/saw-movie">더보기</a></h3>
 </table>
+</div>
 </body>
 </html>

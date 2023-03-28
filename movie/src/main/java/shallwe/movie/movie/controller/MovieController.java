@@ -59,7 +59,7 @@ public class MovieController {
         return "movie/movieDetail";
     }
 
-    @PostMapping("/saw-movie")
+    @PostMapping("/movie/saw-movie")
     public String postSawCount(@RequestParam("movieTitle") String movieTitle,
                                @RequestParam("movieSawCount") int movieSawCount,
                                Authentication authentication, Model model) {
@@ -107,7 +107,7 @@ public class MovieController {
     // 수정할 영화 페이지 가져오기
     @GetMapping("/admin/movie/patch")
     public String adminGetMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
-        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,"admin");
+        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,"admin@gmail.com");
         model.addAttribute("movie", movieRepDto);
         return "movie/moviePatch";
     }
