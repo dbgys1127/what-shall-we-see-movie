@@ -11,9 +11,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.movie.service.MovieService;
+
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -115,5 +119,28 @@ public class MemberMovieControllerTest {
                         .param("page", "1")
                         .param("movieGenre","코미디"))
                 .andExpect(view().name("movie/memberMovieSearchResult"));
+    }
+
+    @DisplayName("멤버는 영화 시청횟수를 수정할 수 있다.")
+    @WithMockUser(username = "test",roles = "USER")
+    @Test
+    void postSawCount() throws Exception {
+        //given
+        String movieTitle = "movie";
+        String email = "test@gmail.com";
+        int movieSawCount = 2;
+
+        MovieDto.Response movieRepDto = MovieDto.Response.builder().build();
+
+        //stub
+        given(movieService.updateSawCount(movieTitle, email, movieSawCount)).willReturn(movieRepDto);
+
+        //when
+        //then
+        mockMvc.perform(post("/movie/saw-movie")
+                        .param("movieTitle", movieTitle)
+                        .param("movieSawCount", String.valueOf(movieSawCount)))
+                .andExpect(view().name("movie/movieDetail"));
+
     }
 }

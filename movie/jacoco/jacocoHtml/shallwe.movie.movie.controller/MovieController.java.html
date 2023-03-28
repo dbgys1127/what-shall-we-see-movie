@@ -63,10 +63,10 @@ public class MovieController {
     public String postSawCount(@RequestParam(&quot;movieTitle&quot;) String movieTitle,
                                @RequestParam(&quot;movieSawCount&quot;) int movieSawCount,
                                Authentication authentication, Model model) {
-<span class="nc" id="L66">        String email = authentication.getName();</span>
-<span class="nc" id="L67">        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email,movieSawCount);</span>
-<span class="nc" id="L68">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
-<span class="nc" id="L69">        return &quot;movie/movieDetail&quot;;</span>
+<span class="fc" id="L66">        String email = authentication.getName();</span>
+<span class="fc" id="L67">        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email,movieSawCount);</span>
+<span class="fc" id="L68">        model.addAttribute(&quot;movie&quot;, movieRepDto);</span>
+<span class="fc" id="L69">        return &quot;movie/movieDetail&quot;;</span>
     }
 
     //==========================관리자 화면 컨트롤러=========================

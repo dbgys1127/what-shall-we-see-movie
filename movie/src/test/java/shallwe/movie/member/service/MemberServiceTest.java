@@ -15,14 +15,19 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
+import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.s3.S3UploadService;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
 
 import java.util.ArrayList;
@@ -47,6 +52,9 @@ public class MemberServiceTest {
 
     @Mock
     S3UploadService s3UploadService;
+
+    @Mock
+    SawMovieService sawMovieService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -115,6 +123,7 @@ public class MemberServiceTest {
         Assertions.assertThatThrownBy(() -> memberService.verifyExistsEmail("test@gmail.com"))
                 .isInstanceOf(BusinessLogicException.class);
     }
+
     @DisplayName("4.찾는 이메일 회원이 있으면 해당 멤버가 반환된다.")
     @Test
     void is_exist_member() {
@@ -196,5 +205,83 @@ public class MemberServiceTest {
 
         //then
         Assertions.assertThat(memberRepDtoList.size()).isEqualTo(3);
+    }
+
+    @DisplayName("9.멤버는 마이페이지에서 자신이 시청횟수를 등록한 영화 목록을 볼 수 있다.")
+    @Test
+    void getMyInfo() {
+        //given
+        String email = "test@gmail.com";
+        Member member = Member.builder()
+                .email(email)
+                .warningCard(0)
+                .build();
+
+        List<SawMovie> sawMovies = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Movie movie = Movie.builder()
+                    .moviePoster("이미지")
+                    .movieTitle("movie" + i)
+                    .build();
+            SawMovie sawMovie = SawMovie.builder()
+                    .movieSawCount(i)
+                    .movie(movie)
+                    .build();
+            sawMovies.add(sawMovie);
+        }
+
+        member.setSawMovies(sawMovies);
+
+        //stub
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+
+        //when
+        MemberDto.Response memberRepDto = memberService.getMyInfo(email);
+
+        //then
+        Assertions.assertThat(memberRepDto.getSawMovies().size()).isEqualTo(10);
+    }
+
+    @DisplayName("10.멤버는 마이페이지 영화 목록에서 더보기를 누르면 시청횟수를 등록한 페이징 처리된 영화 목록 볼 수 있다.")
+    @Test
+    void findMySawMovieList() {
+        //given
+        int page = 0;
+        String email = "test@gmail.com";
+        Member member = Member.builder()
+                .email(email)
+                .warningCard(0)
+                .build();
+
+        List<SawMovie> sawMovies = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Movie movie = Movie.builder()
+                    .moviePoster("이미지")
+                    .movieTitle("movie" + i)
+                    .build();
+            SawMovie sawMovie = SawMovie.builder()
+                    .movieSawCount(i)
+                    .movie(movie)
+                    .build();
+            sawMovies.add(sawMovie);
+        }
+
+        member.setSawMovies(sawMovies);
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("avgSawCount").descending());
+        Page<SawMovie> pageInfo = new PageImpl<>(sawMovies, pageable, sawMovies.size());
+
+        //stub
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        given(sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending())))
+                .willReturn(pageInfo);
+
+        //when
+        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> result = memberService.findMySawMovieList(page,email);
+
+        //then
+        Assertions.assertThat(result.getData().size()).isEqualTo(10);
+        Assertions.assertThat(result.getSort()).isEqualTo("avgSawCount");
+        Assertions.assertThat(result.getNowPage()).isEqualTo(1);
     }
 }

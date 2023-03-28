@@ -14,14 +14,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import shallwe.movie.dto.PagingResponseDto;
+import shallwe.movie.member.entity.Member;
+import shallwe.movie.member.repository.MemberRepository;
+import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.service.SawMovieService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @Slf4j
@@ -31,12 +38,21 @@ public class MemberMovieServiceTest {
 
     @InjectMocks
     private MovieService movieService;
-
     @Mock
     private MovieRepository movieRepository;
 
     @Mock
+    private MemberRepository memberRepository;
+
+
+    @Mock
     private S3UploadService s3UploadService;
+
+    @Mock
+    private MemberService memberService;
+
+    @Mock
+    private SawMovieService sawMovieService;
 
     @Mock
     private AmazonS3 amazonS3;
@@ -90,5 +106,30 @@ public class MemberMovieServiceTest {
         Assertions.assertThat(pagingResponseDto.getNowPage()).isEqualTo(1);
         Assertions.assertThat(pagingResponseDto.getSort()).isEqualTo(sort);
         Assertions.assertThat(pagingResponseDto.getEndPage()).isEqualTo(3);
+    }
+
+    @DisplayName("멤버는 자신이 시청한 영화의 시청횟수를 등록할 수 있다.")
+    @Test
+    void updateSawCount() {
+        //given
+        String movieTitle = "movie";
+        String email = "test@gmail.com";
+        int movieSawCount = 2;
+
+        Member member = Member.builder().email("test@gmail.com").build();
+        movies.get(0).setAvgSawCount(movieSawCount);
+
+        //stub
+        given(memberService.is_exist_member(any())).willReturn(member);
+        given(movieRepository.findByMovieTitle(any())).willReturn(Optional.of(movies.get(0)));
+        given(sawMovieService.saveSawMovie(movies.get(0), member,2)).willReturn(SawMovie.builder().movieSawCount(movieSawCount)
+                .build());
+
+        //when
+        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email, movieSawCount);
+
+        //then
+        Assertions.assertThat(movieRepDto.getMemberSawCount()).isEqualTo(2);
+        Assertions.assertThat(movieRepDto.getAvgSawCount()).isEqualTo(2);
     }
 }

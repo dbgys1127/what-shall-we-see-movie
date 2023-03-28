@@ -77,7 +77,13 @@ public class MemberService {
         memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
         return memberRepDto;
     }
-
+    public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
+        Member member = is_exist_member(email);
+        Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending()));
+        List<SawMovie> sawMovies = pageInfo.getContent();
+        List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
+        return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
+    }
 
     // ============================ 관리자 요청 처리 메소드 ==============================
     /** 1. 회원 목록 조회
@@ -204,11 +210,5 @@ public class MemberService {
     }
 
 
-    public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
-        Member member = is_exist_member(email);
-        Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending()));
-        List<SawMovie> sawMovies = pageInfo.getContent();
-        List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
-        return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
-    }
+
 }

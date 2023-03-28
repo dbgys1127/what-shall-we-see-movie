@@ -45,11 +45,11 @@ public class MovieService {
 <span class="fc" id="L45">        return new PagingResponseDto&lt;&gt;(movieRepDtoList,pageInfo,&quot;&quot;,movieGenre);</span>
     }
     public MovieDto.Response updateSawCount(String movieTitle, String email, int movieSawCount) {
-<span class="nc" id="L48">        Movie findMovie = is_exist_movie(movieTitle);</span>
-<span class="nc" id="L49">        Member findMember = memberService.is_exist_member(email);</span>
-<span class="nc" id="L50">        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);</span>
-<span class="nc" id="L51">        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);</span>
-<span class="nc" id="L52">        return movieRepDto;</span>
+<span class="fc" id="L48">        Movie findMovie = is_exist_movie(movieTitle);</span>
+<span class="fc" id="L49">        Member findMember = memberService.is_exist_member(email);</span>
+<span class="fc" id="L50">        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);</span>
+<span class="fc" id="L51">        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);</span>
+<span class="fc" id="L52">        return movieRepDto;</span>
     }
 
     public MovieDto.Response pickMovie(String movieTitle, String email) {

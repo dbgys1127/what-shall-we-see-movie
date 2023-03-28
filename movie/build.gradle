@@ -100,7 +100,9 @@ jacocoTestReport {
 					"shallwe/movie/audit/**",
 					"shallwe/movie/security/**",
 					"shallwe/movie/s3/**",
-					"shallwe/movie/dto/**"
+					"shallwe/movie/dto/**",
+					"shallwe/movie/movie/dto/**",
+					"shallwe/movie/sawmovie/entity/**"
 			])
 		}))
 	}

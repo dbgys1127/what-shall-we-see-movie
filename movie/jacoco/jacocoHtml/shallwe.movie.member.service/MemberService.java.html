@@ -72,12 +72,18 @@ public class MemberService {
     }
 
     public MemberDto.Response getMyInfo(String email) {
-<span class="nc" id="L75">        Member member = is_exist_member(email);</span>
-<span class="nc" id="L76">        MemberDto.Response memberRepDto = getMemberRepDto(member);</span>
-<span class="nc" id="L77">        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));</span>
-<span class="nc" id="L78">        return memberRepDto;</span>
+<span class="fc" id="L75">        Member member = is_exist_member(email);</span>
+<span class="fc" id="L76">        MemberDto.Response memberRepDto = getMemberRepDto(member);</span>
+<span class="fc" id="L77">        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));</span>
+<span class="fc" id="L78">        return memberRepDto;</span>
     }
-
+    public PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; findMySawMovieList(int page, String email) {
+<span class="fc" id="L81">        Member member = is_exist_member(email);</span>
+<span class="fc" id="L82">        Page&lt;SawMovie&gt; pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by(&quot;avgSawCount&quot;).descending()));</span>
+<span class="fc" id="L83">        List&lt;SawMovie&gt; sawMovies = pageInfo.getContent();</span>
+<span class="fc" id="L84">        List&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);</span>
+<span class="fc" id="L85">        return new PagingResponseDto&lt;&gt;(sawMovieResponseDtoList,pageInfo);</span>
+    }
 
     // ============================ 관리자 요청 처리 메소드 ==============================
     /** 1. 회원 목록 조회
@@ -89,127 +95,121 @@ public class MemberService {
      * sort -&gt; 가입일 순
       */
     public PagingResponseDto&lt;MemberDto.Response&gt; searchMember(String email,int page,String sort) {
-<span class="fc" id="L92">        Page&lt;Member&gt; pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));</span>
-<span class="fc" id="L93">        List&lt;Member&gt; members = pageInfo.getContent();</span>
-<span class="fc" id="L94">        List&lt;MemberDto.Response&gt; memberRepDtoList = getMemberRepList(members);</span>
-<span class="fc" id="L95">        return new PagingResponseDto&lt;&gt;(memberRepDtoList,pageInfo,email,&quot;&quot;);</span>
+<span class="fc" id="L98">        Page&lt;Member&gt; pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));</span>
+<span class="fc" id="L99">        List&lt;Member&gt; members = pageInfo.getContent();</span>
+<span class="fc" id="L100">        List&lt;MemberDto.Response&gt; memberRepDtoList = getMemberRepList(members);</span>
+<span class="fc" id="L101">        return new PagingResponseDto&lt;&gt;(memberRepDtoList,pageInfo,email,&quot;&quot;);</span>
     }
 
     /** 2. 관리자 목록 조회
      *  1번 회원 목록 조회와 기능은 같으나 조회 대상이 ADMIN인 점이 차이
       */
     public PagingResponseDto&lt;MemberDto.Response&gt; searchAdmin(String email,int page,String sort) {
-<span class="fc" id="L102">        Page&lt;Member&gt; pageInfo = memberRepository.findAllAdminWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));</span>
-<span class="fc" id="L103">        List&lt;Member&gt; members = pageInfo.getContent();</span>
-<span class="fc" id="L104">        List&lt;MemberDto.Response&gt; memberRepDtoList = getMemberRepList(members);</span>
-<span class="fc" id="L105">        return new PagingResponseDto&lt;&gt;(memberRepDtoList,pageInfo,email,&quot;&quot;);</span>
+<span class="fc" id="L108">        Page&lt;Member&gt; pageInfo = memberRepository.findAllAdminWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));</span>
+<span class="fc" id="L109">        List&lt;Member&gt; members = pageInfo.getContent();</span>
+<span class="fc" id="L110">        List&lt;MemberDto.Response&gt; memberRepDtoList = getMemberRepList(members);</span>
+<span class="fc" id="L111">        return new PagingResponseDto&lt;&gt;(memberRepDtoList,pageInfo,email,&quot;&quot;);</span>
     }
 
     // 2. 관리자가 관리하고 싶은 회원을 선택할때 사용됨
     public MemberDto.Response pickMember(String email) {
-<span class="fc" id="L110">        Member member = is_exist_member(email);</span>
-<span class="fc" id="L111">        MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
-<span class="fc" id="L112">        return memberRepDto;</span>
+<span class="fc" id="L116">        Member member = is_exist_member(email);</span>
+<span class="fc" id="L117">        MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
+<span class="fc" id="L118">        return memberRepDto;</span>
     }
 
     // 3. 댓글 신고가 접수된 회원을 admin이 경고를 주거나 차단하는 메서드
     public MemberDto.Response giveWarning(String email,String warning, String block) {
-<span class="fc" id="L117">        Member member = is_exist_member(email);</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (warning.equals(&quot;on&quot;)) {</span>
-<span class="fc" id="L119">            member.setWarningCard(member.getWarningCard()+1);</span>
+<span class="fc" id="L123">        Member member = is_exist_member(email);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (warning.equals(&quot;on&quot;)) {</span>
+<span class="fc" id="L125">            member.setWarningCard(member.getWarningCard()+1);</span>
         }
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (block.equals(&quot;on&quot;)) {</span>
-<span class="fc" id="L122">            member.setMemberStatus(Member.MemberStatus.차단);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (block.equals(&quot;on&quot;)) {</span>
+<span class="fc" id="L128">            member.setMemberStatus(Member.MemberStatus.차단);</span>
         } else {
-<span class="fc" id="L124">            member.setMemberStatus(Member.MemberStatus.활성);</span>
+<span class="fc" id="L130">            member.setMemberStatus(Member.MemberStatus.활성);</span>
         }
-<span class="fc" id="L126">        MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
-<span class="fc" id="L127">        return memberRepDto;</span>
+<span class="fc" id="L132">        MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
+<span class="fc" id="L133">        return memberRepDto;</span>
     }
 
     // 4. 관리자 추가 처리 메소드
     public MemberDto.Response createAdmin(MemberDto.Post memberDto) {
-<span class="fc" id="L132">        verifyExistsEmail(memberDto.getEmail());</span>
-<span class="fc" id="L133">        String encryptedPassword = passwordEncoder.encode(memberDto.getPassword());//aop로 관심사 분리 필요</span>
-<span class="fc" id="L134">        List&lt;String&gt; roles = authorityUtils.createRoles(true);</span>
+<span class="fc" id="L138">        verifyExistsEmail(memberDto.getEmail());</span>
+<span class="fc" id="L139">        String encryptedPassword = passwordEncoder.encode(memberDto.getPassword());//aop로 관심사 분리 필요</span>
+<span class="fc" id="L140">        List&lt;String&gt; roles = authorityUtils.createRoles(true);</span>
 
-<span class="fc" id="L136">        Member member = Member.builder().email(memberDto.getEmail()).password(encryptedPassword).roles(roles).build();</span>
-<span class="fc" id="L137">        Member savedMember = memberRepository.save(member);</span>
+<span class="fc" id="L142">        Member member = Member.builder().email(memberDto.getEmail()).password(encryptedPassword).roles(roles).build();</span>
+<span class="fc" id="L143">        Member savedMember = memberRepository.save(member);</span>
 
-<span class="fc" id="L139">        MemberDto.Response memberRepDto = getMemberRepDto(savedMember);</span>
+<span class="fc" id="L145">        MemberDto.Response memberRepDto = getMemberRepDto(savedMember);</span>
 
-<span class="fc" id="L141">        return memberRepDto;</span>
+<span class="fc" id="L147">        return memberRepDto;</span>
     }
     public PagingResponseDto&lt;MemberDto.Response&gt; deleteAdmin(String email) {
-<span class="fc" id="L144">        memberRepository.deleteByEmail(email);</span>
-<span class="fc" id="L145">        return searchAdmin(&quot;@&quot;,0,&quot;memberId&quot;);</span>
+<span class="fc" id="L150">        memberRepository.deleteByEmail(email);</span>
+<span class="fc" id="L151">        return searchAdmin(&quot;@&quot;,0,&quot;memberId&quot;);</span>
     }
 
     //================================= 중복 제거용 메소드 ================================
     //1. 회원 가입시 동일 이메일 중복 가입 방지용 메서드
     public void verifyExistsEmail(String email) {
-<span class="fc" id="L151">        Optional&lt;Member&gt; member = memberRepository.findByEmail(email);</span>
-<span class="fc bfc" id="L152" title="All 2 branches covered.">        if (member.isPresent()) {</span>
-<span class="fc" id="L153">            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_YOUR_EMAIL);</span>
+<span class="fc" id="L157">        Optional&lt;Member&gt; member = memberRepository.findByEmail(email);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (member.isPresent()) {</span>
+<span class="fc" id="L159">            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_YOUR_EMAIL);</span>
         }
-<span class="fc" id="L155">    }</span>
+<span class="fc" id="L161">    }</span>
 
     //2. 회원 단건 조회 용
     public Member is_exist_member(String email) {
-<span class="fc" id="L159">        Optional&lt;Member&gt; optionalMember = memberRepository.findByEmail(email); // DB에서 회원 조회</span>
-<span class="fc" id="L160">        Member findMember = optionalMember.orElseThrow(() -&gt; new BusinessLogicException(ExceptionCode.MEMBER_CANNOT_FIND));</span>
-<span class="fc" id="L161">        return findMember;</span>
+<span class="fc" id="L165">        Optional&lt;Member&gt; optionalMember = memberRepository.findByEmail(email); // DB에서 회원 조회</span>
+<span class="fc" id="L166">        Member findMember = optionalMember.orElseThrow(() -&gt; new BusinessLogicException(ExceptionCode.MEMBER_CANNOT_FIND));</span>
+<span class="fc" id="L167">        return findMember;</span>
     }
 
     //3. 회원이 개인정보 수정시 이미지를 등록하지 않으면 s3에 이미지를 업로드 하지 않게 한다.
     public void isUpdateImage(MultipartFile multipartFile, Member findMember) throws IOException {
-<span class="nc" id="L166">        String url = s3UploadService.upload(multipartFile);</span>
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
-<span class="nc" id="L168">            findMember.setMemberImage(url);</span>
+<span class="nc" id="L172">        String url = s3UploadService.upload(multipartFile);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (!url.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L174">            findMember.setMemberImage(url);</span>
         }
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L176">    }</span>
 
     //4. 일반 회원의 회원정보에 대한 응답용 Dto 생성 메서드
     public static MemberDto.Response getMemberRepDto(Member findMember) {
-<span class="fc" id="L174">        MemberDto.Response memberRepDto = MemberDto.Response.builder()</span>
-<span class="fc" id="L175">                .memberImage(findMember.getMemberImage())</span>
-<span class="fc" id="L176">                .email(findMember.getEmail())</span>
-<span class="fc" id="L177">                .password(findMember.getPassword())</span>
-<span class="fc" id="L178">                .roles(findMember.getRoles())</span>
-<span class="fc" id="L179">                .sawMoviesTotalCount(findMember.getSawMovies().size())</span>
-<span class="fc" id="L180">                .build();</span>
+<span class="fc" id="L180">        MemberDto.Response memberRepDto = MemberDto.Response.builder()</span>
+<span class="fc" id="L181">                .memberImage(findMember.getMemberImage())</span>
+<span class="fc" id="L182">                .email(findMember.getEmail())</span>
+<span class="fc" id="L183">                .password(findMember.getPassword())</span>
+<span class="fc" id="L184">                .roles(findMember.getRoles())</span>
+<span class="fc" id="L185">                .sawMoviesTotalCount(findMember.getSawMovies().size())</span>
+<span class="fc" id="L186">                .build();</span>
 
-<span class="fc" id="L182">        return memberRepDto;</span>
+<span class="fc" id="L188">        return memberRepDto;</span>
     }
 
     //5. 관리자 회원의 회원정보에 대한 응답용 Dto 생성 메서드
     public static MemberDto.Response getAdminRepDto(Member member) {
-<span class="fc" id="L187">        MemberDto.Response memberRepDto = MemberDto.Response.builder()</span>
-<span class="fc" id="L188">                .email(member.getEmail())</span>
-<span class="fc" id="L189">                .createdAt(member.getCreatedAt())</span>
-<span class="fc" id="L190">                .warningCard(member.getWarningCard())</span>
-<span class="fc" id="L191">                .memberStatus(member.getMemberStatus())</span>
-<span class="fc" id="L192">                .build();</span>
-<span class="fc" id="L193">        return memberRepDto;</span>
+<span class="fc" id="L193">        MemberDto.Response memberRepDto = MemberDto.Response.builder()</span>
+<span class="fc" id="L194">                .email(member.getEmail())</span>
+<span class="fc" id="L195">                .createdAt(member.getCreatedAt())</span>
+<span class="fc" id="L196">                .warningCard(member.getWarningCard())</span>
+<span class="fc" id="L197">                .memberStatus(member.getMemberStatus())</span>
+<span class="fc" id="L198">                .build();</span>
+<span class="fc" id="L199">        return memberRepDto;</span>
     }
 
     //6. 회원정보에 대해 list로 반환할때 Dto 생성 메서드
     public static List&lt;MemberDto.Response&gt; getMemberRepList(List&lt;Member&gt; members) {
-<span class="fc" id="L198">        List&lt;MemberDto.Response&gt; memberRepDtoList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L199" title="All 2 branches covered.">        for (Member member : members) {</span>
-<span class="fc" id="L200">            MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
-<span class="fc" id="L201">            memberRepDtoList.add(memberRepDto);</span>
-<span class="fc" id="L202">        }</span>
-<span class="fc" id="L203">        return memberRepDtoList;</span>
+<span class="fc" id="L204">        List&lt;MemberDto.Response&gt; memberRepDtoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        for (Member member : members) {</span>
+<span class="fc" id="L206">            MemberDto.Response memberRepDto = getAdminRepDto(member);</span>
+<span class="fc" id="L207">            memberRepDtoList.add(memberRepDto);</span>
+<span class="fc" id="L208">        }</span>
+<span class="fc" id="L209">        return memberRepDtoList;</span>
     }
 
 
-    public PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; findMySawMovieList(int page, String email) {
-<span class="nc" id="L208">        Member member = is_exist_member(email);</span>
-<span class="nc" id="L209">        Page&lt;SawMovie&gt; pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by(&quot;avgSawCount&quot;).descending()));</span>
-<span class="nc" id="L210">        List&lt;SawMovie&gt; sawMovies = pageInfo.getContent();</span>
-<span class="nc" id="L211">        List&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);</span>
-<span class="nc" id="L212">        return new PagingResponseDto&lt;&gt;(sawMovieResponseDtoList,pageInfo);</span>
-    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
