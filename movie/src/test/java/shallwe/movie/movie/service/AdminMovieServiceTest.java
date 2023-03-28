@@ -12,16 +12,22 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
+import shallwe.movie.member.entity.Member;
+import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.service.SawMovieService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -35,12 +41,19 @@ import static org.mockito.BDDMockito.given;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 public class AdminMovieServiceTest {
     @InjectMocks
     private MovieService movieService;
 
     @Mock
     private MovieRepository movieRepository;
+
+    @Mock
+    private MemberService memberService;
+
+    @Mock
+    private SawMovieService sawMovieService;
 
     @Mock
     private S3UploadService s3UploadService;
@@ -173,9 +186,16 @@ public class AdminMovieServiceTest {
         //given
         String title = "movie1";
         Optional<Movie> movieOptional = Optional.of(movies.get(0));
+        Member member = Member.builder()
+                .email("test@gmail.com")
+                .build();
+        SawMovie sawMovie = SawMovie.builder()
+                .movieSawCount(1).build();
 
         //stub
         given(movieRepository.findByMovieTitle(any())).willReturn(movieOptional);
+        given(memberService.is_exist_member(any())).willReturn(member);
+        given(sawMovieService.getSawMovie(any(), any())).willReturn(sawMovie);
 
         //when
         MovieDto.Response movieRepDto = movieService.pickMovie(title,"test@gmail.com");

@@ -41,31 +41,27 @@ import javax.validation.Valid;
 <span class="fc" id="L41">        return &quot;member/join-form&quot;;</span>
     }
 
-    @GetMapping(&quot;/mypage&quot;)
-    public String mypage() {
-<span class="fc" id="L46">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L47">        return &quot;member/mypage&quot;;</span>
-    }
-    @GetMapping(&quot;/my-info/myImage&quot;)
+
+    @GetMapping(&quot;/mypage/myImage&quot;)
     public String myImageForm() {
-<span class="fc" id="L51">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L52">        return &quot;member/myImage&quot;;</span>
+<span class="fc" id="L47">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L48">        return &quot;member/myImage&quot;;</span>
     }
 
-    @GetMapping(&quot;/my-info/myPassword&quot;)
+    @GetMapping(&quot;/mypage/myPassword&quot;)
     public String myPasswordForm() {
-<span class="fc" id="L57">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L58">        return &quot;member/myPassword&quot;;</span>
+<span class="fc" id="L53">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L54">        return &quot;member/myPassword&quot;;</span>
     }
 
     @GetMapping(&quot;/admin&quot;)
     public String adminPage() {
-<span class="fc" id="L63">        log.info(&quot;now port {}&quot;,port);</span>
-<span class="fc" id="L64">        return &quot;member/admin&quot;;</span>
+<span class="fc" id="L59">        log.info(&quot;now port {}&quot;,port);</span>
+<span class="fc" id="L60">        return &quot;member/admin&quot;;</span>
     }
     @GetMapping(&quot;/admin/administrator/add-admin-form&quot;)
     public String adminAddAdmin() {
-<span class="fc" id="L68">        return &quot;member/addAdmin&quot;;</span>
+<span class="fc" id="L64">        return &quot;member/addAdmin&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

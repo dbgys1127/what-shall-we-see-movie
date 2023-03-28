@@ -7,15 +7,20 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
+import shallwe.movie.member.service.MemberService;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,6 +34,9 @@ public class MemberFormControllerTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @MockBean
+    MemberService memberService;
 
     @DisplayName("1.login-form으로 접근시 login.jsp로 흘러간다.")
     @Test
@@ -62,6 +70,14 @@ public class MemberFormControllerTest {
     @Test
     @WithMockUser(username = "test",roles = "USER")
     void login_member_can_access_my_page() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("test")
+                .build();
+
+        //stub
+        given(memberService.is_exist_member(any())).willReturn(member);
+
         mockMvc.perform(get("/mypage"))
                 .andExpect(view().name("member/mypage"));
     }
@@ -85,7 +101,7 @@ public class MemberFormControllerTest {
     @Test
     @WithMockUser(username = "test",roles = "USER")
     void login_member_can_access_myPassword_page() throws Exception {
-        mockMvc.perform(get("/my-info/myPassword"))
+        mockMvc.perform(get("/mypage/myPassword"))
                 .andExpect(view().name("member/myPassword"));
     }
 
@@ -107,18 +123,19 @@ public class MemberFormControllerTest {
 
     @DisplayName("11.회원을 선택하면 회원에게 경고나 차단을 줄 수 있는 페이지가 나온다.")
     @Test
-    @WithMockUser(username = "test",roles = "ADMIN")
+    @WithMockUser(username = "test@gmail.com",roles = "ADMIN")
     void adminGetWarningPage() throws Exception {
         //given
-        Member member = Member.builder()
-                .email("dbgys@gmail.com")
-                .password("1234!abc")
-                .warningCard(0)
-                .roles(List.of("USER"))
+        MemberDto.Response memberRepDto = MemberDto.Response.builder()
+                .email("test@gmail.com")
+                .warningCard(1)
+                .memberStatus(Member.MemberStatus.활성)
                 .build();
-        memberRepository.save(member);
 
-        String email = "dbgys@gmail.com";
+        String email = "test@gmail.com";
+
+        //stub
+        given(memberService.pickMember(any())).willReturn(memberRepDto);
 
         //when
         mockMvc.perform(get("/admin/member/warning-page")

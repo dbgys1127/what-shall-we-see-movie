@@ -86,7 +86,7 @@ import java.time.LocalDateTime;
 
 
     @Getter
-<span class="nc" id="L89">    @Setter</span>
+<span class="pc" id="L89">    @Setter</span>
     public static class Response {
 <span class="fc" id="L91">        private String movieTitle;</span>
 <span class="nc" id="L92">        private String moviePoster;</span>
@@ -94,22 +94,26 @@ import java.time.LocalDateTime;
 <span class="fc" id="L94">        private int movieRunningTime;</span>
 <span class="nc" id="L95">        private Movie.MovieGenre movieGenre;</span>
 <span class="nc" id="L96">        private LocalDate movieOpenDate;</span>
+<span class="nc" id="L97">        private LocalDateTime createdAt;</span>
 
-<span class="nc" id="L98">        private LocalDateTime createdAt;</span>
+<span class="nc" id="L99">        private int memberSawCount;</span>
 
-<span class="pc" id="L100">        @Builder</span>
+<span class="nc" id="L101">        private double avgSawCount;</span>
+
+<span class="pc" id="L103">        @Builder</span>
         public Response(String movieTitle, String moviePoster,
                         String movieDescription, int movieRunningTime,
                         Movie.MovieGenre movieGenre, LocalDate movieOpenDate,
-<span class="fc" id="L104">                        LocalDateTime createdAt) {</span>
-<span class="fc" id="L105">            this.movieTitle = movieTitle;</span>
-<span class="fc" id="L106">            this.moviePoster = moviePoster;</span>
-<span class="fc" id="L107">            this.movieDescription = movieDescription;</span>
-<span class="fc" id="L108">            this.movieRunningTime = movieRunningTime;</span>
-<span class="fc" id="L109">            this.movieGenre = movieGenre;</span>
-<span class="fc" id="L110">            this.movieOpenDate = movieOpenDate;</span>
-<span class="fc" id="L111">            this.createdAt = createdAt;</span>
-<span class="fc" id="L112">        }</span>
+<span class="fc" id="L107">                        LocalDateTime createdAt, double avgSawCount) {</span>
+<span class="fc" id="L108">            this.movieTitle = movieTitle;</span>
+<span class="fc" id="L109">            this.moviePoster = moviePoster;</span>
+<span class="fc" id="L110">            this.movieDescription = movieDescription;</span>
+<span class="fc" id="L111">            this.movieRunningTime = movieRunningTime;</span>
+<span class="fc" id="L112">            this.movieGenre = movieGenre;</span>
+<span class="fc" id="L113">            this.movieOpenDate = movieOpenDate;</span>
+<span class="fc" id="L114">            this.createdAt = createdAt;</span>
+<span class="fc" id="L115">            this.avgSawCount = avgSawCount;</span>
+<span class="fc" id="L116">        }</span>
     }
 
 }
