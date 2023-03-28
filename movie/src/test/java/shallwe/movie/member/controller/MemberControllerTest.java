@@ -19,15 +19,19 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.MvcResult;
 
+import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -61,7 +65,6 @@ public class MemberControllerTest {
                     .roles(List.of("USER"))
                     .build();
             memberRepository.save(member);
-
     }
 
     @AfterEach
@@ -214,6 +217,25 @@ public class MemberControllerTest {
         assertThat(passwordEncoder.matches("abc!1234", member.getPassword())).isTrue();
     }
 
+    @DisplayName("10.회원은 시청횟수를 등록한 영화 목록내 더보기를 통해 페이징 처리된 영화 목록을 볼 수 있다.")
+    @Test
+    @WithMockUser(username = "test1@gmail.com",roles = "USER")
+    void getMySawMovieList() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("test1@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER"))
+                .build();
+
+        //when
+        //then
+        mockMvc.perform(get("/mypage/saw-movie")
+                        .param("page", "1")
+                        .param("email","test"))
+                .andExpect(view().name("member/sawMovieList"));
+    }
     //주석처리 후 마지막에 풀기
 //    @DisplayName("10.회원 이미지는 수정될 수 있다.")
 //    @WithMockUser(username = "test1@gmail.com",roles = "USER",password = "1234!abc")

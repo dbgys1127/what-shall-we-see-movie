@@ -23,47 +23,45 @@ import java.util.Optional;
 <span class="fc" id="L23">@Slf4j</span>
 public class SawMovieService {
     private final SawMovieRepository sawMovieRepository;
-    private final MemberRepository memberRepository;
-    private final MovieRepository movieRepository;
 
     public SawMovie getSawMovie(Movie movie, Member member) {
-<span class="nc" id="L30">        return sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);</span>
+<span class="nc" id="L28">        return sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);</span>
     }
 
     public SawMovie saveSawMovie(Movie movie, Member member, int movieSawCount) {
-<span class="nc" id="L34">        SawMovie findMovie = sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);</span>
+<span class="fc" id="L32">        SawMovie findMovie = sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);</span>
         SawMovie sawMovie;
 
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (Optional.ofNullable(findMovie).isEmpty()) {</span>
-<span class="nc" id="L38">            sawMovie = new SawMovie();</span>
-<span class="nc" id="L39">            sawMovie.setMovieSawCount(movieSawCount);</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (Optional.ofNullable(findMovie).isEmpty()) {</span>
+<span class="fc" id="L36">            sawMovie = new SawMovie();</span>
+<span class="fc" id="L37">            sawMovie.setMovieSawCount(movieSawCount);</span>
 
         } else {
-<span class="nc" id="L42">            sawMovie = findMovie;</span>
-<span class="nc" id="L43">            sawMovie.setMovieSawCount(movieSawCount);</span>
+<span class="fc" id="L40">            sawMovie = findMovie;</span>
+<span class="fc" id="L41">            sawMovie.setMovieSawCount(movieSawCount);</span>
         }
-<span class="nc" id="L45">        setMemberRelation(member,sawMovie);</span>
-<span class="nc" id="L46">        setMovieRelation(movie,sawMovie);</span>
-<span class="nc" id="L47">        return sawMovieRepository.save(sawMovie);</span>
+<span class="fc" id="L43">        setMemberRelation(member,sawMovie);</span>
+<span class="fc" id="L44">        setMovieRelation(movie,sawMovie);</span>
+<span class="fc" id="L45">        return sawMovieRepository.save(sawMovie);</span>
     }
 
     public void setMemberRelation(Member member, SawMovie sawMovie) {
-<span class="nc" id="L51">        sawMovie.setMember(member);</span>
-<span class="nc" id="L52">        member.getSawMovies().add(sawMovie);</span>
-<span class="nc" id="L53">    }</span>
+<span class="fc" id="L49">        sawMovie.setMember(member);</span>
+<span class="fc" id="L50">        member.getSawMovies().add(sawMovie);</span>
+<span class="fc" id="L51">    }</span>
 
     public void setMovieRelation(Movie movie, SawMovie sawMovie) {
-<span class="nc" id="L56">        sawMovie.setMovie(movie);</span>
-<span class="nc" id="L57">        movie.getSawMovies().add(sawMovie);</span>
-<span class="nc" id="L58">        int sum =0;</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (SawMovie updateSawMovie : movie.getSawMovies()) {</span>
-<span class="nc" id="L60">            sum+= updateSawMovie.getMovieSawCount();</span>
-<span class="nc" id="L61">        }</span>
-<span class="nc" id="L62">        movie.setAvgSawCount((double) sum/movie.getSawMovies().size());</span>
-<span class="nc" id="L63">    }</span>
+<span class="fc" id="L54">        sawMovie.setMovie(movie);</span>
+<span class="fc" id="L55">        movie.getSawMovies().add(sawMovie);</span>
+<span class="fc" id="L56">        int sum =0;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (SawMovie updateSawMovie : movie.getSawMovies()) {</span>
+<span class="fc" id="L58">            sum+= updateSawMovie.getMovieSawCount();</span>
+<span class="fc" id="L59">        }</span>
+<span class="fc" id="L60">        movie.setAvgSawCount((double) sum/movie.getSawMovies().size());</span>
+<span class="fc" id="L61">    }</span>
 
     public Page&lt;SawMovie&gt; getSawMovieList(Member member, PageRequest pageable) {
-<span class="nc" id="L66">        return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);</span>
+<span class="fc" id="L64">        return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

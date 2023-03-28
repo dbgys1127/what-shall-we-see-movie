@@ -76,10 +76,10 @@ public class MemberController {
     public String getMySawMovieList(@RequestParam(value = &quot;page&quot;, defaultValue = &quot;1&quot;) int page,
                                    Authentication authentication
                                    , Model model) {
-<span class="nc" id="L79">        String email = authentication.getName();</span>
-<span class="nc" id="L80">        PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);</span>
-<span class="nc" id="L81">        model.addAttribute(&quot;pageData&quot;, sawMovieResponseDtoList);</span>
-<span class="nc" id="L82">        return &quot;member/sawMovieList&quot;;</span>
+<span class="fc" id="L79">        String email = authentication.getName();</span>
+<span class="fc" id="L80">        PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);</span>
+<span class="fc" id="L81">        model.addAttribute(&quot;pageData&quot;, sawMovieResponseDtoList);</span>
+<span class="fc" id="L82">        return &quot;member/sawMovieList&quot;;</span>
     }
 
     //==========================관리자 화면 컨트롤러=========================

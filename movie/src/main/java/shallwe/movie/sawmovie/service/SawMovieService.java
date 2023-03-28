@@ -23,8 +23,6 @@ import java.util.Optional;
 @Slf4j
 public class SawMovieService {
     private final SawMovieRepository sawMovieRepository;
-    private final MemberRepository memberRepository;
-    private final MovieRepository movieRepository;
 
     public SawMovie getSawMovie(Movie movie, Member member) {
         return sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);
