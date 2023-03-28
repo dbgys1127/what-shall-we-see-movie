@@ -91,40 +91,40 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
 
     @Override
     public SawMovie findSawMovieByMemberAndMovie(Member member, Movie movie) {
-<span class="nc" id="L94">        return queryFactory</span>
-<span class="nc" id="L95">                .selectFrom(sawMovie)</span>
-<span class="nc" id="L96">                .where(sawMovie.member.eq(member)</span>
-<span class="nc" id="L97">                        .and(sawMovie.movie.eq(movie)))</span>
-<span class="nc" id="L98">                .fetchOne();</span>
+<span class="fc" id="L94">        return queryFactory</span>
+<span class="fc" id="L95">                .selectFrom(sawMovie)</span>
+<span class="fc" id="L96">                .where(sawMovie.member.eq(member)</span>
+<span class="fc" id="L97">                        .and(sawMovie.movie.eq(movie)))</span>
+<span class="fc" id="L98">                .fetchOne();</span>
     }
 
     @Override
     public Page&lt;SawMovie&gt; findSawMoviesByMemberWithPaging(Member member, Pageable pageable) {
-<span class="nc" id="L103">        List&lt;SawMovie&gt; content= queryFactory</span>
-<span class="nc" id="L104">                .selectFrom(sawMovie)</span>
-<span class="nc" id="L105">                .where(sawMovie.member.eq(member))</span>
-<span class="nc" id="L106">                .orderBy(movieSort(pageable))</span>
-<span class="nc" id="L107">                .offset(pageable.getOffset())</span>
-<span class="nc" id="L108">                .limit(pageable.getPageSize())</span>
-<span class="nc" id="L109">                .fetch();</span>
-<span class="nc" id="L110">        long total = queryFactory.selectFrom(sawMovie)</span>
-<span class="nc" id="L111">                .where(sawMovie.member.eq(member))</span>
-<span class="nc" id="L112">                .fetchCount();</span>
-<span class="nc" id="L113">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L103">        List&lt;SawMovie&gt; content= queryFactory</span>
+<span class="fc" id="L104">                .selectFrom(sawMovie)</span>
+<span class="fc" id="L105">                .where(sawMovie.member.eq(member))</span>
+<span class="fc" id="L106">                .orderBy(movieSort(pageable))</span>
+<span class="fc" id="L107">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L108">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L109">                .fetch();</span>
+<span class="fc" id="L110">        long total = queryFactory.selectFrom(sawMovie)</span>
+<span class="fc" id="L111">                .where(sawMovie.member.eq(member))</span>
+<span class="fc" id="L112">                .fetchCount();</span>
+<span class="fc" id="L113">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     private OrderSpecifier&lt;?&gt; movieSort(Pageable page) {
 <span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
 <span class="fc bfc" id="L118" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
-<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
 
-<span class="pc bpc" id="L121" title="1 of 4 branches missed.">                switch (order.getProperty()) {</span>
+<span class="fc bfc" id="L121" title="All 4 branches covered.">                switch (order.getProperty()) {</span>
                     case &quot;movieId&quot;:
 <span class="fc" id="L123">                        return new OrderSpecifier(direction, movie.movieId);</span>
                     case &quot;movieOpenDate&quot;:
 <span class="fc" id="L125">                        return new OrderSpecifier&lt;&gt;(direction, movie.movieOpenDate);</span>
                     case &quot;avgSawCount&quot;:
-<span class="nc" id="L127">                        return new OrderSpecifier&lt;&gt;(direction, movie.avgSawCount);</span>
+<span class="fc" id="L127">                        return new OrderSpecifier&lt;&gt;(direction, movie.avgSawCount);</span>
                 }
 <span class="fc" id="L129">            }</span>
         }

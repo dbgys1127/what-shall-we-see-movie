@@ -50,9 +50,13 @@ public class Movie extends TimeAudit {
     }
 
     @Builder
-    public Movie(String movieTitle, String moviePoster,
-                 String movieDescription, int movieRunningTime,
-                 MovieGenre movieGenre, LocalDate movieOpenDate,double avgSawCount) {
+
+    public Movie(Long movieId, String movieTitle,
+                 String moviePoster, String movieDescription,
+                 int movieRunningTime, MovieGenre movieGenre,
+                 LocalDate movieOpenDate, double avgSawCount,
+                 List<SawMovie> sawMovies) {
+        this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.moviePoster = moviePoster;
         this.movieDescription = movieDescription;
@@ -60,5 +64,6 @@ public class Movie extends TimeAudit {
         this.movieGenre = movieGenre;
         this.movieOpenDate = movieOpenDate;
         this.avgSawCount = avgSawCount;
+        this.sawMovies = sawMovies;
     }
 }
