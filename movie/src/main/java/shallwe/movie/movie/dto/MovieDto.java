@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import shallwe.movie.comment.dto.CommentDto;
 import shallwe.movie.movie.entity.Movie;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MovieDto {
 
@@ -102,11 +104,14 @@ public class MovieDto {
 
         private String isWant;
 
+        private List<CommentDto.Response> comments;
+
         @Builder
         public Response(String movieTitle, String moviePoster,
                         String movieDescription, int movieRunningTime,
                         Movie.MovieGenre movieGenre, LocalDate movieOpenDate,
-                        LocalDateTime createdAt, double avgSawCount,String isWant) {
+                        LocalDateTime createdAt, double avgSawCount,String isWant,
+                        List<CommentDto.Response> comments) {
             this.movieTitle = movieTitle;
             this.moviePoster = moviePoster;
             this.movieDescription = movieDescription;
@@ -116,6 +121,7 @@ public class MovieDto {
             this.createdAt = createdAt;
             this.avgSawCount = avgSawCount;
             this.isWant = isWant;
+            this.comments = comments;
         }
     }
 }

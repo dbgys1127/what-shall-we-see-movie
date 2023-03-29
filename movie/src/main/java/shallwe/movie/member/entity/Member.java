@@ -2,6 +2,7 @@ package shallwe.movie.member.entity;
 
 import lombok.*;
 import shallwe.movie.audit.TimeAudit;
+import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.wantmovie.entity.WantMovie;
 
@@ -42,6 +43,9 @@ public class Member extends TimeAudit {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<WantMovie> wantMovies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
     public enum MemberRole{
         ROLE_USER,ROLE_ADMIN;

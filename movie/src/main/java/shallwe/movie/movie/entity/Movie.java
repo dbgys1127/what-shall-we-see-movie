@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shallwe.movie.audit.TimeAudit;
+import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.wantmovie.entity.WantMovie;
 
@@ -48,6 +49,9 @@ public class Movie extends TimeAudit {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<WantMovie> wantMovies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
     public enum MovieGenre {
         코미디, 액션, 범죄, 드라마, SF, 공포, 로맨스;

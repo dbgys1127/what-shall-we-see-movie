@@ -9,6 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shallwe.movie.comment.dto.CommentDto;
+import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.comment.service.CommentService;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
@@ -36,8 +39,10 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final SawMovieService sawMovieService;
     private final WantMovieService wantMovieService;
-    private final S3UploadService s3UploadService;
     private final MemberService memberService;
+    private final CommentService commentService;
+    private final S3UploadService s3UploadService;
+
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
@@ -74,6 +79,12 @@ public class MovieService {
         } else {
             wantMovieService.deleteWantMovie(findMember,findMovie);
         }
+    }
+
+    public void writeMovieComment(String movieTitle, String email, CommentDto.Post commentDto) {
+        Member member = memberService.is_exist_member(email);
+        Movie movie = is_exist_movie(movieTitle);
+        commentService.saveMovieComment(member, movie, commentDto);
     }
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
@@ -178,6 +189,7 @@ public class MovieService {
                 .movieOpenDate(savedMovie.getMovieOpenDate())
                 .movieGenre(savedMovie.getMovieGenre())
                 .movieDescription(savedMovie.getMovieDescription())
+                .comments(CommentDto.getCommentResponseDtoList(savedMovie.getComments()))
                 .build();
         return movieRepDto;
     }
@@ -199,6 +211,7 @@ public class MovieService {
         }
         return movieRepDto;
     }
+
 
 
 }

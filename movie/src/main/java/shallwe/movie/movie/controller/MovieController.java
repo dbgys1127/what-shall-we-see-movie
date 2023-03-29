@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import shallwe.movie.comment.dto.CommentDto;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.movie.dto.MovieDto;
@@ -78,6 +79,18 @@ public class MovieController {
                                 Model model) {
         String email = authentication.getName();
         movieService.updateWantMovie(movieTitle, email, isWant);
+        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        return "redirect:/movie/detail";
+    }
+
+    @PostMapping("/movie/comment")
+    public String postComment(@RequestParam("movieTitle") String movieTitle,
+                              @ModelAttribute CommentDto.Post commentDto,
+                              Authentication authentication,
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+        String email = authentication.getName();
+        movieService.writeMovieComment(movieTitle, email, commentDto);
         redirectAttributes.addAttribute("movieTitle", movieTitle);
         return "redirect:/movie/detail";
     }
