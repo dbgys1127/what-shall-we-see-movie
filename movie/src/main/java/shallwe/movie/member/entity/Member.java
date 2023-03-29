@@ -3,6 +3,7 @@ package shallwe.movie.member.entity;
 import lombok.*;
 import shallwe.movie.audit.TimeAudit;
 import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.wantmovie.entity.WantMovie;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class Member extends TimeAudit {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<SawMovie> sawMovies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<WantMovie> wantMovies = new ArrayList<>();
 
     public enum MemberRole{
         ROLE_USER,ROLE_ADMIN;

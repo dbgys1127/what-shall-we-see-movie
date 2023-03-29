@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.wantmovie.entity.WantMovie;
 
 import java.util.List;
 
@@ -20,4 +21,8 @@ public interface QuerydslRepository {
     SawMovie findSawMovieByMemberAndMovie(Member member, Movie movie);
 
     Page<SawMovie> findSawMoviesByMemberWithPaging(Member member, Pageable pageable);
+
+    WantMovie findWantMovieByMemberAndMovie(Member member, Movie movie);
+
+    Page<WantMovie> findWantMoviesByMemberWithPaging(Member member, Pageable pageable);
 }

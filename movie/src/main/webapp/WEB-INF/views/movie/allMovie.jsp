@@ -11,7 +11,6 @@
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
     .active a{color:red;}
-
 </style>
 <body>
 <h2> 영화 </h2>

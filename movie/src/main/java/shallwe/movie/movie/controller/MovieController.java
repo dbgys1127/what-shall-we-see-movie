@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.movie.dto.MovieDto;
@@ -62,11 +63,23 @@ public class MovieController {
     @PostMapping("/movie/saw-movie")
     public String postSawCount(@RequestParam("movieTitle") String movieTitle,
                                @RequestParam("movieSawCount") int movieSawCount,
-                               Authentication authentication, Model model) {
+                               Authentication authentication, RedirectAttributes redirectAttributes) {
         String email = authentication.getName();
-        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email,movieSawCount);
-        model.addAttribute("movie", movieRepDto);
-        return "movie/movieDetail";
+        movieService.updateSawCount(movieTitle, email,movieSawCount);
+        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        return "redirect:/movie/detail";
+    }
+
+    @PostMapping("/movie/want-movie")
+    public String postWantMovie(@RequestParam("movieTitle") String movieTitle,
+                                @RequestParam(value = "wantMovie", defaultValue = "off") String isWant,
+                                Authentication authentication,
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
+        String email = authentication.getName();
+        movieService.updateWantMovie(movieTitle, email, isWant);
+        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        return "redirect:/movie/detail";
     }
 
     //==========================관리자 화면 컨트롤러=========================

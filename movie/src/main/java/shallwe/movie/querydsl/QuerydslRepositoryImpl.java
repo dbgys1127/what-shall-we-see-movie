@@ -11,12 +11,14 @@ import org.springframework.data.domain.Sort;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.wantmovie.entity.WantMovie;
 
 import java.util.List;
 
 import static shallwe.movie.member.entity.QMember.member;
 import static shallwe.movie.movie.entity.QMovie.movie;
 import static shallwe.movie.sawmovie.entity.QSawMovie.sawMovie;
+import static shallwe.movie.wantmovie.entity.QWantMovie.wantMovie;
 
 @RequiredArgsConstructor
 public class QuerydslRepositoryImpl implements QuerydslRepository{
@@ -113,6 +115,30 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public WantMovie findWantMovieByMemberAndMovie(Member member, Movie movie) {
+        return queryFactory
+                .selectFrom(wantMovie)
+                .where(wantMovie.member.eq(member)
+                        .and(wantMovie.movie.eq(movie)))
+                .fetchOne();
+    }
+
+    @Override
+    public Page<WantMovie> findWantMoviesByMemberWithPaging(Member member, Pageable pageable) {
+        List<WantMovie> content= queryFactory
+                .selectFrom(wantMovie)
+                .where(wantMovie.member.eq(member))
+                .orderBy(memberSort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long total = queryFactory.selectFrom(wantMovie)
+                .where(wantMovie.member.eq(member))
+                .fetchCount();
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private OrderSpecifier<?> movieSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {
@@ -143,6 +169,8 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                         return new OrderSpecifier(direction, member.warningCard);
                     case "memberStatus":
                         return new OrderSpecifier(Order.ASC, member.memberStatus);
+                    case "createdAt":
+                        return new OrderSpecifier<>(direction, wantMovie.createdAt);
                 }
             }
         }

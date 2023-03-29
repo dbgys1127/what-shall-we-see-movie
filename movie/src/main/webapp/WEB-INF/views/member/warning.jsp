@@ -17,14 +17,9 @@
             <tr>
                 <td>${email}</td>
                 <td>${warningCard}</td>
-                <td><input type="checkbox" name="warning" value="on"></td>
+                <td><input type="checkbox" name="warning"></td>
                 <td>
-                    <c:if test="${memberStatus eq '활성'}">
-                    <input type="checkbox" name="block" value="on" />
-                    </c:if>
-                    <c:if test="${memberStatus eq '차단'}">
-                    <input type="checkbox" name="block" value="off" checked />
-                    </c:if>
+                    <input type="checkbox" name="block" <c:if test="${memberStatus eq '차단'}">checked</c:if> />
                 </td>
             </tr>
     <button type="submit">수정</button>

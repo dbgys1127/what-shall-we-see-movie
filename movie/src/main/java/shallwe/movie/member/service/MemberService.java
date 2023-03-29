@@ -19,6 +19,8 @@ import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class MemberService {
     private final CustomAuthorityUtils authorityUtils;
     private final S3UploadService s3UploadService;
     private final SawMovieService sawMovieService;
+
+    private final WantMovieService wantMovieService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     // 1. 회원가입 처리 메소드
@@ -75,6 +79,7 @@ public class MemberService {
         Member member = is_exist_member(email);
         MemberDto.Response memberRepDto = getMemberRepDto(member);
         memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
+        memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
         return memberRepDto;
     }
     public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
@@ -83,6 +88,14 @@ public class MemberService {
         List<SawMovie> sawMovies = pageInfo.getContent();
         List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
         return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
+    }
+
+    public PagingResponseDto<MemberDto.MemberWantMovieResponseDto> findMyWantMovieList(int page, String email) {
+        Member member = is_exist_member(email);
+        Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAt").descending()));
+        List<WantMovie> wantMovies = pageInfo.getContent();
+        List<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = MemberDto.getMemberWantMovieResponseDtoList(wantMovies);
+        return new PagingResponseDto<>(wantMovieResponseDtoList,pageInfo);
     }
 
     // ============================ 관리자 요청 처리 메소드 ==============================
@@ -183,6 +196,7 @@ public class MemberService {
                 .password(findMember.getPassword())
                 .roles(findMember.getRoles())
                 .sawMoviesTotalCount(findMember.getSawMovies().size())
+                .wantMoviesTotalCount(findMember.getWantMovies().size())
                 .build();
 
         return memberRepDto;

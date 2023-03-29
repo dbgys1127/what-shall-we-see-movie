@@ -74,12 +74,20 @@ public class MemberController {
 
     @GetMapping("/mypage/saw-movie")
     public String getMySawMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                   Authentication authentication
-                                   , Model model) {
+                                   Authentication authentication, Model model) {
         String email = authentication.getName();
         PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);
         model.addAttribute("pageData", sawMovieResponseDtoList);
         return "member/sawMovieList";
+    }
+
+    @GetMapping("/mypage/want-movie")
+    public String getMyWantMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
+                                    Authentication authentication, Model model) {
+        String email = authentication.getName();
+        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = memberService.findMyWantMovieList(page-1,email);
+        model.addAttribute("pageData", wantMovieResponseDtoList);
+        return "member/wantMovieList";
     }
 
     //==========================관리자 화면 컨트롤러=========================

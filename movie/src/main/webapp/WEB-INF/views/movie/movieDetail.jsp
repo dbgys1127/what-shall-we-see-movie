@@ -19,6 +19,10 @@
         <button type="submit">등록</button>
     </form>
     <li>나의 시청횟수: ${movie.memberSawCount}</li>
+    <form action = "/movie/want-movie?movieTitle=${movie.movieTitle}" method="post">
+            <input type="checkbox" name="wantMovie" <c:if test="${movie.isWant eq 'on'}">checked</c:if> />
+    <button type="submit">찜 등록</button>
+    </form>
     <button type="button"><a href="/">메인</a></button>
 </ul>
 </body>

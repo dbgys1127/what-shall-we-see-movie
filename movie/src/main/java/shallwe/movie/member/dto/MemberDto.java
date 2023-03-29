@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.wantmovie.entity.WantMovie;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
@@ -61,7 +62,11 @@ public class MemberDto {
 
         private List<MemberSawMovieResponseDto> sawMovies;
 
+        private List<MemberWantMovieResponseDto> wantMovies;
+
         private int sawMoviesTotalCount;
+
+        private int wantMoviesTotalCount;
 
     }
     @Builder
@@ -83,6 +88,27 @@ public class MemberDto {
                         .moviePoster(sawMovie.getMovie().getMoviePoster())
                         .movieTitle(sawMovie.getMovie().getMovieTitle())
                         .sawCount(sawMovie.getMovieSawCount())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    public static class MemberWantMovieResponseDto {
+        private String moviePoster;
+        private String movieTitle;
+    }
+
+    public static List<MemberWantMovieResponseDto> getMemberWantMovieResponseDtoList(List<WantMovie> wantMovies) {
+        return wantMovies
+                .stream()
+                .sorted(Comparator.comparing(WantMovie::getCreatedAt).reversed())
+                .limit(10)
+                .map(wantMovie -> MemberWantMovieResponseDto
+                        .builder()
+                        .moviePoster(wantMovie.getMovie().getMoviePoster())
+                        .movieTitle(wantMovie.getMovie().getMovieTitle())
                         .build())
                 .collect(Collectors.toList());
     }

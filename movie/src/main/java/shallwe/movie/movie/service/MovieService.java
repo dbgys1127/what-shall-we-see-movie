@@ -20,6 +20,8 @@ import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.service.SawMovieService;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,8 +35,8 @@ import java.util.Optional;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final SawMovieService sawMovieService;
+    private final WantMovieService wantMovieService;
     private final S3UploadService s3UploadService;
-
     private final MemberService memberService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
@@ -44,20 +46,35 @@ public class MovieService {
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
-    public MovieDto.Response updateSawCount(String movieTitle, String email, int movieSawCount) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
-        SawMovie sawMovie = sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
-        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
-        return movieRepDto;
-    }
 
     public MovieDto.Response pickMovie(String movieTitle, String email) {
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
+        WantMovie wantMovie = wantMovieService.getWantMovie(findMember, findMovie);
         MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
+        if (Optional.ofNullable(wantMovie).isEmpty()) {
+            movieRepDto.setIsWant("off");
+        } else {
+            movieRepDto.setIsWant("on");
+        }
         return movieRepDto;
+    }
+    public void updateSawCount(String movieTitle, String email, int movieSawCount) {
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
+
+    }
+    public void updateWantMovie(String movieTitle, String email, String isWant) {
+        log.info("isWant ={}",isWant);
+        Movie findMovie = is_exist_movie(movieTitle);
+        Member findMember = memberService.is_exist_member(email);
+        if (isWant.equals("on")) {
+            wantMovieService.saveWantMovie(findMember, findMovie);
+        } else {
+            wantMovieService.deleteWantMovie(findMember,findMovie);
+        }
     }
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
@@ -183,4 +200,6 @@ public class MovieService {
         }
         return movieRepDto;
     }
+
+
 }
