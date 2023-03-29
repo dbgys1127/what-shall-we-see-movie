@@ -44,5 +44,21 @@
         <h3><a href="/mypage/want-movie">더보기</a></h3>
 </table>
 </div>
+<div>
+<h3>댓글 : ${member.commentCount}</h3>
+<table style="border: 1px solid black;" >
+        <c:forEach var="movie" items="${member.comments}">
+            <tr>
+                <td>${movie.commentDetail}</td>
+            </tr>
+            <tr>
+                <td>${movie.movieTitle}</td>
+                <td>${movie.createdAt}</td>
+                <td>신고횟수:${movie.claimCount}회</td>
+            </tr>
+        </c:forEach>
+        <h3><a href="/mypage/comment">더보기</a></h3>
+</table>
+</div>
 </body>
 </html>

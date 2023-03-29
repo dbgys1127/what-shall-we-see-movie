@@ -35,11 +35,27 @@
                     <td><a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a></td>
                     <td>${comment.createdAt}</td>
                     <td>${comment.claimCount}</td>
+                </tr>
+                <tr>
                     <td>
-                        <form action="/movie/comment/claim?commentId=${comment.commentId}" method="post">
+                        <form action="/movie/comment/claim?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
                             <button type="submit">신고</button>
                         </form>
                     </td>
+                    <c:if test = "${movie.currentMember eq comment.createdBy}">
+                        <td>
+                            <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                                <button type="submit">수정</button>
+                            </form>
+                        </td>
+                        </c:if>
+                    <c:if test = "${movie.currentMember eq comment.createdBy}">
+                    <td>
+                        <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </td>
+                    </c:if>
                 </tr>
         </c:forEach>   
     </table>

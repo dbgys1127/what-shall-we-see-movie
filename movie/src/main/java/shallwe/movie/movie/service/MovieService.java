@@ -58,6 +58,7 @@ public class MovieService {
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
         WantMovie wantMovie = wantMovieService.getWantMovie(findMember, findMovie);
         MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
+        movieRepDto.setCurrentMember(email);
         if (Optional.ofNullable(wantMovie).isEmpty()) {
             movieRepDto.setIsWant("off");
         } else {
@@ -85,6 +86,13 @@ public class MovieService {
         Member member = memberService.is_exist_member(email);
         Movie movie = is_exist_movie(movieTitle);
         commentService.saveMovieComment(member, movie, commentDto);
+    }
+    public void addMovieCommentClaim(Long commentId) {
+        commentService.addMovieCommentClaim(commentId);
+    }
+
+    public void deleteMovieComment(Long commentId) {
+        commentService.deleteMovieComment(commentId);
     }
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
@@ -144,8 +152,6 @@ public class MovieService {
         movieRepository.deleteByMovieTitle(movieTitle);
         return findAllMovie(0, "movieId");
     }
-
-
 
     //================================= 중복 제거용 메소드 ================================
 

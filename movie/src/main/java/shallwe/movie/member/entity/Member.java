@@ -44,7 +44,7 @@ public class Member extends TimeAudit {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<WantMovie> wantMovies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
     public enum MemberRole{

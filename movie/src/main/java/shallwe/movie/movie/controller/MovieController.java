@@ -75,8 +75,7 @@ public class MovieController {
     public String postWantMovie(@RequestParam("movieTitle") String movieTitle,
                                 @RequestParam(value = "wantMovie", defaultValue = "off") String isWant,
                                 Authentication authentication,
-                                RedirectAttributes redirectAttributes,
-                                Model model) {
+                                RedirectAttributes redirectAttributes) {
         String email = authentication.getName();
         movieService.updateWantMovie(movieTitle, email, isWant);
         redirectAttributes.addAttribute("movieTitle", movieTitle);
@@ -87,10 +86,26 @@ public class MovieController {
     public String postComment(@RequestParam("movieTitle") String movieTitle,
                               @ModelAttribute CommentDto.Post commentDto,
                               Authentication authentication,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
+                              RedirectAttributes redirectAttributes) {
         String email = authentication.getName();
         movieService.writeMovieComment(movieTitle, email, commentDto);
+        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        return "redirect:/movie/detail";
+    }
+
+    @PostMapping("/movie/comment/claim")
+    public String postCommentClaim(@RequestParam("movieTitle") String movieTitle,
+                                   @RequestParam("commentId") Long commentId,
+                                   RedirectAttributes redirectAttributes) {
+        movieService.addMovieCommentClaim(commentId);
+        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        return "redirect:/movie/detail";
+    }
+    @PostMapping("/movie/comment/delete")
+    public String deleteComment(@RequestParam("movieTitle") String movieTitle,
+                                @RequestParam("commentId") Long commentId,
+                                RedirectAttributes redirectAttributes) {
+        movieService.deleteMovieComment(commentId);
         redirectAttributes.addAttribute("movieTitle", movieTitle);
         return "redirect:/movie/detail";
     }

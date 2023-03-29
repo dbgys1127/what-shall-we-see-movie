@@ -104,6 +104,8 @@ public class MovieDto {
 
         private String isWant;
 
+        private String currentMember;
+
         private List<CommentDto.Response> comments;
 
         @Builder
@@ -111,6 +113,7 @@ public class MovieDto {
                         String movieDescription, int movieRunningTime,
                         Movie.MovieGenre movieGenre, LocalDate movieOpenDate,
                         LocalDateTime createdAt, double avgSawCount,String isWant,
+                        String currentMember,
                         List<CommentDto.Response> comments) {
             this.movieTitle = movieTitle;
             this.moviePoster = moviePoster;
@@ -121,6 +124,7 @@ public class MovieDto {
             this.createdAt = createdAt;
             this.avgSawCount = avgSawCount;
             this.isWant = isWant;
+            this.currentMember = currentMember;
             this.comments = comments;
         }
     }

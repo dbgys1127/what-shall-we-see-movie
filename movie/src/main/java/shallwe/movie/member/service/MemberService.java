@@ -80,12 +80,14 @@ public class MemberService {
         MemberDto.Response memberRepDto = getMemberRepDto(member);
         memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
         memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
+        log.info("memberCount={}",member.getComments().size());
+        memberRepDto.setComments(MemberDto.getMemberCommentResponseDtoList(member.getComments()));
         return memberRepDto;
     }
 
     public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
         Member member = is_exist_member(email);
-        Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending()));
+        Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("movieSawCount").descending()));
         List<SawMovie> sawMovies = pageInfo.getContent();
         List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
         return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
@@ -93,7 +95,7 @@ public class MemberService {
 
     public PagingResponseDto<MemberDto.MemberWantMovieResponseDto> findMyWantMovieList(int page, String email) {
         Member member = is_exist_member(email);
-        Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAt").descending()));
+        Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAtForWantMovie").descending()));
         List<WantMovie> wantMovies = pageInfo.getContent();
         List<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = MemberDto.getMemberWantMovieResponseDtoList(wantMovies);
         return new PagingResponseDto<>(wantMovieResponseDtoList,pageInfo);
@@ -199,6 +201,7 @@ public class MemberService {
                 .roles(findMember.getRoles())
                 .sawMoviesTotalCount(findMember.getSawMovies().size())
                 .wantMoviesTotalCount(findMember.getWantMovies().size())
+                .commentCount(findMember.getComments().size())
                 .build();
 
         return memberRepDto;

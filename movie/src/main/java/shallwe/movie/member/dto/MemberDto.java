@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import shallwe.movie.comment.dto.CommentDto;
+import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.wantmovie.entity.WantMovie;
@@ -64,9 +66,13 @@ public class MemberDto {
 
         private List<MemberWantMovieResponseDto> wantMovies;
 
+        private List<MemberCommentResponseDto> comments;
+
         private int sawMoviesTotalCount;
 
         private int wantMoviesTotalCount;
+
+        private int commentCount;
 
     }
     @Builder
@@ -109,6 +115,31 @@ public class MemberDto {
                         .builder()
                         .moviePoster(wantMovie.getMovie().getMoviePoster())
                         .movieTitle(wantMovie.getMovie().getMovieTitle())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    public static class MemberCommentResponseDto {
+        private String commentDetail;
+        private String movieTitle;
+        private LocalDateTime createdAt;
+        private int claimCount;
+    }
+
+    public static List<MemberCommentResponseDto> getMemberCommentResponseDtoList(List<Comment> comments) {
+        return comments
+                .stream()
+                .sorted(Comparator.comparing(Comment::getCommentId).reversed())
+                .limit(10)
+                .map(comment -> MemberCommentResponseDto
+                        .builder()
+                        .commentDetail(comment.getCommentDetail())
+                        .movieTitle(comment.getMovie().getMovieTitle())
+                        .createdAt(comment.getCreatedAt())
+                        .claimCount(comment.getClaimCount())
                         .build())
                 .collect(Collectors.toList());
     }
