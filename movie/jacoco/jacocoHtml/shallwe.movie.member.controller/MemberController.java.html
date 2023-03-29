@@ -74,82 +74,90 @@ public class MemberController {
 
     @GetMapping(&quot;/mypage/saw-movie&quot;)
     public String getMySawMovieList(@RequestParam(value = &quot;page&quot;, defaultValue = &quot;1&quot;) int page,
-                                   Authentication authentication
-                                   , Model model) {
-<span class="fc" id="L79">        String email = authentication.getName();</span>
-<span class="fc" id="L80">        PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);</span>
-<span class="fc" id="L81">        model.addAttribute(&quot;pageData&quot;, sawMovieResponseDtoList);</span>
-<span class="fc" id="L82">        return &quot;member/sawMovieList&quot;;</span>
+                                   Authentication authentication, Model model) {
+<span class="fc" id="L78">        String email = authentication.getName();</span>
+<span class="fc" id="L79">        PagingResponseDto&lt;MemberDto.MemberSawMovieResponseDto&gt; sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);</span>
+<span class="fc" id="L80">        model.addAttribute(&quot;pageData&quot;, sawMovieResponseDtoList);</span>
+<span class="fc" id="L81">        return &quot;member/sawMovieList&quot;;</span>
+    }
+
+    @GetMapping(&quot;/mypage/want-movie&quot;)
+    public String getMyWantMovieList(@RequestParam(value = &quot;page&quot;, defaultValue = &quot;1&quot;) int page,
+                                    Authentication authentication, Model model) {
+<span class="fc" id="L87">        String email = authentication.getName();</span>
+<span class="fc" id="L88">        PagingResponseDto&lt;MemberDto.MemberWantMovieResponseDto&gt; wantMovieResponseDtoList = memberService.findMyWantMovieList(page-1,email);</span>
+<span class="fc" id="L89">        model.addAttribute(&quot;pageData&quot;, wantMovieResponseDtoList);</span>
+<span class="fc" id="L90">        return &quot;member/wantMovieList&quot;;</span>
     }
 
     //==========================관리자 화면 컨트롤러=========================
 
     @GetMapping(&quot;/admin/member/warning-page&quot;)
     public String adminGetWarning(@RequestParam(&quot;email&quot;) String email, Model model) {
-<span class="fc" id="L89">        MemberDto.Response memberRepDto=memberService.pickMember(email);</span>
-<span class="fc" id="L90">        model.addAttribute(&quot;email&quot;, memberRepDto.getEmail());</span>
-<span class="fc" id="L91">        model.addAttribute(&quot;warningCard&quot;, memberRepDto.getWarningCard());</span>
-<span class="fc" id="L92">        model.addAttribute(&quot;memberStatus&quot;, memberRepDto.getMemberStatus());</span>
-<span class="fc" id="L93">        return &quot;member/warning&quot;;</span>
+<span class="fc" id="L97">        MemberDto.Response memberRepDto=memberService.pickMember(email);</span>
+<span class="fc" id="L98">        model.addAttribute(&quot;email&quot;, memberRepDto.getEmail());</span>
+<span class="fc" id="L99">        model.addAttribute(&quot;warningCard&quot;, memberRepDto.getWarningCard());</span>
+<span class="fc" id="L100">        model.addAttribute(&quot;memberStatus&quot;, memberRepDto.getMemberStatus());</span>
+<span class="fc" id="L101">        return &quot;member/warning&quot;;</span>
     }
 
     @PostMapping(&quot;/admin/member/warning&quot;)
     public String adminPatchWarning(@RequestParam(&quot;email&quot;) String email,
                                      @RequestParam(value = &quot;warning&quot;,defaultValue = &quot;off&quot;) String warning,
                                      @RequestParam(value = &quot;block&quot;,defaultValue = &quot;off&quot;) String block, Model model) {
-<span class="fc" id="L100">        MemberDto.Response memberRepDto=memberService.giveWarning(email,warning, block);</span>
-<span class="fc" id="L101">        model.addAttribute(&quot;email&quot;,memberRepDto.getEmail());</span>
-<span class="fc" id="L102">        model.addAttribute(&quot;warningCard&quot;,memberRepDto.getWarningCard());</span>
-<span class="fc" id="L103">        model.addAttribute(&quot;memberStatus&quot;,memberRepDto.getMemberStatus());</span>
-<span class="fc" id="L104">        return &quot;member/warning&quot;;</span>
+<span class="fc" id="L108">        MemberDto.Response memberRepDto=memberService.giveWarning(email,warning, block);</span>
+<span class="fc" id="L109">        model.addAttribute(&quot;email&quot;,memberRepDto.getEmail());</span>
+<span class="fc" id="L110">        model.addAttribute(&quot;warningCard&quot;,memberRepDto.getWarningCard());</span>
+<span class="fc" id="L111">        model.addAttribute(&quot;memberStatus&quot;,memberRepDto.getMemberStatus());</span>
+<span class="fc" id="L112">        return &quot;member/warning&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/member&quot;)
     public String adminGetMembers(@RequestParam(&quot;page&quot;) int page,
                                   @RequestParam(value = &quot;sort&quot;, defaultValue = &quot;memberId&quot;) String sort, Model model) {
-<span class="fc" id="L110">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchMember(&quot;@&quot;,page - 1, sort);</span>
-<span class="fc" id="L111">        log.info(&quot;MEM_startPage={}&quot;,pageRepDto.getStartPage());</span>
-<span class="fc" id="L112">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L113">        return &quot;member/member&quot;;</span>
+<span class="fc" id="L118">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchMember(&quot;@&quot;,page - 1, sort);</span>
+<span class="fc" id="L119">        log.info(&quot;MEM_startPage={}&quot;,pageRepDto.getStartPage());</span>
+<span class="fc" id="L120">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L121">        return &quot;member/member&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/member/search&quot;)
     public String getMemberBySearch(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                     @RequestParam(value = &quot;email&quot;,required = false) String email, Model model) {
-<span class="fc" id="L119">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchMember(email,page-1,&quot;memberId&quot;);</span>
-<span class="fc" id="L120">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L121">        return &quot;member/memberSearchResult&quot;;</span>
+<span class="fc" id="L127">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchMember(email,page-1,&quot;memberId&quot;);</span>
+<span class="fc" id="L128">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L129">        return &quot;member/memberSearchResult&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/administrator&quot;)
     public String adminGetAdmins(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                     @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;memberId&quot;) String sort, Model model) {
-<span class="fc" id="L127">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(&quot;@&quot;,page-1,sort);</span>
-<span class="fc" id="L128">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L129">        return &quot;member/admins&quot;;</span>
+<span class="fc" id="L135">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(&quot;@&quot;,page-1,sort);</span>
+<span class="fc" id="L136">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L137">        return &quot;member/admins&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/administrator/search&quot;)
     public String adminGetAdminsBySearch(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
                                  @RequestParam(value = &quot;email&quot;,required = false) String email, Model model) {
-<span class="fc" id="L135">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(email,page-1,&quot;memberId&quot;);</span>
-<span class="fc" id="L136">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L137">        return &quot;member/admins&quot;;</span>
+<span class="fc" id="L143">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto = memberService.searchAdmin(email,page-1,&quot;memberId&quot;);</span>
+<span class="fc" id="L144">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L145">        return &quot;member/admins&quot;;</span>
     }
 
     @PostMapping(&quot;/admin/administrator/add&quot;)
     public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-<span class="fc" id="L142">        MemberDto.Response saveMember=memberService.createAdmin(memberDto);</span>
-<span class="fc" id="L143">        model.addAttribute(&quot;email&quot;,saveMember.getEmail());</span>
-<span class="fc" id="L144">        model.addAttribute(&quot;memberImage&quot;,saveMember.getMemberImage());</span>
-<span class="fc" id="L145">        return &quot;member/join&quot;;</span>
+<span class="fc" id="L150">        MemberDto.Response saveMember=memberService.createAdmin(memberDto);</span>
+<span class="fc" id="L151">        model.addAttribute(&quot;email&quot;,saveMember.getEmail());</span>
+<span class="fc" id="L152">        model.addAttribute(&quot;memberImage&quot;,saveMember.getMemberImage());</span>
+<span class="fc" id="L153">        return &quot;member/join&quot;;</span>
     }
 
     @GetMapping(&quot;/admin/administrator/delete&quot;)
     public String adminDeleteAdmin(@RequestParam(&quot;email&quot;) String email,Model model) {
-<span class="fc" id="L150">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto=memberService.deleteAdmin(email);</span>
-<span class="fc" id="L151">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
-<span class="fc" id="L152">        return &quot;member/admins&quot;;</span>
+<span class="fc" id="L158">        PagingResponseDto&lt;MemberDto.Response&gt; pageRepDto=memberService.deleteAdmin(email);</span>
+<span class="fc" id="L159">        model.addAttribute(&quot;pageData&quot;, pageRepDto);</span>
+<span class="fc" id="L160">        return &quot;member/admins&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

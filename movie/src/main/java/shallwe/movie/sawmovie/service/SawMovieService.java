@@ -28,6 +28,10 @@ public class SawMovieService {
         return sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);
     }
 
+    public Page<SawMovie> getSawMovieList(Member member, PageRequest pageable) {
+        return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);
+    }
+
     public void saveSawMovie(Movie movie, Member member, int movieSawCount) {
         SawMovie findMovie = getSawMovie(movie,member);
         SawMovie sawMovie;
@@ -44,9 +48,6 @@ public class SawMovieService {
         setMovieRelation(movie,sawMovie);
         sawMovieRepository.save(sawMovie);
     }
-    public Page<SawMovie> getSawMovieList(Member member, PageRequest pageable) {
-        return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);
-    }
 
     public void setMemberRelation(Member member, SawMovie sawMovie) {
         sawMovie.setMember(member);
@@ -62,6 +63,4 @@ public class SawMovieService {
         }
         movie.setAvgSawCount((double) sum/movie.getSawMovies().size());
     }
-
-
 }

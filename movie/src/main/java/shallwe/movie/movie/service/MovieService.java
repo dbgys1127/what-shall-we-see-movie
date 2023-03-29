@@ -67,7 +67,6 @@ public class MovieService {
 
     }
     public void updateWantMovie(String movieTitle, String email, String isWant) {
-        log.info("isWant ={}",isWant);
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         if (isWant.equals("on")) {

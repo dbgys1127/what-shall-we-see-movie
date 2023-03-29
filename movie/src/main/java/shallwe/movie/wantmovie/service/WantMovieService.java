@@ -25,6 +25,11 @@ public class WantMovieService {
     public WantMovie getWantMovie(Member member, Movie movie) {
         return wantMovieRepository.findWantMovieByMemberAndMovie(member, movie);
     }
+
+    public Page<WantMovie> getWantMovieList(Member member, PageRequest pageable) {
+        return wantMovieRepository.findWantMoviesByMemberWithPaging(member, pageable);
+    }
+
     public void saveWantMovie(Member findMember,Movie findMovie) {
         WantMovie findWantMovie = getWantMovie(findMember, findMovie);
         if (Optional.ofNullable(findWantMovie).isPresent()) {
@@ -37,9 +42,6 @@ public class WantMovieService {
         wantMovieRepository.save(wantMovie);
     }
 
-    public Page<WantMovie> getWantMovieList(Member member, PageRequest pageable) {
-        return wantMovieRepository.findWantMoviesByMemberWithPaging(member, pageable);
-    }
     public void deleteWantMovie(Member findMember, Movie findMovie) {
         WantMovie findWantMovie = getWantMovie(findMember, findMovie);
         if (Optional.ofNullable(findWantMovie).isEmpty()) {
@@ -47,6 +49,7 @@ public class WantMovieService {
         }
         wantMovieRepository.delete(findWantMovie);
     }
+
     public void setMemberRelation(Member member, WantMovie wantMovie) {
         wantMovie.setMember(member);
         member.getWantMovies().add(wantMovie);

@@ -29,6 +29,8 @@ import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.security.service.CustomAuthorityUtils;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,9 @@ public class MemberServiceTest {
 
     @Mock
     SawMovieService sawMovieService;
+
+    @Mock
+    WantMovieService wantMovieService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -209,7 +214,7 @@ public class MemberServiceTest {
 
     @DisplayName("9.멤버는 마이페이지에서 자신이 시청횟수를 등록한 영화 목록을 볼 수 있다.")
     @Test
-    void getMyInfo() {
+    void getMyInfoMySawMovies() {
         //given
         String email = "test@gmail.com";
         Member member = Member.builder()
@@ -282,6 +287,99 @@ public class MemberServiceTest {
         //then
         Assertions.assertThat(result.getData().size()).isEqualTo(10);
         Assertions.assertThat(result.getSort()).isEqualTo("avgSawCount");
+        Assertions.assertThat(result.getNowPage()).isEqualTo(1);
+    }
+
+    @DisplayName("11.멤버는 마이페이지에서 자신이 찜 등록한 영화 목록을 볼 수 있다.")
+    @Test
+    void getMyInfoMyWantMovie() {
+        //given
+        String email = "test@gmail.com";
+        Member member = Member.builder()
+                .email(email)
+                .warningCard(0)
+                .build();
+
+        List<SawMovie> sawMovies = new ArrayList<>();
+        List<WantMovie> wantMovies = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Movie movie = Movie.builder()
+                    .moviePoster("이미지")
+                    .movieTitle("movie" + i)
+                    .build();
+            SawMovie sawMovie = SawMovie.builder()
+                    .movieSawCount(i)
+                    .movie(movie)
+                    .build();
+            WantMovie wantMovie = WantMovie.builder()
+                    .wantMovieId((long) i)
+                    .movie(movie)
+                    .build();
+            sawMovies.add(sawMovie);
+            wantMovies.add(wantMovie);
+        }
+
+        member.setSawMovies(sawMovies);
+        member.setWantMovies(wantMovies);
+
+        //stub
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+
+        //when
+        MemberDto.Response memberRepDto = memberService.getMyInfo(email);
+
+        //then
+        Assertions.assertThat(memberRepDto.getSawMovies().size()).isEqualTo(10);
+        Assertions.assertThat(memberRepDto.getWantMovies().size()).isEqualTo(10);
+    }
+
+    @DisplayName("12.멤버는 마이페이지 찜영화 목록에서 더보기를 누르면 찜을 등록한 페이징 처리된 영화 목록 볼 수 있다.")
+    @Test
+    void findMyWantMovieList() {
+        //given
+        int page = 0;
+        String email = "test@gmail.com";
+        Member member = Member.builder()
+                .email(email)
+                .warningCard(0)
+                .build();
+
+        List<SawMovie> sawMovies = new ArrayList<>();
+        List<WantMovie> wantMovies = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Movie movie = Movie.builder()
+                    .moviePoster("이미지")
+                    .movieTitle("movie" + i)
+                    .build();
+            SawMovie sawMovie = SawMovie.builder()
+                    .movieSawCount(i)
+                    .movie(movie)
+                    .build();
+            WantMovie wantMovie = WantMovie.builder()
+                    .wantMovieId((long) i)
+                    .movie(movie)
+                    .build();
+            sawMovies.add(sawMovie);
+            wantMovies.add(wantMovie);
+        }
+
+        member.setSawMovies(sawMovies);
+        member.setWantMovies(wantMovies);
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        Page<WantMovie> pageInfo = new PageImpl<>(wantMovies, pageable, wantMovies.size());
+
+        //stub
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
+        given(wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAt").descending())))
+                .willReturn(pageInfo);
+
+        //when
+        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> result = memberService.findMyWantMovieList(page,email);
+
+        //then
+        Assertions.assertThat(result.getData().size()).isEqualTo(10);
+        Assertions.assertThat(result.getSort()).isEqualTo("createdAt");
         Assertions.assertThat(result.getNowPage()).isEqualTo(1);
     }
 }

@@ -236,6 +236,26 @@ public class MemberControllerTest {
                         .param("email","test"))
                 .andExpect(view().name("member/sawMovieList"));
     }
+
+    @DisplayName("11.회원은 시청횟수를 등록한 영화 목록내 더보기를 통해 페이징 처리된 영화 목록을 볼 수 있다.")
+    @Test
+    @WithMockUser(username = "test1@gmail.com",roles = "USER")
+    void getMyWantMovieList() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("test1@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER"))
+                .build();
+
+        //when
+        //then
+        mockMvc.perform(get("/mypage/want-movie")
+                        .param("page", "1")
+                        .param("email","test"))
+                .andExpect(view().name("member/wantMovieList"));
+    }
     //주석처리 후 마지막에 풀기
 //    @DisplayName("10.회원 이미지는 수정될 수 있다.")
 //    @WithMockUser(username = "test1@gmail.com",roles = "USER",password = "1234!abc")

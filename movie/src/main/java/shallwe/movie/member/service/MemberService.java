@@ -82,6 +82,7 @@ public class MemberService {
         memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
         return memberRepDto;
     }
+
     public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
         Member member = is_exist_member(email);
         Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending()));
@@ -159,6 +160,7 @@ public class MemberService {
 
         return memberRepDto;
     }
+
     public PagingResponseDto<MemberDto.Response> deleteAdmin(String email) {
         memberRepository.deleteByEmail(email);
         return searchAdmin("@",0,"memberId");

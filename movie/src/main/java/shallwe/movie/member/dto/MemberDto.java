@@ -103,7 +103,7 @@ public class MemberDto {
     public static List<MemberWantMovieResponseDto> getMemberWantMovieResponseDtoList(List<WantMovie> wantMovies) {
         return wantMovies
                 .stream()
-                .sorted(Comparator.comparing(WantMovie::getCreatedAt).reversed())
+                .sorted(Comparator.comparing(WantMovie::getWantMovieId).reversed())
                 .limit(10)
                 .map(wantMovie -> MemberWantMovieResponseDto
                         .builder()

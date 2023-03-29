@@ -28,6 +28,8 @@ import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.service.SawMovieService;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -54,6 +56,9 @@ public class AdminMovieServiceTest {
 
     @Mock
     private SawMovieService sawMovieService;
+
+    @Mock
+    private WantMovieService wantMovieService;
 
     @Mock
     private S3UploadService s3UploadService;
@@ -191,11 +196,14 @@ public class AdminMovieServiceTest {
                 .build();
         SawMovie sawMovie = SawMovie.builder()
                 .movieSawCount(1).build();
+        WantMovie wantMovie = WantMovie.builder()
+                .build();
 
         //stub
         given(movieRepository.findByMovieTitle(any())).willReturn(movieOptional);
         given(memberService.is_exist_member(any())).willReturn(member);
         given(sawMovieService.getSawMovie(any(), any())).willReturn(sawMovie);
+        given(wantMovieService.getWantMovie(any(), any())).willReturn(wantMovie);
 
         //when
         MovieDto.Response movieRepDto = movieService.pickMovie(title,"test@gmail.com");

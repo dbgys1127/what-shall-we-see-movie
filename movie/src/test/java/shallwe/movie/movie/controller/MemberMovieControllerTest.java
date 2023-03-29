@@ -133,14 +133,33 @@ public class MemberMovieControllerTest {
         MovieDto.Response movieRepDto = MovieDto.Response.builder().build();
 
         //stub
-        given(movieService.updateSawCount(movieTitle, email, movieSawCount)).willReturn(movieRepDto);
-
         //when
         //then
         mockMvc.perform(post("/movie/saw-movie")
                         .param("movieTitle", movieTitle)
                         .param("movieSawCount", String.valueOf(movieSawCount)))
-                .andExpect(view().name("movie/movieDetail"));
+                .andExpect(view().name("redirect:/movie/detail"));
+
+    }
+
+    @DisplayName("멤버는 찜 상태를 수정할 수 있다.")
+    @WithMockUser(username = "test",roles = "USER")
+    @Test
+    void postWantMovie() throws Exception {
+        //given
+        String movieTitle = "movie";
+        String email = "test@gmail.com";
+        String isWant = "on";
+
+        MovieDto.Response movieRepDto = MovieDto.Response.builder().build();
+
+        //stub
+        //when
+        //then
+        mockMvc.perform(post("/movie/want-movie")
+                        .param("movieTitle", movieTitle)
+                        .param("wantMovie", String.valueOf(isWant)))
+                .andExpect(view().name("redirect:/movie/detail"));
 
     }
 }

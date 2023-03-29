@@ -23,6 +23,8 @@ import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.service.SawMovieService;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +56,9 @@ public class MemberMovieServiceTest {
 
     @Mock
     private SawMovieService sawMovieService;
+
+    @Mock
+    private WantMovieService wantMovieService;
 
     @Mock
     private AmazonS3 amazonS3;
@@ -119,17 +125,67 @@ public class MemberMovieServiceTest {
         Member member = Member.builder().email("test@gmail.com").build();
         movies.get(0).setAvgSawCount(movieSawCount);
 
+        SawMovie sawMovie = SawMovie.builder()
+                .movieSawCount(movieSawCount)
+                .movie(movies.get(0))
+                .member(member)
+                .build();
+
+        WantMovie wantMovie = WantMovie.builder()
+                .member(member)
+                .movie(movies.get(0))
+                .build();
+
         //stub
         given(memberService.is_exist_member(any())).willReturn(member);
         given(movieRepository.findByMovieTitle(any())).willReturn(Optional.of(movies.get(0)));
-        given(sawMovieService.saveSawMovie(movies.get(0), member,2)).willReturn(SawMovie.builder().movieSawCount(movieSawCount)
-                .build());
+        given(sawMovieService.getSawMovie(movies.get(0), member)).willReturn(sawMovie);
+        given(wantMovieService.getWantMovie(member, movies.get(0))).willReturn(wantMovie);
+
 
         //when
-        MovieDto.Response movieRepDto = movieService.updateSawCount(movieTitle, email, movieSawCount);
+        movieService.updateSawCount(movieTitle, email, movieSawCount);
+        MovieDto.Response movieRepDto = movieService.pickMovie(movieTitle, email);
 
         //then
         Assertions.assertThat(movieRepDto.getMemberSawCount()).isEqualTo(2);
         Assertions.assertThat(movieRepDto.getAvgSawCount()).isEqualTo(2);
+    }
+
+    @DisplayName("멤버는 차후 볼 영화를 찜할 수 있다.")
+    @Test
+    void updateWantMovie() {
+        //given
+        String movieTitle = "movie";
+        String email = "test@gmail.com";
+        String isWant = "on";
+
+        Member member = Member.builder().email("test@gmail.com").build();
+        movies.get(0).setAvgSawCount(2);
+
+        SawMovie sawMovie = SawMovie.builder()
+                .movieSawCount(2)
+                .movie(movies.get(0))
+                .member(member)
+                .build();
+
+        WantMovie wantMovie = WantMovie.builder()
+                .member(member)
+                .movie(movies.get(0))
+                .build();
+
+        //stub
+        given(memberService.is_exist_member(any())).willReturn(member);
+        given(movieRepository.findByMovieTitle(any())).willReturn(Optional.of(movies.get(0)));
+        given(sawMovieService.getSawMovie(movies.get(0), member)).willReturn(sawMovie);
+        given(wantMovieService.getWantMovie(member, movies.get(0))).willReturn(wantMovie);
+
+
+        //when
+        movieService.updateWantMovie(movieTitle, email, isWant);
+        MovieDto.Response movieRepDto = movieService.pickMovie(movieTitle, email);
+
+        //then
+        Assertions.assertThat(movieRepDto.getIsWant()).isEqualTo("on");
     }
 }

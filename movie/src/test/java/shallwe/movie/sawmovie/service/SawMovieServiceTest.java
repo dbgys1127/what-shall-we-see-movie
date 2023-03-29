@@ -16,6 +16,8 @@ import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.sawmovie.repository.SawMovieRepository;
+import shallwe.movie.wantmovie.entity.WantMovie;
+import shallwe.movie.wantmovie.repository.WantMovieRepository;
 
 import java.util.ArrayList;
 
@@ -33,37 +35,6 @@ public class SawMovieServiceTest {
     SawMovieRepository sawMovieRepository;
 
     @DisplayName("1.멤버가 시청횟수를 등록하면, 대상 영화, 등록한 회원, 횟수를 담은 객체가 반환된다.")
-    @Test
-    void saveSawMovieNew() {
-        //given
-        int movieSawCount = 1;
-        Member member = Member.builder()
-                .email("test@gmail.com")
-                .build();
-        member.setSawMovies(new ArrayList<>());
-        Movie movie = Movie.builder()
-                .movieTitle("movie1")
-                .build();
-        movie.setSawMovies(new ArrayList<>());
-
-        SawMovie sawMovie = SawMovie.builder()
-                .movieSawCount(movieSawCount)
-                .movie(movie)
-                .member(member)
-                .build();
-
-        //stub
-        given(sawMovieRepository.save(any())).willReturn(sawMovie);
-
-        //when
-        SawMovie saveSawMovie = sawMovieService.saveSawMovie(movie, member, movieSawCount);
-
-        //then
-        Assertions.assertThat(saveSawMovie.getMovieSawCount()).isEqualTo(1);
-        Assertions.assertThat(saveSawMovie.getMovie().getMovieTitle()).isEqualTo(movie.getMovieTitle());
-        Assertions.assertThat(saveSawMovie.getMember().getEmail()).isEqualTo(member.getEmail());
-    }
-    @DisplayName("2.앞서 시청횟수를 등록한 멤버라면, 기존 객체가 수정되어 반환된다.")
     @Test
     void saveSawMovieAlreadyExist() {
         //given
@@ -88,7 +59,8 @@ public class SawMovieServiceTest {
         given(sawMovieRepository.save(any())).willReturn(sawMovie);
 
         //when
-        SawMovie saveSawMovie = sawMovieService.saveSawMovie(movie, member, movieSawCount);
+        sawMovieService.saveSawMovie(movie, member, movieSawCount);
+        SawMovie saveSawMovie = sawMovieService.getSawMovie(movie, member);
 
         //then
         Assertions.assertThat(saveSawMovie.getMovieSawCount()).isEqualTo(1);

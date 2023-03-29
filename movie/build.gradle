@@ -102,7 +102,8 @@ jacocoTestReport {
 					"shallwe/movie/s3/**",
 					"shallwe/movie/dto/**",
 					"shallwe/movie/movie/dto/**",
-					"shallwe/movie/sawmovie/entity/**"
+					"shallwe/movie/sawmovie/entity/**",
+					"shallwe/movie/wantmovie/entity/**"
 			])
 		}))
 	}
