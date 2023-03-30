@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import shallwe.movie.comment.dto.CommentDto;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.movie.service.MovieService;
@@ -161,5 +162,58 @@ public class MemberMovieControllerTest {
                         .param("wantMovie", String.valueOf(isWant)))
                 .andExpect(view().name("redirect:/movie/detail"));
 
+    }
+
+    @DisplayName("멤버는 댓글을 등록할 수 있다.")
+    @WithMockUser(username = "test",roles = "USER")
+    @Test
+    void postComment() throws Exception {
+        //given
+        String movieTitle = "movie";
+        CommentDto.Post comment = CommentDto.Post.builder()
+                .commentDetail("comment").build();
+
+        //stub
+        //when
+        //then
+        mockMvc.perform(post("/movie/comment")
+                        .param("movieTitle", movieTitle)
+                        .param("commentDetail", comment.getCommentDetail()))
+                .andExpect(view().name("redirect:/movie/detail"));
+
+    }
+
+    @DisplayName("멤버는 댓글을 신고할 수 있다.")
+    @WithMockUser(username = "test",roles = "USER")
+    @Test
+    void postCommentClaim() throws Exception {
+        //given
+        String movieTitle = "movie";
+        Long commentId =1L;
+
+        //stub
+        //when
+        //then
+        mockMvc.perform(post("/movie/comment/claim")
+                        .param("movieTitle", movieTitle)
+                        .param("commentId", String.valueOf(commentId)))
+                .andExpect(view().name("redirect:/movie/detail"));
+    }
+
+    @DisplayName("멤버는 댓글을 삭제할 수 있다.")
+    @WithMockUser(username = "test",roles = "USER")
+    @Test
+    void deleteComment() throws Exception {
+        //given
+        String movieTitle = "movie";
+        Long commentId =1L;
+
+        //stub
+        //when
+        //then
+        mockMvc.perform(post("/movie/comment/delete")
+                        .param("movieTitle", movieTitle)
+                        .param("commentId", String.valueOf(commentId)))
+                .andExpect(view().name("redirect:/movie/detail"));
     }
 }

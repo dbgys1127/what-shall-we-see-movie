@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.dto.PagingResponseDto;
@@ -39,6 +40,8 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -260,4 +263,6 @@ public class AdminMovieServiceTest {
         Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movieUpdate");
         Assertions.assertThat(movieRepDto.getMovieRunningTime()).isEqualTo(90);
     }
+
+
 }

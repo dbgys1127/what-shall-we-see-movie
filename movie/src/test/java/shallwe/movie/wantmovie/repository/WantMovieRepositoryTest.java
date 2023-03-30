@@ -101,7 +101,7 @@ public class WantMovieRepositoryTest {
         Member member = memberRepository.findByEmail("test1@gmail.com").orElseThrow();
 
         //when
-        Page<WantMovie> wantMovies=wantMovieRepository.findWantMoviesByMemberWithPaging(member, PageRequest.of(0, 10, Sort.by("createdAt")));
+        Page<WantMovie> wantMovies=wantMovieRepository.findWantMoviesByMemberWithPaging(member, PageRequest.of(0, 10, Sort.by("createdAtForWantMovie")));
 
         //then
         Assertions.assertThat(wantMovies.getContent().size()).isEqualTo(1);

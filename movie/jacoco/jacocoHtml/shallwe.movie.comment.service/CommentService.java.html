@@ -2,6 +2,9 @@
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shallwe.movie.comment.dto.CommentDto;
@@ -9,33 +12,57 @@ import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.comment.repository.CommentRepository;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
+import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.wantmovie.entity.WantMovie;
+
+import java.util.Optional;
 
 @Service
 @Transactional
-<span class="fc" id="L16">@RequiredArgsConstructor</span>
-<span class="fc" id="L17">@Slf4j</span>
+<span class="fc" id="L22">@RequiredArgsConstructor</span>
+<span class="fc" id="L23">@Slf4j</span>
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    public void saveMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
-<span class="nc" id="L22">        Comment comment = Comment.builder()</span>
-<span class="nc" id="L23">                .commentDetail(commentDto.getCommentDetail()).build();</span>
 
-<span class="nc" id="L25">        setMemberRelation(member,comment);</span>
-<span class="nc" id="L26">        setMovieRelation(movie,comment);</span>
+    public Page&lt;Comment&gt; getCommentList(String email, Pageable pageable) {
+<span class="nc" id="L29">        return commentRepository.findCommentByMemberWithPaging(email,pageable);</span>
+    }
+    public Comment saveMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
+<span class="fc" id="L32">        Comment comment = Comment.builder()</span>
+<span class="fc" id="L33">                .commentDetail(commentDto.getCommentDetail()).build();</span>
 
-<span class="nc" id="L28">        commentRepository.save(comment);</span>
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L35">        setMemberRelation(member,comment);</span>
+<span class="fc" id="L36">        setMovieRelation(movie,comment);</span>
+
+<span class="fc" id="L38">        return commentRepository.save(comment);</span>
+    }
+
+
+    public void addMovieCommentClaim(Long commentId) {
+<span class="fc" id="L43">        Comment comment = is_exist_comment(commentId);</span>
+<span class="fc" id="L44">        int claimCount = comment.getClaimCount();</span>
+<span class="fc" id="L45">        claimCount++;</span>
+<span class="fc" id="L46">        comment.setClaimCount(claimCount);</span>
+<span class="fc" id="L47">    }</span>
+    public void deleteMovieComment(Long commentId) {
+<span class="fc" id="L49">        commentRepository.delete(is_exist_comment(commentId));</span>
+<span class="fc" id="L50">    }</span>
 
     public void setMemberRelation(Member member, Comment comment) {
-<span class="nc" id="L32">        comment.setMember(member);</span>
-<span class="nc" id="L33">        member.getComments().add(comment);</span>
-<span class="nc" id="L34">    }</span>
+<span class="fc" id="L53">        comment.setMember(member);</span>
+<span class="fc" id="L54">        member.getComments().add(comment);</span>
+<span class="fc" id="L55">    }</span>
 
     public void setMovieRelation(Movie movie, Comment comment) {
-<span class="nc" id="L37">        comment.setMovie(movie);</span>
-<span class="nc" id="L38">        movie.getComments().add(comment);</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L58">        comment.setMovie(movie);</span>
+<span class="fc" id="L59">        movie.getComments().add(comment);</span>
+<span class="fc" id="L60">    }</span>
+
+    public Comment is_exist_comment(Long commentId) {
+<span class="fc" id="L63">        Optional&lt;Comment&gt; optionalComment =commentRepository.findById(commentId);</span>
+<span class="pc" id="L64">        Comment findComment = optionalComment.orElseThrow(() -&gt; new RuntimeException());</span>
+<span class="fc" id="L65">        return findComment;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -5,11 +5,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import shallwe.movie.audit.CreatorAuditor;
 import shallwe.movie.member.repository.MemberRepository;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.querydsl.QuerydslRepositoryImpl;
@@ -25,6 +27,10 @@ public class TestConfig {
     @PersistenceContext
     private EntityManager em;
 
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return new CreatorAuditor();
+    }
     @Bean
     public JPAQueryFactory jpaQueryFactory(){
         return new JPAQueryFactory(em);

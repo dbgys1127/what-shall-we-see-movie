@@ -256,6 +256,25 @@ public class MemberControllerTest {
                         .param("email","test"))
                 .andExpect(view().name("member/wantMovieList"));
     }
+    @DisplayName("12.회원은 등록했던 댓글을 영화 목록내 더보기를 통해 페이징 처리된 댓글 목록을 볼 수 있다.")
+    @Test
+    @WithMockUser(username = "test1@gmail.com",roles = "USER")
+    void getMyCommentList() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("test1@gmail.com")
+                .password("1234!abc")
+                .warningCard(0)
+                .roles(List.of("USER"))
+                .build();
+
+        //when
+        //then
+        mockMvc.perform(get("/mypage/comment")
+                        .param("page", "1")
+                        .param("sort","claimCount"))
+                .andExpect(view().name("member/commentList"));
+    }
     //주석처리 후 마지막에 풀기
 //    @DisplayName("10.회원 이미지는 수정될 수 있다.")
 //    @WithMockUser(username = "test1@gmail.com",roles = "USER",password = "1234!abc")

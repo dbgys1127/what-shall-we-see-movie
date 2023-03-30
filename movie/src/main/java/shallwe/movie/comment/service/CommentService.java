@@ -28,14 +28,14 @@ public class CommentService {
     public Page<Comment> getCommentList(String email, Pageable pageable) {
         return commentRepository.findCommentByMemberWithPaging(email,pageable);
     }
-    public void saveMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
+    public Comment saveMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
         Comment comment = Comment.builder()
                 .commentDetail(commentDto.getCommentDetail()).build();
 
         setMemberRelation(member,comment);
         setMovieRelation(movie,comment);
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
 
@@ -43,7 +43,6 @@ public class CommentService {
         Comment comment = is_exist_comment(commentId);
         int claimCount = comment.getClaimCount();
         claimCount++;
-        log.info("countClaim = {}",claimCount);
         comment.setClaimCount(claimCount);
     }
     public void deleteMovieComment(Long commentId) {

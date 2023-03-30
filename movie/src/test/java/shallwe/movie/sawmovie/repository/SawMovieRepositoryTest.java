@@ -98,7 +98,7 @@ public class SawMovieRepositoryTest {
         Member member = memberRepository.findByEmail("test1@gmail.com").orElseThrow();
 
         //when
-        Page<SawMovie> sawMovie=sawMovieRepository.findSawMoviesByMemberWithPaging(member,PageRequest.of(0, 10, Sort.by("avgSawCount")));
+        Page<SawMovie> sawMovie=sawMovieRepository.findSawMoviesByMemberWithPaging(member,PageRequest.of(0, 10, Sort.by("movieSawCount")));
 
         //then
         Assertions.assertThat(sawMovie.getContent().size()).isEqualTo(1);

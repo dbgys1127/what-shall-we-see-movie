@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import shallwe.movie.comment.dto.CommentDto;
+import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.comment.service.CommentService;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
@@ -59,6 +62,9 @@ public class MemberMovieServiceTest {
 
     @Mock
     private WantMovieService wantMovieService;
+
+    @Mock
+    private CommentService commentService;
 
     @Mock
     private AmazonS3 amazonS3;
@@ -187,5 +193,34 @@ public class MemberMovieServiceTest {
 
         //then
         Assertions.assertThat(movieRepDto.getIsWant()).isEqualTo("on");
+    }
+
+    @DisplayName("회원은 영화에 대해 댓글을 작성할 수 있다.")
+    @Test
+    void writeMovieComment() {
+        //given
+        String movieTitle = "movie1";
+        String email = "teat@gmail.com";
+        CommentDto.Post commentDto = CommentDto.Post.builder()
+                .commentDetail("comment").build();
+
+        Member member = Member.builder().email("test@gmail.com").build();
+        Comment comment = Comment.builder()
+                .commentDetail(commentDto.getCommentDetail())
+                .member(member)
+                .movie(movies.get(0))
+                .build();
+
+        //stub
+        given(memberService.is_exist_member(email)).willReturn(member);
+        given(movieRepository.findByMovieTitle(movieTitle)).willReturn(Optional.of(movies.get(0)));
+        given(commentService.saveMovieComment(member, movies.get(0), commentDto)).willReturn(comment);
+
+        //when
+        movieService.writeMovieComment(movieTitle,email,commentDto);
+
+        //then
+        Assertions.assertThat(comment.getMovie()).isNotNull();
+        Assertions.assertThat(comment.getMember()).isNotNull();
     }
 }

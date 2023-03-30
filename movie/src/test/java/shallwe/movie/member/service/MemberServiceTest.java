@@ -19,6 +19,8 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.comment.service.CommentService;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.member.dto.MemberDto;
@@ -60,6 +62,9 @@ public class MemberServiceTest {
 
     @Mock
     WantMovieService wantMovieService;
+
+    @Mock
+    CommentService commentService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -278,7 +283,7 @@ public class MemberServiceTest {
 
         //stub
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-        given(sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("avgSawCount").descending())))
+        given(sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("movieSawCount").descending())))
                 .willReturn(pageInfo);
 
         //when
@@ -371,7 +376,7 @@ public class MemberServiceTest {
 
         //stub
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-        given(wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAt").descending())))
+        given(wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAtForWantMovie").descending())))
                 .willReturn(pageInfo);
 
         //when
@@ -380,6 +385,51 @@ public class MemberServiceTest {
         //then
         Assertions.assertThat(result.getData().size()).isEqualTo(10);
         Assertions.assertThat(result.getSort()).isEqualTo("createdAt");
+        Assertions.assertThat(result.getNowPage()).isEqualTo(1);
+    }
+
+    @DisplayName("13.멤버는 마이페이지 댓글 목록에서 더보기를 누르면 페이징 처리된 댓글 목록 볼 수 있다.")
+    @Test
+    void findMyCommentList() {
+        //given
+        int page = 0;
+        String email = "test@gmail.com";
+        String sort = "claimCount";
+        Member member = Member.builder()
+                .email(email)
+                .warningCard(0)
+                .build();
+        Movie movie = Movie.builder()
+                .moviePoster("이미지")
+                .movieTitle("movie")
+                .build();
+
+        List<Comment> comments = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            Comment comment = Comment.builder()
+                    .commentId(1L)
+                    .commentDetail("comment" + i)
+                    .movie(movie)
+                    .member(member)
+                    .claimCount(11 - i)
+                    .build();
+            comments.add(comment);
+        }
+
+        member.setComments(comments);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
+        Page<Comment> pageInfo = new PageImpl<>(comments, pageable, comments.size());
+
+        //stub
+        given(commentService.getCommentList(email, PageRequest.of(page, 10, Sort.by(sort).descending())))
+                .willReturn(pageInfo);
+
+        //when
+        PagingResponseDto<MemberDto.MemberCommentResponseDto> result = memberService.findMyCommentList(page,email,sort);
+
+        //then
+        Assertions.assertThat(result.getData().size()).isEqualTo(10);
+        Assertions.assertThat(result.getSort()).isEqualTo(sort);
         Assertions.assertThat(result.getNowPage()).isEqualTo(1);
     }
 }
