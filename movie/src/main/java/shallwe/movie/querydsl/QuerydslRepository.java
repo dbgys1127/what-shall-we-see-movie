@@ -27,5 +27,5 @@ public interface QuerydslRepository {
 
     Page<WantMovie> findWantMoviesByMemberWithPaging(Member member, Pageable pageable);
 
-    Page<Comment> findCommentByMemberWithPaging(Member member, Pageable pageable);
+    Page<Comment> findCommentByMemberWithPaging(String email, Pageable pageable);
 }

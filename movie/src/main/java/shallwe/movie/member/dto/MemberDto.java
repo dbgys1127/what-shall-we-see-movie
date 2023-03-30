@@ -123,22 +123,25 @@ public class MemberDto {
     @Getter
     @Setter
     public static class MemberCommentResponseDto {
+        private Long commentId;
         private String commentDetail;
         private String movieTitle;
         private LocalDateTime createdAt;
+        private String createdBy;
         private int claimCount;
     }
 
     public static List<MemberCommentResponseDto> getMemberCommentResponseDtoList(List<Comment> comments) {
         return comments
                 .stream()
-                .sorted(Comparator.comparing(Comment::getCommentId).reversed())
                 .limit(10)
                 .map(comment -> MemberCommentResponseDto
                         .builder()
+                        .commentId(comment.getCommentId())
                         .commentDetail(comment.getCommentDetail())
                         .movieTitle(comment.getMovie().getMovieTitle())
                         .createdAt(comment.getCreatedAt())
+                        .createdBy(comment.getCreatedBy())
                         .claimCount(comment.getClaimCount())
                         .build())
                 .collect(Collectors.toList());

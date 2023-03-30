@@ -36,14 +36,14 @@ public class MemberController {
     // 유효성 검증 실패에 대한 내용 view 전달 방법 필요
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-        MemberDto.Response saveMember=memberService.createMember(memberDto);
-        model.addAttribute("email",saveMember.getEmail());
-        model.addAttribute("memberImage",saveMember.getMemberImage());
+        MemberDto.Response saveMember = memberService.createMember(memberDto);
+        model.addAttribute("email", saveMember.getEmail());
+        model.addAttribute("memberImage", saveMember.getMemberImage());
         return "member/join";
     }
 
     @GetMapping("/mypage")
-    public String mypage(Authentication authentication,Model model) {
+    public String mypage(Authentication authentication, Model model) {
         String email = authentication.getName();//aop 필요
         MemberDto.Response memberRepDto = memberService.getMyInfo(email);
         model.addAttribute("member", memberRepDto);
@@ -52,10 +52,10 @@ public class MemberController {
 
     @PostMapping("/mypage/myImage")
     public String patchMyImage(@RequestPart("myImage") MultipartFile multipartFile,
-                              Authentication authentication,
-                              Model model) throws IOException {
+                               Authentication authentication,
+                               Model model) throws IOException {
         String email = authentication.getName();//aop 필요
-        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile,email);
+        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile, email);
         model.addAttribute("memberImage", patchMember.getMemberImage());
         model.addAttribute("email", email);
         return "member/mypage";
@@ -63,10 +63,10 @@ public class MemberController {
 
     @PostMapping("/mypage/myPassword")
     public String patchMyPassword(@ModelAttribute @Valid MemberDto.Patch memberDto,
-                              Authentication authentication,
-                              Model model) throws IOException {
+                                  Authentication authentication,
+                                  Model model) throws IOException {
         String email = authentication.getName();
-        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto,email);
+        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto, email);
         model.addAttribute("memberImage", patchMember.getMemberImage());
         model.addAttribute("email", email);
         return "member/mypage";
@@ -74,27 +74,37 @@ public class MemberController {
 
     @GetMapping("/mypage/saw-movie")
     public String getMySawMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                   Authentication authentication, Model model) {
+                                    Authentication authentication, Model model) {
         String email = authentication.getName();
-        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page-1,email);
+        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page - 1, email);
         model.addAttribute("pageData", sawMovieResponseDtoList);
         return "member/sawMovieList";
     }
 
     @GetMapping("/mypage/want-movie")
     public String getMyWantMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                    Authentication authentication, Model model) {
+                                     Authentication authentication, Model model) {
         String email = authentication.getName();
-        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = memberService.findMyWantMovieList(page-1,email);
+        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = memberService.findMyWantMovieList(page - 1, email);
         model.addAttribute("pageData", wantMovieResponseDtoList);
         return "member/wantMovieList";
+    }
+
+    @GetMapping("/mypage/comment")
+    public String getMyCommentList(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "sort",defaultValue = "createdAtForComment") String sort,
+                                   Authentication authentication, Model model) {
+        String email = authentication.getName();
+        PagingResponseDto<MemberDto.MemberCommentResponseDto> commentResponseDtoList = memberService.findMyCommentList(page - 1, email,sort);
+        model.addAttribute("pageData", commentResponseDtoList);
+        return "member/commentList";
     }
 
     //==========================관리자 화면 컨트롤러=========================
 
     @GetMapping("/admin/member/warning-page")
     public String adminGetWarning(@RequestParam("email") String email, Model model) {
-        MemberDto.Response memberRepDto=memberService.pickMember(email);
+        MemberDto.Response memberRepDto = memberService.pickMember(email);
         model.addAttribute("email", memberRepDto.getEmail());
         model.addAttribute("warningCard", memberRepDto.getWarningCard());
         model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
@@ -103,60 +113,69 @@ public class MemberController {
 
     @PostMapping("/admin/member/warning")
     public String adminPatchWarning(@RequestParam("email") String email,
-                                     @RequestParam(value = "warning",defaultValue = "off") String warning,
-                                     @RequestParam(value = "block",defaultValue = "off") String block, Model model) {
-        MemberDto.Response memberRepDto=memberService.giveWarning(email,warning, block);
-        model.addAttribute("email",memberRepDto.getEmail());
-        model.addAttribute("warningCard",memberRepDto.getWarningCard());
-        model.addAttribute("memberStatus",memberRepDto.getMemberStatus());
+                                    @RequestParam(value = "warning", defaultValue = "off") String warning,
+                                    @RequestParam(value = "block", defaultValue = "off") String block, Model model) {
+        MemberDto.Response memberRepDto = memberService.giveWarning(email, warning, block);
+        model.addAttribute("email", memberRepDto.getEmail());
+        model.addAttribute("warningCard", memberRepDto.getWarningCard());
+        model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
         return "member/warning";
     }
 
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam("page") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@",page - 1, sort);
-        log.info("MEM_startPage={}",pageRepDto.getStartPage());
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@", page - 1, sort);
+        log.info("MEM_startPage={}", pageRepDto.getStartPage());
         model.addAttribute("pageData", pageRepDto);
         return "member/member";
     }
 
     @GetMapping("/admin/member/search")
-    public String getMemberBySearch(@RequestParam(value = "page",defaultValue = "1") int page,
-                                    @RequestParam(value = "email",required = false) String email, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email,page-1,"memberId");
+    public String getMemberBySearch(@RequestParam(value = "page", defaultValue = "1") int page,
+                                    @RequestParam(value = "email", required = false) String email, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email, page - 1, "memberId");
         model.addAttribute("pageData", pageRepDto);
         return "member/memberSearchResult";
     }
 
     @GetMapping("/admin/administrator")
-    public String adminGetAdmins(@RequestParam(value = "page",defaultValue = "1") int page,
-                                    @RequestParam(value = "sort",defaultValue = "memberId") String sort, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@",page-1,sort);
+    public String adminGetAdmins(@RequestParam(value = "page", defaultValue = "1") int page,
+                                 @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@", page - 1, sort);
         model.addAttribute("pageData", pageRepDto);
         return "member/admins";
     }
 
     @GetMapping("/admin/administrator/search")
-    public String adminGetAdminsBySearch(@RequestParam(value = "page",defaultValue = "1") int page,
-                                 @RequestParam(value = "email",required = false) String email, Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin(email,page-1,"memberId");
+    public String adminGetAdminsBySearch(@RequestParam(value = "page", defaultValue = "1") int page,
+                                         @RequestParam(value = "email", required = false) String email, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin(email, page - 1, "memberId");
         model.addAttribute("pageData", pageRepDto);
         return "member/admins";
     }
 
     @PostMapping("/admin/administrator/add")
     public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
-        MemberDto.Response saveMember=memberService.createAdmin(memberDto);
-        model.addAttribute("email",saveMember.getEmail());
-        model.addAttribute("memberImage",saveMember.getMemberImage());
+        MemberDto.Response saveMember = memberService.createAdmin(memberDto);
+        model.addAttribute("email", saveMember.getEmail());
+        model.addAttribute("memberImage", saveMember.getMemberImage());
         return "member/join";
     }
 
     @GetMapping("/admin/administrator/delete")
-    public String adminDeleteAdmin(@RequestParam("email") String email,Model model) {
-        PagingResponseDto<MemberDto.Response> pageRepDto=memberService.deleteAdmin(email);
+    public String adminDeleteAdmin(@RequestParam("email") String email, Model model) {
+        PagingResponseDto<MemberDto.Response> pageRepDto = memberService.deleteAdmin(email);
         model.addAttribute("pageData", pageRepDto);
         return "member/admins";
+    }
+
+    @GetMapping("/admin/comment")
+    public String adminGetCommentList(@RequestParam(value = "page", defaultValue = "1") int page,
+                                      @RequestParam(value = "sort",defaultValue = "claimCount") String sort,
+                                      Model model) {
+        PagingResponseDto<MemberDto.MemberCommentResponseDto> commentResponseDtoList = memberService.findMyCommentList(page - 1, "@",sort);
+        model.addAttribute("pageData", commentResponseDtoList);
+        return "member/claimCommentList";
     }
 }

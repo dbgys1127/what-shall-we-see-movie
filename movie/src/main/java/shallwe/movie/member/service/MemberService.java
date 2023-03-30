@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.comment.service.CommentService;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
@@ -24,8 +26,10 @@ import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,8 +42,8 @@ public class MemberService {
     private final CustomAuthorityUtils authorityUtils;
     private final S3UploadService s3UploadService;
     private final SawMovieService sawMovieService;
-
     private final WantMovieService wantMovieService;
+    private final CommentService commentService;
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     // 1. 회원가입 처리 메소드
@@ -80,8 +84,11 @@ public class MemberService {
         MemberDto.Response memberRepDto = getMemberRepDto(member);
         memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
         memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
-        log.info("memberCount={}",member.getComments().size());
-        memberRepDto.setComments(MemberDto.getMemberCommentResponseDtoList(member.getComments()));
+        memberRepDto.setComments(MemberDto.getMemberCommentResponseDtoList(member.getComments())
+                .stream()
+                .sorted(Comparator.comparing(MemberDto.MemberCommentResponseDto::getCommentId).reversed())
+                .collect(Collectors.toList())
+        );
         return memberRepDto;
     }
 
@@ -101,6 +108,12 @@ public class MemberService {
         return new PagingResponseDto<>(wantMovieResponseDtoList,pageInfo);
     }
 
+    public PagingResponseDto<MemberDto.MemberCommentResponseDto> findMyCommentList(int page, String email, String sort) {
+        Page<Comment> pageInfo = commentService.getCommentList(email, PageRequest.of(page, 10, Sort.by(sort).descending()));
+        List<Comment> comments = pageInfo.getContent();
+        List<MemberDto.MemberCommentResponseDto> commentResponseDtoList = MemberDto.getMemberCommentResponseDtoList(comments);
+        return new PagingResponseDto<>(commentResponseDtoList, pageInfo);
+    }
     // ============================ 관리자 요청 처리 메소드 ==============================
     /** 1. 회원 목록 조회
      * [검색이 없는 회원 목록 조회 시]

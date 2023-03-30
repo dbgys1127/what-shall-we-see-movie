@@ -142,16 +142,16 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
     }
 
     @Override
-    public Page<Comment> findCommentByMemberWithPaging(Member member, Pageable pageable) {
+    public Page<Comment> findCommentByMemberWithPaging(String email, Pageable pageable) {
         List<Comment> content= queryFactory
                 .selectFrom(comment)
-                .where(comment.member.eq(member))
+                .where(comment.member.email.contains(email))
                 .orderBy(memberSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         long total = queryFactory.selectFrom(comment)
-                .where(comment.member.eq(member))
+                .where(comment.member.email.contains(email))
                 .fetchCount();
         return new PageImpl<>(content, pageable, total);
     }
@@ -190,6 +190,8 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                         return new OrderSpecifier(direction, wantMovie.createdAt);
                     case "createdAtForComment":
                         return new OrderSpecifier(direction, comment.createdAt);
+                    case "claimCount":
+                        return new OrderSpecifier(direction, comment.claimCount);
                 }
             }
         }
