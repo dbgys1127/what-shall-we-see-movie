@@ -13,7 +13,8 @@
     <h3>영화 관리</h3>
     <a href="/admin/movie?page=1">영화</a>
     <h3>댓글 관리</h3>
-    <a href="/admin/comment">신고 댓글 관리</a>
-
+    <a href="/admin/comment">신고 댓글 조회</a>
+    <h3>문의 관리</h3>
+    <a href="/admin/inquiry">문의 내역 조회</a>
 </body>
 </html>

@@ -26,7 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public Page&lt;Comment&gt; getCommentList(String email, Pageable pageable) {
-<span class="nc" id="L29">        return commentRepository.findCommentByMemberWithPaging(email,pageable);</span>
+<span class="fc" id="L29">        return commentRepository.findCommentByMemberWithPaging(email,pageable);</span>
     }
     public Comment saveMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
 <span class="fc" id="L32">        Comment comment = Comment.builder()</span>

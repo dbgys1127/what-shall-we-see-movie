@@ -2,7 +2,6 @@ package shallwe.movie.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Controller;
@@ -15,12 +14,9 @@ import shallwe.movie.member.dto.MemberDto;
 
 import shallwe.movie.member.service.MemberService;
 
-
-import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
+
 
 
 @Slf4j

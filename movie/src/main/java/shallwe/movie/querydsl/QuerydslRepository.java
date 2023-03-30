@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.inquiry.entity.Inquiry;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -28,4 +29,6 @@ public interface QuerydslRepository {
     Page<WantMovie> findWantMoviesByMemberWithPaging(Member member, Pageable pageable);
 
     Page<Comment> findCommentByMemberWithPaging(String email, Pageable pageable);
+
+    Page<Inquiry> findInquiryByMemberWithPaging(String email, Pageable pageable);
 }

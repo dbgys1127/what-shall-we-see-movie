@@ -240,7 +240,4 @@ public class MemberService {
         }
         return memberRepDtoList;
     }
-
-
-
 }

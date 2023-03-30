@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.inquiry.entity.Inquiry;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -17,6 +18,7 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 import java.util.List;
 
 import static shallwe.movie.comment.entity.QComment.comment;
+import static shallwe.movie.inquiry.entity.QInquiry.inquiry;
 import static shallwe.movie.member.entity.QMember.member;
 import static shallwe.movie.movie.entity.QMovie.movie;
 import static shallwe.movie.sawmovie.entity.QSawMovie.sawMovie;
@@ -156,6 +158,21 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public Page<Inquiry> findInquiryByMemberWithPaging(String email, Pageable pageable) {
+        List<Inquiry> content= queryFactory
+                .selectFrom(inquiry)
+                .where(inquiry.member.email.contains(email))
+                .orderBy(inquirySort(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long total = queryFactory.selectFrom(inquiry)
+                .where(inquiry.member.email.contains(email))
+                .fetchCount();
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private OrderSpecifier<?> movieSort(Pageable page) {
         if (!page.getSort().isEmpty()) {
             for (Sort.Order order : page.getSort()) {
@@ -192,6 +209,21 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
                         return new OrderSpecifier(direction, comment.createdAt);
                     case "claimCount":
                         return new OrderSpecifier(direction, comment.claimCount);
+                }
+            }
+        }
+        return null;
+    }
+    private OrderSpecifier<?> inquirySort(Pageable page) {
+        if (!page.getSort().isEmpty()) {
+            for (Sort.Order order : page.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch (order.getProperty()) {
+                    case "createdAt":
+                        return new OrderSpecifier(direction, inquiry.createdAt);
+                    case "inquiryStatus":
+                        return new OrderSpecifier(direction, inquiry.inquiryStatus);
                 }
             }
         }

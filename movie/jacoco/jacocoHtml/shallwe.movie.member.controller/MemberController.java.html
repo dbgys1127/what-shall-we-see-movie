@@ -94,10 +94,10 @@ public class MemberController {
     public String getMyCommentList(@RequestParam(value = &quot;page&quot;, defaultValue = &quot;1&quot;) int page,
                                    @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;createdAtForComment&quot;) String sort,
                                    Authentication authentication, Model model) {
-<span class="nc" id="L97">        String email = authentication.getName();</span>
-<span class="nc" id="L98">        PagingResponseDto&lt;MemberDto.MemberCommentResponseDto&gt; commentResponseDtoList = memberService.findMyCommentList(page - 1, email,sort);</span>
-<span class="nc" id="L99">        model.addAttribute(&quot;pageData&quot;, commentResponseDtoList);</span>
-<span class="nc" id="L100">        return &quot;member/commentList&quot;;</span>
+<span class="fc" id="L97">        String email = authentication.getName();</span>
+<span class="fc" id="L98">        PagingResponseDto&lt;MemberDto.MemberCommentResponseDto&gt; commentResponseDtoList = memberService.findMyCommentList(page - 1, email,sort);</span>
+<span class="fc" id="L99">        model.addAttribute(&quot;pageData&quot;, commentResponseDtoList);</span>
+<span class="fc" id="L100">        return &quot;member/commentList&quot;;</span>
     }
 
     //==========================관리자 화면 컨트롤러=========================
