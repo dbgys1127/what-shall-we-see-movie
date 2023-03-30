@@ -18,8 +18,16 @@
     <tr><td>문의 내용: ${inquiry.inquiryDescription}</td></tr>
     <tr>
         <td><button type="submit"><a href="/inquiry/patch?inquiryId=${inquiry.inquiryId}" >수정하기</a></button></td>
+        
         <td><button type="button"><a href="/">메인</a></button></td>
     </tr>
+     <c:forEach var="answer" items="${inquiry.answers}">    
+        <tr><td>${answer.answerDescription}</td></tr>
+        <tr>
+            <td>${answer.createdBy}</td>
+            <td>${answer.createdAt}</td>
+        </tr>
+    </c:forEach>  
 </table>
 </body>
 </html>

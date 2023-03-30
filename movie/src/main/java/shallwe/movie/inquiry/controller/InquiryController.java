@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import shallwe.movie.answer.dto.AnswerDto;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.inquiry.dto.InquiryDto;
 import shallwe.movie.inquiry.service.InquiryService;
@@ -70,6 +71,16 @@ public class InquiryController {
         PagingResponseDto<InquiryDto.Response> pageData=inquiryService.getInquiryList("@",page-1,sort);
         model.addAttribute("pageData", pageData);
         return "inquiry/adminInquiry";
+    }
+
+    @PostMapping("/admin/inquiry/answer")
+    String postAnswer(@RequestParam("inquiryId") Long inquiryId,
+                      @RequestParam(value = "inquiryStatus",defaultValue = "off") String inquiryStatus,
+                      @ModelAttribute @Valid AnswerDto.Post answerDto,
+                      RedirectAttributes redirectAttributes) {
+        inquiryService.saveAnswer(inquiryId, inquiryStatus, answerDto);
+        redirectAttributes.addAttribute("inquiryId", inquiryId);
+        return "redirect:/admin/inquiry/detail";
     }
     @GetMapping("/admin/inquiry/detail")
     String getAdminInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {

@@ -4,10 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shallwe.movie.answer.entity.Answer;
 import shallwe.movie.audit.WriterAudit;
 import shallwe.movie.member.entity.Member;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,15 +34,19 @@ public class Inquiry extends WriterAudit {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL)
+    List<Answer> answers = new ArrayList<>();
+
     public enum InquiryStatus {
         처리, 대기;
     }
 
     @Builder
-    public Inquiry(Long inquiryId, String inquiryTitle, String inquiryDescription) {
+    public Inquiry(Long inquiryId, String inquiryTitle, String inquiryDescription,List<Answer> answers) {
         this.inquiryId = inquiryId;
         this.inquiryTitle = inquiryTitle;
         this.inquiryDescription = inquiryDescription;
         this.inquiryStatus = InquiryStatus.대기;
+        this.answers = answers;
     }
 }

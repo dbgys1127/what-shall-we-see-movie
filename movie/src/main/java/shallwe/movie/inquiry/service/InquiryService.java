@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shallwe.movie.answer.dto.AnswerDto;
+import shallwe.movie.answer.service.AnswerService;
 import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.inquiry.dto.InquiryDto;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final MemberService memberService;
+    private final AnswerService answerService;
     public Inquiry saveInquiry(String email, InquiryDto.Post inquiryDto) {
         Inquiry inquiry = transferDtoToInquiry(inquiryDto);
         Member member = memberService.is_exist_member(email);
@@ -41,7 +44,7 @@ public class InquiryService {
     }
 
     public InquiryDto.Response getInquiry(Long inquiryId) {
-        Inquiry inquiry = is_exist_comment(inquiryId);
+        Inquiry inquiry = is_exist_inquiry(inquiryId);
         return InquiryDto.Response.builder()
                 .inquiryId(inquiry.getInquiryId())
                 .inquiryTitle(inquiry.getInquiryTitle())
@@ -49,13 +52,14 @@ public class InquiryService {
                 .inquiryStatus(inquiry.getInquiryStatus())
                 .createdAt(inquiry.getCreatedAt())
                 .createdBy(inquiry.getCreatedBy())
+                .answers(InquiryDto.getAnswerResponseDtoList(inquiry.getAnswers()))
                 .build();
     }
 
     public void deleteInquiry(Long inquiryId) {
-        inquiryRepository.delete(is_exist_comment(inquiryId));
+        inquiryRepository.delete(is_exist_inquiry(inquiryId));
     }
-    public Inquiry is_exist_comment(Long inquiryId) {
+    public Inquiry is_exist_inquiry(Long inquiryId) {
         Optional<Inquiry> optionalInquiry =inquiryRepository.findById(inquiryId);
         Inquiry findInquiry = optionalInquiry.orElseThrow(() -> new RuntimeException());
         return findInquiry;
@@ -87,4 +91,13 @@ public class InquiryService {
     }
 
 
+    public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
+        Inquiry inquiry = is_exist_inquiry(inquiryId);
+        answerService.saveAnswer(inquiry, answerDto);
+        if (inquiryStatus.equals("on")) {
+            inquiry.setInquiryStatus(Inquiry.InquiryStatus.처리);
+        } else {
+            inquiry.setInquiryStatus(Inquiry.InquiryStatus.대기);
+        }
+    }
 }

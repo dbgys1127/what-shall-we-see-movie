@@ -3,6 +3,9 @@ package shallwe.movie.inquiry.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import shallwe.movie.answer.dto.AnswerDto;
+import shallwe.movie.answer.entity.Answer;
+import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.inquiry.entity.Inquiry;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
@@ -10,7 +13,9 @@ import shallwe.movie.member.entity.Member;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class InquiryDto {
@@ -39,5 +44,18 @@ public class InquiryDto {
         private Inquiry.InquiryStatus inquiryStatus;
         private String createdBy;
         private LocalDateTime createdAt;
+        private List<AnswerDto.Response> answers;
+    }
+    public static List<AnswerDto.Response> getAnswerResponseDtoList(List<Answer> answers) {
+        return answers
+                .stream()
+                .sorted(Comparator.comparing(Answer::getAnswerId).reversed())
+                .map(answer -> AnswerDto.Response
+                        .builder()
+                        .answerDescription(answer.getAnswerDescription())
+                        .createdBy(answer.getCreatedBy())
+                        .createdAt(answer.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
