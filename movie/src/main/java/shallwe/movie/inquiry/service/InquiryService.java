@@ -59,6 +59,18 @@ public class InquiryService {
     public void deleteInquiry(Long inquiryId) {
         inquiryRepository.delete(is_exist_inquiry(inquiryId));
     }
+    public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
+        Inquiry inquiry = is_exist_inquiry(inquiryId);
+        answerService.saveAnswer(inquiry, answerDto);
+        if (inquiryStatus.equals("on")) {
+            inquiry.setInquiryStatus(Inquiry.InquiryStatus.처리);
+        } else {
+            inquiry.setInquiryStatus(Inquiry.InquiryStatus.대기);
+        }
+    }
+    public void deleteAnswer(Long inquiryId) {
+        answerService.deleteAnswer(inquiryId);
+    }
     public Inquiry is_exist_inquiry(Long inquiryId) {
         Optional<Inquiry> optionalInquiry =inquiryRepository.findById(inquiryId);
         Inquiry findInquiry = optionalInquiry.orElseThrow(() -> new RuntimeException());
@@ -91,13 +103,5 @@ public class InquiryService {
     }
 
 
-    public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
-        Inquiry inquiry = is_exist_inquiry(inquiryId);
-        answerService.saveAnswer(inquiry, answerDto);
-        if (inquiryStatus.equals("on")) {
-            inquiry.setInquiryStatus(Inquiry.InquiryStatus.처리);
-        } else {
-            inquiry.setInquiryStatus(Inquiry.InquiryStatus.대기);
-        }
-    }
+
 }

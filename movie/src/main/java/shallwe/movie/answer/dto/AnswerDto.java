@@ -21,6 +21,7 @@ public class AnswerDto {
     @Setter
     @Builder
     public static class Response {
+        private Long answerId;
         private String answerDescription;
         private String createdBy;
         private LocalDateTime createdAt;

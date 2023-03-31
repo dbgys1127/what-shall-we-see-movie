@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InquiryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.inquiry.service</a> &gt; <span class="el_source">InquiryService.java</span></div><h1>InquiryService.java</h1><pre class="source lang-java linenums">package shallwe.movie.inquiry.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import shallwe.movie.answer.dto.AnswerDto;
+import shallwe.movie.answer.service.AnswerService;
+import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.dto.PagingResponseDto;
+import shallwe.movie.inquiry.dto.InquiryDto;
+import shallwe.movie.inquiry.entity.Inquiry;
+import shallwe.movie.inquiry.repository.InquiryRepository;
+import shallwe.movie.member.entity.Member;
+import shallwe.movie.member.service.MemberService;
+import shallwe.movie.wantmovie.entity.WantMovie;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional
+<span class="fc" id="L27">@RequiredArgsConstructor</span>
+<span class="fc" id="L28">@Slf4j</span>
+public class InquiryService {
+    private final InquiryRepository inquiryRepository;
+    private final MemberService memberService;
+    private final AnswerService answerService;
+    public Inquiry saveInquiry(String email, InquiryDto.Post inquiryDto) {
+<span class="fc" id="L34">        Inquiry inquiry = transferDtoToInquiry(inquiryDto);</span>
+<span class="fc" id="L35">        Member member = memberService.is_exist_member(email);</span>
+<span class="fc" id="L36">        setMemberRelation(member,inquiry);</span>
+<span class="fc" id="L37">        return inquiryRepository.save(inquiry);</span>
+    }
+    public PagingResponseDto&lt;InquiryDto.Response&gt; getInquiryList(String email, int page, String sort) {
+<span class="fc" id="L40">        Page&lt;Inquiry&gt; pageInfo = inquiryRepository.findInquiryByMemberWithPaging(email, PageRequest.of(page, 10, Sort.by(sort).descending()));</span>
+<span class="fc" id="L41">        List&lt;Inquiry&gt; inquiries = pageInfo.getContent();</span>
+<span class="fc" id="L42">        List&lt;InquiryDto.Response&gt; inquiryRepDtoList = getInquiryRepDtoList(inquiries);</span>
+<span class="fc" id="L43">        return new PagingResponseDto&lt;&gt;(inquiryRepDtoList,pageInfo);</span>
+    }
+
+    public InquiryDto.Response getInquiry(Long inquiryId) {
+<span class="fc" id="L47">        Inquiry inquiry = is_exist_inquiry(inquiryId);</span>
+<span class="fc" id="L48">        return InquiryDto.Response.builder()</span>
+<span class="fc" id="L49">                .inquiryId(inquiry.getInquiryId())</span>
+<span class="fc" id="L50">                .inquiryTitle(inquiry.getInquiryTitle())</span>
+<span class="fc" id="L51">                .inquiryDescription(inquiry.getInquiryDescription())</span>
+<span class="fc" id="L52">                .inquiryStatus(inquiry.getInquiryStatus())</span>
+<span class="fc" id="L53">                .createdAt(inquiry.getCreatedAt())</span>
+<span class="fc" id="L54">                .createdBy(inquiry.getCreatedBy())</span>
+<span class="fc" id="L55">                .answers(InquiryDto.getAnswerResponseDtoList(inquiry.getAnswers()))</span>
+<span class="fc" id="L56">                .build();</span>
+    }
+
+    public void deleteInquiry(Long inquiryId) {
+<span class="nc" id="L60">        inquiryRepository.delete(is_exist_inquiry(inquiryId));</span>
+<span class="nc" id="L61">    }</span>
+    public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
+<span class="fc" id="L63">        Inquiry inquiry = is_exist_inquiry(inquiryId);</span>
+<span class="fc" id="L64">        answerService.saveAnswer(inquiry, answerDto);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (inquiryStatus.equals(&quot;on&quot;)) {</span>
+<span class="fc" id="L66">            inquiry.setInquiryStatus(Inquiry.InquiryStatus.처리);</span>
+        } else {
+<span class="fc" id="L68">            inquiry.setInquiryStatus(Inquiry.InquiryStatus.대기);</span>
+        }
+<span class="fc" id="L70">    }</span>
+    public void deleteAnswer(Long inquiryId) {
+<span class="nc" id="L72">        answerService.deleteAnswer(inquiryId);</span>
+<span class="nc" id="L73">    }</span>
+    public Inquiry is_exist_inquiry(Long inquiryId) {
+<span class="fc" id="L75">        Optional&lt;Inquiry&gt; optionalInquiry =inquiryRepository.findById(inquiryId);</span>
+<span class="pc" id="L76">        Inquiry findInquiry = optionalInquiry.orElseThrow(() -&gt; new RuntimeException());</span>
+<span class="fc" id="L77">        return findInquiry;</span>
+    }
+    private static Inquiry transferDtoToInquiry(InquiryDto.Post inquiryDto) {
+<span class="fc" id="L80">        return Inquiry.builder()</span>
+<span class="fc" id="L81">                .inquiryTitle(inquiryDto.getInquiryTitle())</span>
+<span class="fc" id="L82">                .inquiryDescription(inquiryDto.getInquiryDescription())</span>
+<span class="fc" id="L83">                .build();</span>
+    }
+    private static List&lt;InquiryDto.Response&gt; getInquiryRepDtoList(List&lt;Inquiry&gt; inquiries) {
+<span class="fc" id="L86">        List&lt;InquiryDto.Response&gt; inquiryRepDtoList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (Inquiry inquiry : inquiries) {</span>
+<span class="fc" id="L88">            InquiryDto.Response inquiryRepDto = InquiryDto.Response.builder()</span>
+<span class="fc" id="L89">                    .inquiryId(inquiry.getInquiryId())</span>
+<span class="fc" id="L90">                    .inquiryTitle(inquiry.getInquiryTitle())</span>
+<span class="fc" id="L91">                    .inquiryDescription(inquiry.getInquiryDescription())</span>
+<span class="fc" id="L92">                    .inquiryStatus(inquiry.getInquiryStatus())</span>
+<span class="fc" id="L93">                    .createdBy(inquiry.getCreatedBy())</span>
+<span class="fc" id="L94">                    .createdAt(inquiry.getCreatedAt())</span>
+<span class="fc" id="L95">                    .build();</span>
+<span class="fc" id="L96">            inquiryRepDtoList.add(inquiryRepDto);</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">        return inquiryRepDtoList;</span>
+    }
+    public void setMemberRelation(Member member, Inquiry inquiry) {
+<span class="fc" id="L101">        inquiry.setMember(member);</span>
+<span class="fc" id="L102">        member.getInquiries().add(inquiry);</span>
+<span class="fc" id="L103">    }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

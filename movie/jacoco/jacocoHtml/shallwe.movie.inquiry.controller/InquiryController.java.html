@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InquiryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">movie</a> &gt; <a href="index.source.html" class="el_package">shallwe.movie.inquiry.controller</a> &gt; <span class="el_source">InquiryController.java</span></div><h1>InquiryController.java</h1><pre class="source lang-java linenums">package shallwe.movie.inquiry.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import shallwe.movie.answer.dto.AnswerDto;
+import shallwe.movie.dto.PagingResponseDto;
+import shallwe.movie.inquiry.dto.InquiryDto;
+import shallwe.movie.inquiry.service.InquiryService;
+
+import javax.validation.Valid;
+
+<span class="fc" id="L20">@Slf4j</span>
+@Controller
+<span class="fc" id="L22">@RequiredArgsConstructor</span>
+public class InquiryController {
+
+    private final InquiryService inquiryService;
+
+    //============================ 사용자 ==========================
+
+    @GetMapping(&quot;/inquiry/add-inquiry-form&quot;)
+    String getInquiryAddForm() {
+<span class="nc" id="L31">        return &quot;inquiry/addInquiry&quot;;</span>
+    }
+
+    @PostMapping(&quot;/inquiry&quot;)
+    String postInquiry(@ModelAttribute @Valid InquiryDto.Post inquiryDto,
+                       Authentication authentication) {
+<span class="nc" id="L37">        String email = authentication.getName();</span>
+<span class="nc" id="L38">        inquiryService.saveInquiry(email, inquiryDto);</span>
+<span class="nc" id="L39">        return &quot;redirect:/inquiry&quot;;</span>
+    }
+
+    @GetMapping(&quot;/inquiry&quot;)
+    String getMyInquiryList(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
+                        @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;createdAt&quot;) String sort,
+                        Authentication authentication,
+                        Model model) {
+<span class="nc" id="L47">        String email=authentication.getName();</span>
+<span class="nc" id="L48">        PagingResponseDto&lt;InquiryDto.Response&gt; pageData=inquiryService.getInquiryList(email,page-1,sort);</span>
+<span class="nc" id="L49">        model.addAttribute(&quot;pageData&quot;, pageData);</span>
+<span class="nc" id="L50">        return &quot;inquiry/myInquiry&quot;;</span>
+    }
+
+    @GetMapping(&quot;/inquiry/detail&quot;)
+    String getMyInquiry(@RequestParam(&quot;inquiryId&quot;) Long inquiryId, Model model) {
+<span class="nc" id="L55">        InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);</span>
+<span class="nc" id="L56">        model.addAttribute(&quot;inquiry&quot;, inquiryRepDto);</span>
+<span class="nc" id="L57">        return &quot;inquiry/myInquiryDetail&quot;;</span>
+    }
+
+    @PostMapping(&quot;/inquiry/delete&quot;)
+    String deleteInquiry(@RequestParam(&quot;inquiryId&quot;) Long inquiryId) {
+<span class="nc" id="L62">        inquiryService.deleteInquiry(inquiryId);</span>
+<span class="nc" id="L63">        return &quot;redirect:/inquiry&quot;;</span>
+    }
+    //============================관리자 ==========================
+
+    @GetMapping(&quot;/admin/inquiry&quot;)
+    String getInquiryListForAdmin(@RequestParam(value = &quot;page&quot;,defaultValue = &quot;1&quot;) int page,
+                        @RequestParam(value = &quot;sort&quot;,defaultValue = &quot;createdAt&quot;) String sort,
+                        Model model) {
+<span class="nc" id="L71">        PagingResponseDto&lt;InquiryDto.Response&gt; pageData=inquiryService.getInquiryList(&quot;@&quot;,page-1,sort);</span>
+<span class="nc" id="L72">        model.addAttribute(&quot;pageData&quot;, pageData);</span>
+<span class="nc" id="L73">        return &quot;inquiry/adminInquiry&quot;;</span>
+    }
+
+    @PostMapping(&quot;/admin/inquiry/answer&quot;)
+    String postAnswer(@RequestParam(&quot;inquiryId&quot;) Long inquiryId,
+                      @RequestParam(value = &quot;inquiryStatus&quot;,defaultValue = &quot;off&quot;) String inquiryStatus,
+                      @ModelAttribute @Valid AnswerDto.Post answerDto,
+                      RedirectAttributes redirectAttributes) {
+<span class="nc" id="L81">        inquiryService.saveAnswer(inquiryId, inquiryStatus, answerDto);</span>
+<span class="nc" id="L82">        redirectAttributes.addAttribute(&quot;inquiryId&quot;, inquiryId);</span>
+<span class="nc" id="L83">        return &quot;redirect:/admin/inquiry/detail&quot;;</span>
+    }
+
+    @PostMapping(&quot;/admin/inquiry/answer/delete&quot;)
+    String deleteAnswer(@RequestParam(&quot;answerId&quot;) Long answerId,
+                        @RequestParam(&quot;inquiryId&quot;) Long inquiryId,
+                        RedirectAttributes redirectAttributes) {
+<span class="nc" id="L90">        inquiryService.deleteAnswer(answerId);</span>
+<span class="nc" id="L91">        redirectAttributes.addAttribute(&quot;inquiryId&quot;, inquiryId);</span>
+<span class="nc" id="L92">        return &quot;redirect:/admin/inquiry/detail&quot;;</span>
+    }
+
+    @GetMapping(&quot;/admin/inquiry/detail&quot;)
+    String getAdminInquiry(@RequestParam(&quot;inquiryId&quot;) Long inquiryId, Model model) {
+<span class="nc" id="L97">        InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);</span>
+<span class="nc" id="L98">        model.addAttribute(&quot;inquiry&quot;, inquiryRepDto);</span>
+<span class="nc" id="L99">        return &quot;inquiry/adminInquiryDetail&quot;;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

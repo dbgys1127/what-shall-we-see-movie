@@ -52,6 +52,7 @@ public class InquiryDto {
                 .sorted(Comparator.comparing(Answer::getAnswerId).reversed())
                 .map(answer -> AnswerDto.Response
                         .builder()
+                        .answerId(answer.getAnswerId())
                         .answerDescription(answer.getAnswerDescription())
                         .createdBy(answer.getCreatedBy())
                         .createdAt(answer.getCreatedAt())

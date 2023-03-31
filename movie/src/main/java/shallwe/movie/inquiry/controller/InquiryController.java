@@ -82,6 +82,16 @@ public class InquiryController {
         redirectAttributes.addAttribute("inquiryId", inquiryId);
         return "redirect:/admin/inquiry/detail";
     }
+
+    @PostMapping("/admin/inquiry/answer/delete")
+    String deleteAnswer(@RequestParam("answerId") Long answerId,
+                        @RequestParam("inquiryId") Long inquiryId,
+                        RedirectAttributes redirectAttributes) {
+        inquiryService.deleteAnswer(answerId);
+        redirectAttributes.addAttribute("inquiryId", inquiryId);
+        return "redirect:/admin/inquiry/detail";
+    }
+
     @GetMapping("/admin/inquiry/detail")
     String getAdminInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
         InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);

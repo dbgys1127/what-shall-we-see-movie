@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import shallwe.movie.comment.entity.Comment;
+import shallwe.movie.inquiry.entity.Inquiry;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -17,185 +18,216 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 import java.util.List;
 
 import static shallwe.movie.comment.entity.QComment.comment;
+import static shallwe.movie.inquiry.entity.QInquiry.inquiry;
 import static shallwe.movie.member.entity.QMember.member;
 import static shallwe.movie.movie.entity.QMovie.movie;
 import static shallwe.movie.sawmovie.entity.QSawMovie.sawMovie;
 import static shallwe.movie.wantmovie.entity.QWantMovie.wantMovie;
 
-<span class="fc" id="L25">@RequiredArgsConstructor</span>
+<span class="fc" id="L27">@RequiredArgsConstructor</span>
 public class QuerydslRepositoryImpl implements QuerydslRepository{
     private final JPAQueryFactory queryFactory;
     @Override
     public Page&lt;Member&gt; findAllMemberWithPaging(String email,Pageable pageable) {
-<span class="fc" id="L30">        List&lt;Member&gt; content = queryFactory</span>
-<span class="fc" id="L31">                .selectFrom(member)</span>
-<span class="fc" id="L32">                .where(member.email.contains(email)</span>
-<span class="fc" id="L33">                                .and(member.roles.size().eq(1)))</span>
-<span class="fc" id="L34">                .orderBy(memberSort(pageable))</span>
-<span class="fc" id="L35">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L36">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L37">                .fetch();</span>
+<span class="fc" id="L32">        List&lt;Member&gt; content = queryFactory</span>
+<span class="fc" id="L33">                .selectFrom(member)</span>
+<span class="fc" id="L34">                .where(member.email.contains(email)</span>
+<span class="fc" id="L35">                                .and(member.roles.size().eq(1)))</span>
+<span class="fc" id="L36">                .orderBy(memberSort(pageable))</span>
+<span class="fc" id="L37">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L38">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L39">                .fetch();</span>
 
-<span class="fc" id="L39">        long total = queryFactory.selectFrom(member)</span>
-<span class="fc" id="L40">                .where(member.email.contains(email)</span>
-<span class="fc" id="L41">                                .and(member.roles.size().eq(1)))</span>
-<span class="fc" id="L42">                .fetchCount();</span>
-<span class="fc" id="L43">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
+<span class="fc" id="L41">        long total = queryFactory.selectFrom(member)</span>
+<span class="fc" id="L42">                .where(member.email.contains(email)</span>
+<span class="fc" id="L43">                                .and(member.roles.size().eq(1)))</span>
+<span class="fc" id="L44">                .fetchCount();</span>
+<span class="fc" id="L45">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
     }
 
     @Override
     public Page&lt;Member&gt; findAllAdminWithPaging(String email, Pageable pageable) {
-<span class="fc" id="L48">        List&lt;Member&gt; content = queryFactory</span>
-<span class="fc" id="L49">                .selectFrom(member)</span>
-<span class="fc" id="L50">                .where(member.email.contains(email)</span>
-<span class="fc" id="L51">                        .and(member.roles.size().eq(2)))</span>
-<span class="fc" id="L52">                .orderBy(memberSort(pageable))</span>
-<span class="fc" id="L53">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L54">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L55">                .fetch();</span>
+<span class="fc" id="L50">        List&lt;Member&gt; content = queryFactory</span>
+<span class="fc" id="L51">                .selectFrom(member)</span>
+<span class="fc" id="L52">                .where(member.email.contains(email)</span>
+<span class="fc" id="L53">                        .and(member.roles.size().eq(2)))</span>
+<span class="fc" id="L54">                .orderBy(memberSort(pageable))</span>
+<span class="fc" id="L55">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L56">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L57">                .fetch();</span>
 
-<span class="fc" id="L57">        long total = queryFactory.selectFrom(member)</span>
-<span class="fc" id="L58">                .where(member.email.contains(email)</span>
-<span class="fc" id="L59">                        .and(member.roles.size().eq(2)))</span>
-<span class="fc" id="L60">                .fetchCount();</span>
-<span class="fc" id="L61">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
+<span class="fc" id="L59">        long total = queryFactory.selectFrom(member)</span>
+<span class="fc" id="L60">                .where(member.email.contains(email)</span>
+<span class="fc" id="L61">                        .and(member.roles.size().eq(2)))</span>
+<span class="fc" id="L62">                .fetchCount();</span>
+<span class="fc" id="L63">        return new PageImpl&lt;&gt;(content,pageable,total);</span>
     }
 
     @Override
     public Page&lt;Movie&gt; findMovieByTitleWithPaging(String title, Pageable pageable) {
-<span class="fc" id="L66">        List&lt;Movie&gt; content = queryFactory</span>
-<span class="fc" id="L67">                .selectFrom(movie)</span>
-<span class="fc" id="L68">                .where(movie.movieTitle.contains(title))</span>
-<span class="fc" id="L69">                .orderBy(movieSort(pageable))</span>
-<span class="fc" id="L70">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L71">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L72">                .fetch();</span>
+<span class="fc" id="L68">        List&lt;Movie&gt; content = queryFactory</span>
+<span class="fc" id="L69">                .selectFrom(movie)</span>
+<span class="fc" id="L70">                .where(movie.movieTitle.contains(title))</span>
+<span class="fc" id="L71">                .orderBy(movieSort(pageable))</span>
+<span class="fc" id="L72">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L73">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L74">                .fetch();</span>
 
-<span class="fc" id="L74">        long total = queryFactory.selectFrom(movie)</span>
-<span class="fc" id="L75">                .where(movie.movieTitle.contains(title))</span>
-<span class="fc" id="L76">                .fetchCount();</span>
-<span class="fc" id="L77">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L76">        long total = queryFactory.selectFrom(movie)</span>
+<span class="fc" id="L77">                .where(movie.movieTitle.contains(title))</span>
+<span class="fc" id="L78">                .fetchCount();</span>
+<span class="fc" id="L79">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     @Override
     public Page&lt;Movie&gt; findMovieByGenreWithPaging(String movieGenre, Pageable pageable) {
-<span class="fc" id="L82">        List&lt;Movie&gt; content = queryFactory</span>
-<span class="fc" id="L83">                .selectFrom(movie)</span>
-<span class="fc" id="L84">                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))</span>
-<span class="fc" id="L85">                .orderBy(movieSort(pageable))</span>
-<span class="fc" id="L86">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L87">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L88">                .fetch();</span>
+<span class="fc" id="L84">        List&lt;Movie&gt; content = queryFactory</span>
+<span class="fc" id="L85">                .selectFrom(movie)</span>
+<span class="fc" id="L86">                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))</span>
+<span class="fc" id="L87">                .orderBy(movieSort(pageable))</span>
+<span class="fc" id="L88">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L89">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L90">                .fetch();</span>
 
-<span class="fc" id="L90">        long total = queryFactory.selectFrom(movie)</span>
-<span class="fc" id="L91">                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))</span>
-<span class="fc" id="L92">                .fetchCount();</span>
-<span class="fc" id="L93">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L92">        long total = queryFactory.selectFrom(movie)</span>
+<span class="fc" id="L93">                .where(movie.movieGenre.eq(Movie.MovieGenre.valueOf(movieGenre)))</span>
+<span class="fc" id="L94">                .fetchCount();</span>
+<span class="fc" id="L95">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     @Override
     public SawMovie findSawMovieByMemberAndMovie(Member member, Movie movie) {
-<span class="fc" id="L98">        return queryFactory</span>
-<span class="fc" id="L99">                .selectFrom(sawMovie)</span>
-<span class="fc" id="L100">                .where(sawMovie.member.eq(member)</span>
-<span class="fc" id="L101">                        .and(sawMovie.movie.eq(movie)))</span>
-<span class="fc" id="L102">                .fetchOne();</span>
+<span class="fc" id="L100">        return queryFactory</span>
+<span class="fc" id="L101">                .selectFrom(sawMovie)</span>
+<span class="fc" id="L102">                .where(sawMovie.member.eq(member)</span>
+<span class="fc" id="L103">                        .and(sawMovie.movie.eq(movie)))</span>
+<span class="fc" id="L104">                .fetchOne();</span>
     }
 
     @Override
     public Page&lt;SawMovie&gt; findSawMoviesByMemberWithPaging(Member member, Pageable pageable) {
-<span class="fc" id="L107">        List&lt;SawMovie&gt; content= queryFactory</span>
-<span class="fc" id="L108">                .selectFrom(sawMovie)</span>
-<span class="fc" id="L109">                .where(sawMovie.member.eq(member))</span>
-<span class="fc" id="L110">                .orderBy(memberSort(pageable))</span>
-<span class="fc" id="L111">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L112">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L113">                .fetch();</span>
-<span class="fc" id="L114">        long total = queryFactory.selectFrom(sawMovie)</span>
-<span class="fc" id="L115">                .where(sawMovie.member.eq(member))</span>
-<span class="fc" id="L116">                .fetchCount();</span>
-<span class="fc" id="L117">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L109">        List&lt;SawMovie&gt; content= queryFactory</span>
+<span class="fc" id="L110">                .selectFrom(sawMovie)</span>
+<span class="fc" id="L111">                .where(sawMovie.member.eq(member))</span>
+<span class="fc" id="L112">                .orderBy(memberSort(pageable))</span>
+<span class="fc" id="L113">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L114">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L115">                .fetch();</span>
+<span class="fc" id="L116">        long total = queryFactory.selectFrom(sawMovie)</span>
+<span class="fc" id="L117">                .where(sawMovie.member.eq(member))</span>
+<span class="fc" id="L118">                .fetchCount();</span>
+<span class="fc" id="L119">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     @Override
     public WantMovie findWantMovieByMemberAndMovie(Member member, Movie movie) {
-<span class="fc" id="L122">        return queryFactory</span>
-<span class="fc" id="L123">                .selectFrom(wantMovie)</span>
-<span class="fc" id="L124">                .where(wantMovie.member.eq(member)</span>
-<span class="fc" id="L125">                        .and(wantMovie.movie.eq(movie)))</span>
-<span class="fc" id="L126">                .fetchOne();</span>
+<span class="fc" id="L124">        return queryFactory</span>
+<span class="fc" id="L125">                .selectFrom(wantMovie)</span>
+<span class="fc" id="L126">                .where(wantMovie.member.eq(member)</span>
+<span class="fc" id="L127">                        .and(wantMovie.movie.eq(movie)))</span>
+<span class="fc" id="L128">                .fetchOne();</span>
     }
 
     @Override
     public Page&lt;WantMovie&gt; findWantMoviesByMemberWithPaging(Member member, Pageable pageable) {
-<span class="fc" id="L131">        List&lt;WantMovie&gt; content= queryFactory</span>
-<span class="fc" id="L132">                .selectFrom(wantMovie)</span>
-<span class="fc" id="L133">                .where(wantMovie.member.eq(member))</span>
-<span class="fc" id="L134">                .orderBy(memberSort(pageable))</span>
-<span class="fc" id="L135">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L136">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L137">                .fetch();</span>
-<span class="fc" id="L138">        long total = queryFactory.selectFrom(wantMovie)</span>
-<span class="fc" id="L139">                .where(wantMovie.member.eq(member))</span>
-<span class="fc" id="L140">                .fetchCount();</span>
-<span class="fc" id="L141">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L133">        List&lt;WantMovie&gt; content= queryFactory</span>
+<span class="fc" id="L134">                .selectFrom(wantMovie)</span>
+<span class="fc" id="L135">                .where(wantMovie.member.eq(member))</span>
+<span class="fc" id="L136">                .orderBy(memberSort(pageable))</span>
+<span class="fc" id="L137">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L138">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L139">                .fetch();</span>
+<span class="fc" id="L140">        long total = queryFactory.selectFrom(wantMovie)</span>
+<span class="fc" id="L141">                .where(wantMovie.member.eq(member))</span>
+<span class="fc" id="L142">                .fetchCount();</span>
+<span class="fc" id="L143">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     @Override
     public Page&lt;Comment&gt; findCommentByMemberWithPaging(String email, Pageable pageable) {
-<span class="fc" id="L146">        List&lt;Comment&gt; content= queryFactory</span>
-<span class="fc" id="L147">                .selectFrom(comment)</span>
-<span class="fc" id="L148">                .where(comment.member.email.contains(email))</span>
-<span class="fc" id="L149">                .orderBy(memberSort(pageable))</span>
-<span class="fc" id="L150">                .offset(pageable.getOffset())</span>
-<span class="fc" id="L151">                .limit(pageable.getPageSize())</span>
-<span class="fc" id="L152">                .fetch();</span>
-<span class="fc" id="L153">        long total = queryFactory.selectFrom(comment)</span>
-<span class="fc" id="L154">                .where(comment.member.email.contains(email))</span>
-<span class="fc" id="L155">                .fetchCount();</span>
-<span class="fc" id="L156">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+<span class="fc" id="L148">        List&lt;Comment&gt; content= queryFactory</span>
+<span class="fc" id="L149">                .selectFrom(comment)</span>
+<span class="fc" id="L150">                .where(comment.member.email.contains(email))</span>
+<span class="fc" id="L151">                .orderBy(memberSort(pageable))</span>
+<span class="fc" id="L152">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L153">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L154">                .fetch();</span>
+<span class="fc" id="L155">        long total = queryFactory.selectFrom(comment)</span>
+<span class="fc" id="L156">                .where(comment.member.email.contains(email))</span>
+<span class="fc" id="L157">                .fetchCount();</span>
+<span class="fc" id="L158">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
+    }
+
+    @Override
+    public Page&lt;Inquiry&gt; findInquiryByMemberWithPaging(String email, Pageable pageable) {
+<span class="fc" id="L163">        List&lt;Inquiry&gt; content= queryFactory</span>
+<span class="fc" id="L164">                .selectFrom(inquiry)</span>
+<span class="fc" id="L165">                .where(inquiry.member.email.contains(email))</span>
+<span class="fc" id="L166">                .orderBy(inquirySort(pageable))</span>
+<span class="fc" id="L167">                .offset(pageable.getOffset())</span>
+<span class="fc" id="L168">                .limit(pageable.getPageSize())</span>
+<span class="fc" id="L169">                .fetch();</span>
+<span class="fc" id="L170">        long total = queryFactory.selectFrom(inquiry)</span>
+<span class="fc" id="L171">                .where(inquiry.member.email.contains(email))</span>
+<span class="fc" id="L172">                .fetchCount();</span>
+<span class="fc" id="L173">        return new PageImpl&lt;&gt;(content, pageable, total);</span>
     }
 
     private OrderSpecifier&lt;?&gt; movieSort(Pageable page) {
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
-<span class="fc bfc" id="L161" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
 
-<span class="fc bfc" id="L164" title="All 3 branches covered.">                switch (order.getProperty()) {</span>
+<span class="fc bfc" id="L181" title="All 3 branches covered.">                switch (order.getProperty()) {</span>
                     case &quot;movieId&quot;:
-<span class="fc" id="L166">                        return new OrderSpecifier(direction, movie.movieId);</span>
+<span class="fc" id="L183">                        return new OrderSpecifier(direction, movie.movieId);</span>
                     case &quot;movieOpenDate&quot;:
-<span class="fc" id="L168">                        return new OrderSpecifier&lt;&gt;(direction, movie.movieOpenDate);</span>
+<span class="fc" id="L185">                        return new OrderSpecifier&lt;&gt;(direction, movie.movieOpenDate);</span>
                 }
-<span class="fc" id="L170">            }</span>
+<span class="fc" id="L187">            }</span>
         }
-<span class="fc" id="L172">        return null;</span>
+<span class="fc" id="L189">        return null;</span>
     }
 
     private OrderSpecifier&lt;?&gt; memberSort(Pageable page) {
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            for (Sort.Order order : page.getSort()) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
 
-<span class="fc bfc" id="L180" title="All 8 branches covered.">                switch (order.getProperty()) {</span>
+<span class="fc bfc" id="L197" title="All 8 branches covered.">                switch (order.getProperty()) {</span>
                     case &quot;memberId&quot;:
-<span class="fc" id="L182">                        return new OrderSpecifier(direction, member.memberId);</span>
+<span class="fc" id="L199">                        return new OrderSpecifier(direction, member.memberId);</span>
                     case &quot;warningCard&quot;:
-<span class="fc" id="L184">                        return new OrderSpecifier(direction, member.warningCard);</span>
+<span class="fc" id="L201">                        return new OrderSpecifier(direction, member.warningCard);</span>
                     case &quot;memberStatus&quot;:
-<span class="fc" id="L186">                        return new OrderSpecifier(Order.ASC, member.memberStatus);</span>
+<span class="fc" id="L203">                        return new OrderSpecifier(Order.ASC, member.memberStatus);</span>
                     case &quot;movieSawCount&quot;:
-<span class="fc" id="L188">                        return new OrderSpecifier(direction, sawMovie.movieSawCount);</span>
+<span class="fc" id="L205">                        return new OrderSpecifier(direction, sawMovie.movieSawCount);</span>
                     case &quot;createdAtForWantMovie&quot;:
-<span class="fc" id="L190">                        return new OrderSpecifier(direction, wantMovie.createdAt);</span>
+<span class="fc" id="L207">                        return new OrderSpecifier(direction, wantMovie.createdAt);</span>
                     case &quot;createdAtForComment&quot;:
-<span class="fc" id="L192">                        return new OrderSpecifier(direction, comment.createdAt);</span>
+<span class="fc" id="L209">                        return new OrderSpecifier(direction, comment.createdAt);</span>
                     case &quot;claimCount&quot;:
-<span class="fc" id="L194">                        return new OrderSpecifier(direction, comment.claimCount);</span>
+<span class="fc" id="L211">                        return new OrderSpecifier(direction, comment.claimCount);</span>
                 }
-<span class="fc" id="L196">            }</span>
+<span class="fc" id="L213">            }</span>
         }
-<span class="fc" id="L198">        return null;</span>
+<span class="fc" id="L215">        return null;</span>
+    }
+    private OrderSpecifier&lt;?&gt; inquirySort(Pageable page) {
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">        if (!page.getSort().isEmpty()) {</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">            for (Sort.Order order : page.getSort()) {</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;</span>
+
+<span class="pc bpc" id="L222" title="1 of 3 branches missed.">                switch (order.getProperty()) {</span>
+                    case &quot;createdAt&quot;:
+<span class="fc" id="L224">                        return new OrderSpecifier(direction, inquiry.createdAt);</span>
+                    case &quot;inquiryStatus&quot;:
+<span class="fc" id="L226">                        return new OrderSpecifier(direction, inquiry.inquiryStatus);</span>
+                }
+<span class="nc" id="L228">            }</span>
+        }
+<span class="nc" id="L230">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

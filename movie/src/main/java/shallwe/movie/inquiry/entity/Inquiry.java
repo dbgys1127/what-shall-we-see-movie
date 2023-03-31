@@ -42,11 +42,12 @@ public class Inquiry extends WriterAudit {
     }
 
     @Builder
-    public Inquiry(Long inquiryId, String inquiryTitle, String inquiryDescription,List<Answer> answers) {
+    public Inquiry(Long inquiryId, String inquiryTitle, String inquiryDescription,Member member,List<Answer> answers) {
         this.inquiryId = inquiryId;
         this.inquiryTitle = inquiryTitle;
         this.inquiryDescription = inquiryDescription;
         this.inquiryStatus = InquiryStatus.대기;
+        this.member = member;
         this.answers = answers;
     }
 }
