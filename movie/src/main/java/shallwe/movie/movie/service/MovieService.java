@@ -44,7 +44,7 @@ public class MovieService {
     private final S3UploadService s3UploadService;
 
 
-    // ============================ 일반 유저 요청 처리 메소드 ==============================
+    // ============================ 일반 유저 요청 처리 메소드 =============================
     public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
         Page<Movie> pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
