@@ -1,5 +1,6 @@
 package shallwe.movie.movie.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,20 +18,37 @@ import org.springframework.test.context.ActiveProfiles;
 import shallwe.movie.TestConfig;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.entity.Movie;
+import shallwe.movie.sawmovie.entity.SawMovie;
+import shallwe.movie.sawmovie.repository.SawMovieRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @Import(TestConfig.class)
 @ActiveProfiles("test")
+@Slf4j
 public class MovieRepositoryTest {
     @Autowired
     private MovieRepository movieRepository;
+    @Autowired
+    private SawMovieRepository sawMovieRepository;
+
+    private List<Movie> movies = new ArrayList<>();
+    private List<SawMovie> sawMovies = new ArrayList<>();
 
     @BeforeEach
     void insertData() {
+        for (int i = 1; i < 21; i++) {
+            SawMovie sawMovie = SawMovie.builder()
+                    .movieSawCount(i)
+                    .build();
+            sawMovies.add(sawMovie);
+        }
+        sawMovieRepository.saveAll(sawMovies);
         for (int i = 1; i < 21; i++) {
             Movie movie = Movie.builder()
                     .movieTitle("movie" + i)
@@ -39,8 +57,9 @@ public class MovieRepositoryTest {
                     .movieOpenDate(LocalDate.of(2023, 1, i))
                     .movieGenre(Movie.MovieGenre.드라마)
                     .movieRunningTime(90)
+                    .sawMovies(sawMovies)
                     .build();
-            movieRepository.save(movie);
+            movies.add(movie);
         }
         for (int i = 21; i < 31; i++) {
             Movie movie = Movie.builder()
@@ -50,9 +69,12 @@ public class MovieRepositoryTest {
                     .movieOpenDate(LocalDate.of(2023, 1, i))
                     .movieGenre(Movie.MovieGenre.코미디)
                     .movieRunningTime(90)
+                    .sawMovies(sawMovies)
                     .build();
-            movieRepository.save(movie);
+            movies.add(movie);
         }
+
+        movieRepository.saveAll(movies);
     }
     @AfterEach
     void deleteData() {
@@ -140,4 +162,5 @@ public class MovieRepositoryTest {
                         .findMovieByTitleWithPaging("movie", PageRequest.of(0, 10, Sort.by("m").descending())))
                 .isInstanceOf(NullPointerException.class);
     }
+
 }

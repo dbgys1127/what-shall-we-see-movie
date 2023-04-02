@@ -27,6 +27,7 @@ out/
 !**/src/test/**/out/
 application-aws.yml
 application-local.yml
+application-testDB.yml
 
 ### NetBeans ###
 /nbproject/private/

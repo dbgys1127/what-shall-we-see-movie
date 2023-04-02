@@ -18,8 +18,8 @@ spring:
 
   # Jpa setting
   jpa:
-    show_sql: true
-    open-in-view: true
+#    show_sql: true
+#    open-in-view: true
 #    database: mysql
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -27,8 +27,8 @@ spring:
     properties:
       hibernate:
 #        show-sql: true
-        format_sql: true
-        generate-ddl: true
+#        format_sql: true
+#        generate-ddl: true
 
   # redis setting
   redis:
@@ -63,10 +63,10 @@ handlebars:
 logging:
   level:
     org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
+      springframework:
+        orm:
+          jpa: DEBUG
+
 
 cloud:
   aws:
