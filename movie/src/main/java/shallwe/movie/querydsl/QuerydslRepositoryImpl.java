@@ -31,16 +31,16 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
     public Page<Member> findAllMemberWithPaging(String email,Pageable pageable) {
         List<Member> content = queryFactory
                 .selectFrom(member)
-                .where(member.email.contains(email)
-                                .and(member.roles.size().eq(1)))
+                .where(member.email.like("%"+email+"%")
+                        .and(member.roles.size().eq(1)))
                 .orderBy(memberSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         long total = queryFactory.selectFrom(member)
-                .where(member.email.contains(email)
-                                .and(member.roles.size().eq(1)))
+                .where(member.email.like("%"+email+"%")
+                        .and(member.roles.size().eq(1)))
                 .fetchCount();
         return new PageImpl<>(content,pageable,total);
     }
@@ -67,14 +67,14 @@ public class QuerydslRepositoryImpl implements QuerydslRepository{
     public Page<Movie> findMovieByTitleWithPaging(String title, Pageable pageable) {
         List<Movie> content = queryFactory
                 .selectFrom(movie)
-                .where(movie.movieTitle.contains(title))
+                .where(movie.movieTitle.like("%"+title+"%"))
                 .orderBy(movieSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         long total = queryFactory.selectFrom(movie)
-                .where(movie.movieTitle.contains(title))
+                .where(movie.movieTitle.like("%"+title+"%"))
                 .fetchCount();
         return new PageImpl<>(content, pageable, total);
     }

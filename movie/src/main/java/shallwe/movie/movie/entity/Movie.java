@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(indexes = {@Index(name="idx_movie_title",columnList = "movieTitle")})
 public class Movie extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

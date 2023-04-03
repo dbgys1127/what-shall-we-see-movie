@@ -113,13 +113,9 @@ public class MovieNPlusOneRepositoryTest {
     @DisplayName("sawMovie가 fetchType Lazy 일때 영화를 조회하면 N+1 문제가 발생한다.")
     @Test
     void getMoviesHaveNPlusOneWithLazy() {
-
-        log.info("--------------------------- n+1 start------------------------");
-        List<Movie> movieList = movieRepository.findAll() ;
-        log.info("--------------------------- n+1 stop ------------------------");
-        for (Movie movie1 : movieList) {
-            log.info("Lazy = {}",movie1.getSawMovies().size());
-        }
+        log.info("--------------------------- findByEmail start ------------------------");
+        memberRepository.findByEmail("test1@gmail.com");
+        log.info("--------------------------- findByEmail stop ------------------------");
     }
 
 //    @Transactional

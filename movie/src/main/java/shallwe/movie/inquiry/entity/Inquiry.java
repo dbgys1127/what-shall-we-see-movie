@@ -29,6 +29,7 @@ public class Inquiry extends WriterAudit {
     private String inquiryDescription;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private InquiryStatus inquiryStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

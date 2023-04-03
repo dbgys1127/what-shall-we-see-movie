@@ -14,6 +14,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(indexes = {@Index(name = "idx_member_movie",columnList = "member_id,movie_id"),
+        @Index(name = "idx_member",columnList = "member_id")})
 public class WantMovie extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

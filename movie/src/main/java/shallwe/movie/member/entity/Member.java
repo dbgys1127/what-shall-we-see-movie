@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(indexes = {@Index(name="idx_email",columnList = "email")})
 public class Member extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
