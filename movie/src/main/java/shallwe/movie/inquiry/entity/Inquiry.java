@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import shallwe.movie.answer.entity.Answer;
 import shallwe.movie.audit.WriterAudit;
 import shallwe.movie.member.entity.Member;
@@ -34,6 +35,7 @@ public class Inquiry extends WriterAudit {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();
 

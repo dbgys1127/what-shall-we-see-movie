@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import shallwe.movie.audit.TimeAudit;
 import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -44,12 +45,15 @@ public class Movie extends TimeAudit {
 
     private double avgSawCount;
 
-    @OneToMany(mappedBy = "movie", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<SawMovie> sawMovies = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<WantMovie> wantMovies = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 

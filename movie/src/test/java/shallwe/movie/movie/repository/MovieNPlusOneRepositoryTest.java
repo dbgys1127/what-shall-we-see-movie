@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-@ActiveProfiles("testDB")
+@ActiveProfiles("local")
 @Slf4j
 public class MovieNPlusOneRepositoryTest {
 
@@ -65,47 +65,73 @@ public class MovieNPlusOneRepositoryTest {
     private EntityManager entityManager;
 
 
-    @BeforeEach
-    void insertData() {
-
-        for (int i = 0; i < 10; i++) {
-            sawMovie = SawMovie.builder()
-                    .movieSawCount(i)
-                    .build();
-            sawMovies.add(sawMovie);
-        }
-        sawMovieRepository.saveAll(sawMovies);
-
-        for (int i = 0; i < 7; i++) {
-            movie = Movie.builder()
-                    .moviePoster("img")
-                    .movieDescription("description")
-                    .movieTitle("movie1")
-                    .movieGenre(Movie.MovieGenre.공포)
-                    .movieOpenDate(LocalDate.of(2021, 01, 01))
-                    .movieRunningTime(90)
-                    .build();
-            movie.setSawMovies(sawMovies);
-            movies.add(movie);
-        }
-        movieRepository.saveAll(movies);
-        entityManager.clear();
-    }
-
-    @AfterEach
-    void deleteData() {
-        movieRepository.deleteAll();
-        memberRepository.deleteAll();
-    }
+//    @BeforeEach
+//    void insertData() {
+//
+//        for (int i = 0; i < 10; i++) {
+//            sawMovie = SawMovie.builder()
+//                    .movieSawCount(i)
+//                    .build();
+//            sawMovies.add(sawMovie);
+//        }
+//        sawMovieRepository.saveAll(sawMovies);
+//
+//        for (int i = 0; i < 7; i++) {
+//            movie = Movie.builder()
+//                    .moviePoster("img")
+//                    .movieDescription("description")
+//                    .movieTitle("movie1")
+//                    .movieGenre(Movie.MovieGenre.공포)
+//                    .movieOpenDate(LocalDate.of(2021, 01, 01))
+//                    .movieRunningTime(90)
+//                    .build();
+//            movie.setSawMovies(sawMovies);
+//            movies.add(movie);
+//        }
+//        movieRepository.saveAll(movies);
+//        entityManager.clear();
+//    }
+//
+//    @AfterEach
+//    void deleteData() {
+//        movieRepository.deleteAll();
+//        memberRepository.deleteAll();
+//    }
 
     @Transactional
-    @DisplayName("영화를 조회하면 N+1 문제가 발생한다.")
+    @DisplayName("sawMovie가 fetchType Eager 일때 영화를 조회하면 N+1 문제가 발생한다.")
     @Test
-    void getMoviesHaveNPlusOne() {
+    void getMoviesHaveNPlusOneWithEager() {
 
         log.info("--------------------------- n+1 start------------------------");
         List<Movie> movieList = movieRepository.findAll() ;
         log.info("--------------------------- n+1 stop ------------------------");
 
     }
+
+    @Transactional
+    @DisplayName("sawMovie가 fetchType Lazy 일때 영화를 조회하면 N+1 문제가 발생한다.")
+    @Test
+    void getMoviesHaveNPlusOneWithLazy() {
+
+        log.info("--------------------------- n+1 start------------------------");
+        List<Movie> movieList = movieRepository.findAll() ;
+        log.info("--------------------------- n+1 stop ------------------------");
+        for (Movie movie1 : movieList) {
+            log.info("Lazy = {}",movie1.getSawMovies().size());
+        }
+    }
+
+//    @Transactional
+//    @DisplayName("fetch join을 사용하면 sawMovie가 일때 영화를 조회하면 N+1 문제가 발생하지않는다..")
+//    @Test
+//    void getMoviesHaveNPlusOneWithFetchJoin() {
+//
+//        log.info("--------------------------- n+1 start------------------------");
+//        List<Movie> movieList = movieRepository.findAllMovieNormalJPQL() ;
+//        log.info("--------------------------- n+1 stop ------------------------");
+//        for (Movie movie1 : movieList) {
+//            log.info("Lazy = {}",movie1.getSawMovies().size());
+//        }
+//    }
 }

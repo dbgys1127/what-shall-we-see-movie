@@ -1,6 +1,7 @@
 package shallwe.movie.member.entity;
 
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import shallwe.movie.audit.TimeAudit;
 import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.inquiry.entity.Inquiry;
@@ -39,15 +40,19 @@ public class Member extends TimeAudit {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<SawMovie> sawMovies = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<WantMovie> wantMovies = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Inquiry> inquiries = new ArrayList<>();
 
