@@ -2,6 +2,7 @@ package shallwe.movie.dto;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class PagingResponseDto<T> {
     private boolean prev, next;
     private String sort;
     private String target;
-
     private String genre;
 
     public PagingResponseDto(List<T> data, Page page) {

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.comment.dto.CommentDto;
-import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.comment.service.CommentService;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
@@ -19,6 +18,7 @@ import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
+import shallwe.movie.movie.repository.MovieRedisRepository;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -42,6 +42,7 @@ public class MovieService {
     private final MemberService memberService;
     private final CommentService commentService;
     private final S3UploadService s3UploadService;
+    private final MovieRedisRepository movieRedisRepository;
 
 
     // ============================ 일반 유저 요청 처리 메소드 =============================
@@ -53,6 +54,11 @@ public class MovieService {
     }
 
     public MovieDto.Response pickMovie(String movieTitle, String email) {
+        Optional<MovieDto.Response> cachedRepDto = movieRedisRepository.findById(movieTitle);
+        if (cachedRepDto.isPresent()) {
+            log.info("cached={}",cachedRepDto.get().getMovieTitle());
+            return cachedRepDto.get();
+        }
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
@@ -64,6 +70,7 @@ public class MovieService {
         } else {
             movieRepDto.setIsWant("on");
         }
+        movieRedisRepository.save(movieRepDto);
         return movieRepDto;
     }
     public void updateSawCount(String movieTitle, String email, int movieSawCount) {
