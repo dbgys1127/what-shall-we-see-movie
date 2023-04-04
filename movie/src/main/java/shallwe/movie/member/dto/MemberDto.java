@@ -1,9 +1,10 @@
 package shallwe.movie.member.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.*;
 import shallwe.movie.comment.dto.CommentDto;
 import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.member.entity.Member;
@@ -13,6 +14,7 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -50,7 +52,9 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    public static class Response {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response implements Serializable {
         private String email;
         private String password;
         private String memberImage;
@@ -58,6 +62,8 @@ public class MemberDto {
 
         private Member.MemberStatus memberStatus;
 
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime createdAt;
 
         private List<String> roles;
@@ -78,7 +84,9 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    public static class MemberSawMovieResponseDto {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberSawMovieResponseDto implements Serializable {
         private String moviePoster;
         private String movieTitle;
         private int sawCount;
@@ -101,7 +109,9 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    public static class MemberWantMovieResponseDto {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberWantMovieResponseDto implements Serializable {
         private String moviePoster;
         private String movieTitle;
     }
@@ -122,11 +132,17 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    public static class MemberCommentResponseDto {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberCommentResponseDto implements Serializable {
         private Long commentId;
         private String commentDetail;
         private String movieTitle;
+
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime createdAt;
+
         private String createdBy;
         private int claimCount;
     }

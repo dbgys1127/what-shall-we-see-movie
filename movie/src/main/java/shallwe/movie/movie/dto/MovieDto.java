@@ -7,9 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.sun.istack.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -98,7 +96,8 @@ public class MovieDto {
 
     @Getter
     @Setter
-    @RedisHash(value = "movieOne",timeToLive = 600)
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response implements Serializable {
         @Id
         private String movieTitle;
@@ -107,12 +106,12 @@ public class MovieDto {
         private int movieRunningTime;
         private Movie.MovieGenre movieGenre;
 
-//        @JsonSerialize(using = LocalDateSerializer.class)
-//        @JsonDeserialize(using = LocalDateDeserializer.class)
+        @JsonSerialize(using = LocalDateSerializer.class)
+        @JsonDeserialize(using = LocalDateDeserializer.class)
         private LocalDate movieOpenDate;
 
-//        @JsonSerialize(using = LocalDateTimeSerializer.class)
-//        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime createdAt;
 
         private int memberSawCount;

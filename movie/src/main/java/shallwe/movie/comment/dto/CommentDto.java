@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import shallwe.movie.comment.entity.Comment;
 import shallwe.movie.member.dto.MemberDto;
 import shallwe.movie.member.entity.Member;
@@ -15,6 +13,7 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -33,13 +32,15 @@ public class CommentDto {
     @Builder
     @Getter
     @Setter
-    public static class Response {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response implements Serializable {
         private Long commentId;
         private String commentDetail;
         private String createdBy;
 
-//        @JsonSerialize(using = LocalDateTimeSerializer.class)
-//        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime createdAt;
         private int claimCount;
     }

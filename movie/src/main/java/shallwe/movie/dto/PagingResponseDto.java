@@ -1,13 +1,18 @@
 package shallwe.movie.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
-public class PagingResponseDto<T> {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PagingResponseDto<T> implements Serializable {
     private List<T> data;
 
     private int startPage;

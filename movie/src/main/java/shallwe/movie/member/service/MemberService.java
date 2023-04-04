@@ -2,6 +2,7 @@ package shallwe.movie.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -91,7 +92,7 @@ public class MemberService {
         );
         return memberRepDto;
     }
-
+    @Cacheable(value = "mySawMovie",key = "#email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
         Member member = is_exist_member(email);
         Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("movieSawCount").descending()));
@@ -100,6 +101,7 @@ public class MemberService {
         return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
     }
 
+    @Cacheable(value = "myWantMovie",key = "#email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MemberDto.MemberWantMovieResponseDto> findMyWantMovieList(int page, String email) {
         Member member = is_exist_member(email);
         Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAtForWantMovie").descending()));
@@ -108,6 +110,7 @@ public class MemberService {
         return new PagingResponseDto<>(wantMovieResponseDtoList,pageInfo);
     }
 
+    @Cacheable(value = "myComment",key = "#email.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MemberDto.MemberCommentResponseDto> findMyCommentList(int page, String email, String sort) {
         Page<Comment> pageInfo = commentService.getCommentList(email, PageRequest.of(page, 10, Sort.by(sort).descending()));
         List<Comment> comments = pageInfo.getContent();
@@ -123,6 +126,7 @@ public class MemberService {
      * email -> 검색된 회원만 조회 하도록 직접 입력 받음
      * sort -> 가입일 순
       */
+    @Cacheable(value = "searchMember",key = "#email.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MemberDto.Response> searchMember(String email,int page,String sort) {
         Page<Member> pageInfo = memberRepository.findAllMemberWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();
@@ -133,6 +137,7 @@ public class MemberService {
     /** 2. 관리자 목록 조회
      *  1번 회원 목록 조회와 기능은 같으나 조회 대상이 ADMIN인 점이 차이
       */
+    @Cacheable(value = "searchAdmin",key = "#email.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MemberDto.Response> searchAdmin(String email,int page,String sort) {
         Page<Member> pageInfo = memberRepository.findAllAdminWithPaging(email,PageRequest.of(page,10,Sort.by(sort).descending()));
         List<Member> members = pageInfo.getContent();

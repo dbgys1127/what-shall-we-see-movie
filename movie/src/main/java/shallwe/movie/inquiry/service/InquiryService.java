@@ -2,6 +2,7 @@ package shallwe.movie.inquiry.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -36,6 +37,7 @@ public class InquiryService {
         setMemberRelation(member,inquiry);
         return inquiryRepository.save(inquiry);
     }
+    @Cacheable(value = "allInquiry",key = "#email.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<InquiryDto.Response> getInquiryList(String email, int page, String sort) {
         Page<Inquiry> pageInfo = inquiryRepository.findInquiryByMemberWithPaging(email, PageRequest.of(page, 10, Sort.by(sort).descending()));
         List<Inquiry> inquiries = pageInfo.getContent();

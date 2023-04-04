@@ -2,6 +2,9 @@ package shallwe.movie.movie.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,10 +45,11 @@ public class MovieService {
     private final MemberService memberService;
     private final CommentService commentService;
     private final S3UploadService s3UploadService;
-    private final MovieRedisRepository movieRedisRepository;
+//    private final MovieRedisRepository movieRedisRepository;
 
 
     // ============================ 일반 유저 요청 처리 메소드 =============================
+    @Cacheable(value = "searchMovie",key = "#movieGenre.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
         Page<Movie> pageInfo = movieRepository.findMovieByGenreWithPaging(movieGenre, pageable);
@@ -53,12 +57,14 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
 
+
+    @Cacheable(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager",unless = "#result == null")
     public MovieDto.Response pickMovie(String movieTitle, String email) {
-        Optional<MovieDto.Response> cachedRepDto = movieRedisRepository.findById(movieTitle);
-        if (cachedRepDto.isPresent()) {
-            log.info("cached={}",cachedRepDto.get().getMovieTitle());
-            return cachedRepDto.get();
-        }
+//        Optional<MovieDto.Response> cachedRepDto = movieRedisRepository.findById(movieTitle);
+//        if (cachedRepDto.isPresent()) {
+//            log.info("cached={}",cachedRepDto.get().getMovieTitle());
+//            return cachedRepDto.get();
+//        }
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
@@ -70,15 +76,19 @@ public class MovieService {
         } else {
             movieRepDto.setIsWant("on");
         }
-        movieRedisRepository.save(movieRepDto);
+//        movieRedisRepository.save(movieRepDto);
         return movieRepDto;
     }
+
+    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
     public void updateSawCount(String movieTitle, String email, int movieSawCount) {
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
 
     }
+
+    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
     public void updateWantMovie(String movieTitle, String email, String isWant) {
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
@@ -89,11 +99,13 @@ public class MovieService {
         }
     }
 
+    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
     public void writeMovieComment(String movieTitle, String email, CommentDto.Post commentDto) {
         Member member = memberService.is_exist_member(email);
         Movie movie = is_exist_movie(movieTitle);
         commentService.saveMovieComment(member, movie, commentDto);
     }
+    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
     public void addMovieCommentClaim(Long commentId) {
         commentService.addMovieCommentClaim(commentId);
     }
@@ -124,6 +136,7 @@ public class MovieService {
      * sort -> 가입일, 시청영화순, 경고수, 차단여부
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
+    @Cacheable(value = "allMovie",key = "#sort.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> findAllMovie(int page, String sort) {
         Page<Movie> pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
@@ -136,6 +149,7 @@ public class MovieService {
      * sort -> 등록일 평균 시청횟수순 정렬
      * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
      */
+    @Cacheable(value = "searchMovie",key = "#title.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> searchMovieByTitle(String title, int page, String sort) {
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());

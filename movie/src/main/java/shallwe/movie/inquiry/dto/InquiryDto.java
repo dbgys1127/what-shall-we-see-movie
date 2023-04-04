@@ -1,8 +1,10 @@
 package shallwe.movie.inquiry.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.*;
 import shallwe.movie.answer.dto.AnswerDto;
 import shallwe.movie.answer.entity.Answer;
 import shallwe.movie.comment.entity.Comment;
@@ -12,6 +14,7 @@ import shallwe.movie.member.entity.Member;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -37,13 +40,19 @@ public class InquiryDto {
     @Builder
     @Getter
     @Setter
-    public static class Response {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response implements Serializable {
         private Long inquiryId;
         private String inquiryTitle;
         private String inquiryDescription;
         private Inquiry.InquiryStatus inquiryStatus;
         private String createdBy;
+
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime createdAt;
+
         private List<AnswerDto.Response> answers;
     }
     public static List<AnswerDto.Response> getAnswerResponseDtoList(List<Answer> answers) {
