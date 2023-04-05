@@ -9,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.comment.dto.CommentDto;
@@ -29,6 +31,7 @@ import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.wantmovie.entity.WantMovie;
 import shallwe.movie.wantmovie.service.WantMovieService;
 
+import javax.persistence.LockModeType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,6 @@ public class MovieService {
     private final MemberService memberService;
     private final CommentService commentService;
     private final S3UploadService s3UploadService;
-//    private final MovieRedisRepository movieRedisRepository;
 
 
     // ============================ 일반 유저 요청 처리 메소드 =============================
@@ -60,11 +62,6 @@ public class MovieService {
 
     @Cacheable(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager",unless = "#result == null")
     public MovieDto.Response pickMovie(String movieTitle, String email) {
-//        Optional<MovieDto.Response> cachedRepDto = movieRedisRepository.findById(movieTitle);
-//        if (cachedRepDto.isPresent()) {
-//            log.info("cached={}",cachedRepDto.get().getMovieTitle());
-//            return cachedRepDto.get();
-//        }
         Movie findMovie = is_exist_movie(movieTitle);
         Member findMember = memberService.is_exist_member(email);
         SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
@@ -76,10 +73,12 @@ public class MovieService {
         } else {
             movieRepDto.setIsWant("on");
         }
-//        movieRedisRepository.save(movieRepDto);
+
         return movieRepDto;
     }
 
+//    @Lock(LockModeType.PESSIMISTIC_READ)
+//    @Transactional(isolation = Isolation.READ_COMMITTED)
     @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
     public void updateSawCount(String movieTitle, String email, int movieSawCount) {
         Movie findMovie = is_exist_movie(movieTitle);
