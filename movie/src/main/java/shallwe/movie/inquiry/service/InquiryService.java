@@ -2,6 +2,7 @@ package shallwe.movie.inquiry.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,9 +32,10 @@ public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final MemberService memberService;
     private final AnswerService answerService;
-    public Inquiry saveInquiry(String email, InquiryDto.Post inquiryDto) {
+
+    @CacheEvict(value = "allInquiry",allEntries = true,cacheManager ="contentCacheManager")
+    public Inquiry saveInquiry(Member member, InquiryDto.Post inquiryDto) {
         Inquiry inquiry = transferDtoToInquiry(inquiryDto);
-        Member member = memberService.is_exist_member(email);
         setMemberRelation(member,inquiry);
         return inquiryRepository.save(inquiry);
     }

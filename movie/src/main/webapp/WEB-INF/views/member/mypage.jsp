@@ -8,7 +8,7 @@
 </head>
 <body>
 <h2> Mypage </h2>
-<img src="${memberImage}" />
+<img src="${member.memberImage}" />
 <br>
 <button type="button"><a href="/mypage/myImage">대표 이미지 수정</a></button>
 <button type="button"><a href="/mypage/myPassword">비밀번호 수정</a></button>

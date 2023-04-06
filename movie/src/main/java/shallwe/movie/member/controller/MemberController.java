@@ -9,9 +9,12 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import shallwe.movie.aop.NeedEmail;
+import shallwe.movie.aop.NeedMember;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
 
+import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
 
 import javax.validation.Valid;
@@ -38,59 +41,55 @@ public class MemberController {
         return "member/join";
     }
 
+    @NeedMember
     @GetMapping("/mypage")
-    public String mypage(Authentication authentication, Model model) {
-        String email = authentication.getName();//aop 필요
-        MemberDto.Response memberRepDto = memberService.getMyInfo(email);
+    public String mypage(Member member, Model model) {
+        MemberDto.Response memberRepDto = memberService.getMyInfo(member);
         model.addAttribute("member", memberRepDto);
         return "member/mypage";
     }
 
+    @NeedMember
     @PostMapping("/mypage/myImage")
-    public String patchMyImage(@RequestPart("myImage") MultipartFile multipartFile,
-                               Authentication authentication,
+    public String patchMyImage(Member member,@RequestPart("myImage") MultipartFile multipartFile,
                                Model model) throws IOException {
-        String email = authentication.getName();//aop 필요
-        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile, email);
-        model.addAttribute("memberImage", patchMember.getMemberImage());
-        model.addAttribute("email", email);
+        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile, member);
+        model.addAttribute("member", patchMember);
         return "member/mypage";
     }
 
+    @NeedMember
     @PostMapping("/mypage/myPassword")
-    public String patchMyPassword(@ModelAttribute @Valid MemberDto.Patch memberDto,
-                                  Authentication authentication,
+    public String patchMyPassword(Member member,@ModelAttribute @Valid MemberDto.Patch memberDto,
                                   Model model) throws IOException {
-        String email = authentication.getName();
-        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto, email);
-        model.addAttribute("memberImage", patchMember.getMemberImage());
-        model.addAttribute("email", email);
+        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto, member);
+        model.addAttribute("member", patchMember);
         return "member/mypage";
     }
 
+    @NeedMember
     @GetMapping("/mypage/saw-movie")
-    public String getMySawMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                    Authentication authentication, Model model) {
-        String email = authentication.getName();
-        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page - 1, email);
+    public String getMySawMovieList(Member member, @RequestParam(value = "page", defaultValue = "1") int page,
+                                     Model model) {
+        PagingResponseDto<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = memberService.findMySawMovieList(page - 1, member);
         model.addAttribute("pageData", sawMovieResponseDtoList);
         return "member/sawMovieList";
     }
 
+    @NeedMember
     @GetMapping("/mypage/want-movie")
-    public String getMyWantMovieList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     Authentication authentication, Model model) {
-        String email = authentication.getName();
-        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = memberService.findMyWantMovieList(page - 1, email);
+    public String getMyWantMovieList(Member member, @RequestParam(value = "page", defaultValue = "1") int page,
+                                      Model model) {
+        PagingResponseDto<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = memberService.findMyWantMovieList(page - 1, member);
         model.addAttribute("pageData", wantMovieResponseDtoList);
         return "member/wantMovieList";
     }
 
+    @NeedEmail
     @GetMapping("/mypage/comment")
-    public String getMyCommentList(@RequestParam(value = "page", defaultValue = "1") int page,
+    public String getMyCommentList(String email, @RequestParam(value = "page", defaultValue = "1") int page,
                                    @RequestParam(value = "sort",defaultValue = "createdAtForComment") String sort,
-                                   Authentication authentication, Model model) {
-        String email = authentication.getName();
+                                    Model model) {
         PagingResponseDto<MemberDto.MemberCommentResponseDto> commentResponseDtoList = memberService.findMyCommentList(page - 1, email,sort);
         model.addAttribute("pageData", commentResponseDtoList);
         return "member/commentList";

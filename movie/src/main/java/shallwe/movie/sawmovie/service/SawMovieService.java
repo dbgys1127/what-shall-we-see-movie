@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.repository.MemberRepository;
@@ -24,7 +25,7 @@ import java.util.Optional;
 public class SawMovieService {
     private final SawMovieRepository sawMovieRepository;
 
-    public SawMovie getSawMovie(Movie movie, Member member) {
+    public SawMovie getSawMovie(Member member, Movie movie) {
         return sawMovieRepository.findSawMovieByMemberAndMovie(member, movie);
     }
 
@@ -32,8 +33,9 @@ public class SawMovieService {
         return sawMovieRepository.findSawMoviesByMemberWithPaging(member,pageable);
     }
 
+
     public void saveSawMovie(Movie movie, Member member, int movieSawCount) {
-        SawMovie findMovie = getSawMovie(movie,member);
+        SawMovie findMovie = getSawMovie(member,movie);
         SawMovie sawMovie;
 
         if (Optional.ofNullable(findMovie).isEmpty()) {
@@ -44,9 +46,11 @@ public class SawMovieService {
             sawMovie = findMovie;
             sawMovie.setMovieSawCount(movieSawCount);
         }
-        setMemberRelation(member,sawMovie);
+
         setMovieRelation(movie,sawMovie);
+        setMemberRelation(member,sawMovie);
         sawMovieRepository.save(sawMovie);
+        log.info("Test 평균시청횟수 = {}",movie.getAvgSawCount());
     }
 
     public void setMemberRelation(Member member, SawMovie sawMovie) {

@@ -263,6 +263,4 @@ public class AdminMovieServiceTest {
         Assertions.assertThat(movieRepDto.getMovieTitle()).isEqualTo("movieUpdate");
         Assertions.assertThat(movieRepDto.getMovieRunningTime()).isEqualTo(90);
     }
-
-
 }

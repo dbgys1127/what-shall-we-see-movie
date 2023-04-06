@@ -15,6 +15,7 @@ import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.sawmovie.entity.SawMovie;
 import shallwe.movie.wantmovie.entity.WantMovie;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 
 import static shallwe.movie.comment.entity.QComment.comment;

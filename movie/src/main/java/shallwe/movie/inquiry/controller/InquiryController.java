@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shallwe.movie.answer.dto.AnswerDto;
+import shallwe.movie.aop.NeedEmail;
+import shallwe.movie.aop.NeedMember;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.inquiry.dto.InquiryDto;
 import shallwe.movie.inquiry.service.InquiryService;
+import shallwe.movie.member.entity.Member;
 
 import javax.validation.Valid;
 
@@ -32,20 +35,18 @@ public class InquiryController {
         return "inquiry/addInquiry";
     }
 
+    @NeedMember
     @PostMapping("/inquiry")
-    String postInquiry(@ModelAttribute @Valid InquiryDto.Post inquiryDto,
-                       Authentication authentication) {
-        String email = authentication.getName();
-        inquiryService.saveInquiry(email, inquiryDto);
+    String postInquiry(Member member, @ModelAttribute @Valid InquiryDto.Post inquiryDto) {
+        inquiryService.saveInquiry(member, inquiryDto);
         return "redirect:/inquiry";
     }
 
+    @NeedEmail
     @GetMapping("/inquiry")
-    String getMyInquiryList(@RequestParam(value = "page",defaultValue = "1") int page,
+    String getMyInquiryList(String email,@RequestParam(value = "page",defaultValue = "1") int page,
                         @RequestParam(value = "sort",defaultValue = "createdAt") String sort,
-                        Authentication authentication,
                         Model model) {
-        String email=authentication.getName();
         PagingResponseDto<InquiryDto.Response> pageData=inquiryService.getInquiryList(email,page-1,sort);
         model.addAttribute("pageData", pageData);
         return "inquiry/myInquiry";

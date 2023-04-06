@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,14 +61,12 @@ public class MovieService {
     }
 
 
-    @Cacheable(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager",unless = "#result == null")
-    public MovieDto.Response pickMovie(String movieTitle, String email) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
-        SawMovie sawMovie=sawMovieService.getSawMovie(findMovie, findMember);
-        WantMovie wantMovie = wantMovieService.getWantMovie(findMember, findMovie);
-        MovieDto.Response movieRepDto = getSawCount(findMovie, sawMovie);
-        movieRepDto.setCurrentMember(email);
+    @Cacheable(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager",unless = "#result == null")
+    public MovieDto.Response pickMovie(Member member, Movie movie) {
+        SawMovie sawMovie=sawMovieService.getSawMovie(member, movie);
+        WantMovie wantMovie = wantMovieService.getWantMovie(member, movie);
+        MovieDto.Response movieRepDto = getSawCount(movie, sawMovie);
+        movieRepDto.setCurrentMember(member.getEmail());
         if (Optional.ofNullable(wantMovie).isEmpty()) {
             movieRepDto.setIsWant("off");
         } else {
@@ -77,34 +76,40 @@ public class MovieService {
         return movieRepDto;
     }
 
-//    @Lock(LockModeType.PESSIMISTIC_READ)
-//    @Transactional(isolation = Isolation.READ_COMMITTED)
-    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
-    public void updateSawCount(String movieTitle, String email, int movieSawCount) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
-        sawMovieService.saveSawMovie(findMovie, findMember, movieSawCount);
 
+    @Caching(evict = {
+            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "mySawMovie",allEntries = true,cacheManager = "contentCacheManager"),
+    })
+    public void updateSawCount(Member member, Movie movie, int movieSawCount) {
+        sawMovieService.saveSawMovie(movie, member, movieSawCount);
     }
 
-    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
-    public void updateWantMovie(String movieTitle, String email, String isWant) {
-        Movie findMovie = is_exist_movie(movieTitle);
-        Member findMember = memberService.is_exist_member(email);
+    @Caching(evict = {
+            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myWantMovie",allEntries = true,cacheManager = "contentCacheManager"),
+    })
+    public void updateWantMovie(Member member, Movie movie, String isWant) {
         if (isWant.equals("on")) {
-            wantMovieService.saveWantMovie(findMember, findMovie);
+            wantMovieService.saveWantMovie(member, movie);
         } else {
-            wantMovieService.deleteWantMovie(findMember,findMovie);
+            wantMovieService.deleteWantMovie(member,movie);
         }
     }
 
-    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
-    public void writeMovieComment(String movieTitle, String email, CommentDto.Post commentDto) {
-        Member member = memberService.is_exist_member(email);
-        Movie movie = is_exist_movie(movieTitle);
+    @Caching(evict = {
+            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
+    })
+    public void writeMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
         commentService.saveMovieComment(member, movie, commentDto);
     }
-    @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager")
+    @Caching(evict = {
+            @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
+    })
     public void addMovieCommentClaim(Long commentId) {
         commentService.addMovieCommentClaim(commentId);
     }

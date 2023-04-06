@@ -8,10 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import shallwe.movie.aop.NeedMemberAndMovieTitle;
 import shallwe.movie.comment.dto.CommentDto;
 import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.member.dto.MemberDto;
+import shallwe.movie.member.entity.Member;
 import shallwe.movie.movie.dto.MovieDto;
+import shallwe.movie.movie.entity.Movie;
 import shallwe.movie.movie.service.MovieService;
 
 import javax.validation.Valid;
@@ -52,44 +55,43 @@ public class MovieController {
         return "movie/memberMovieSearchResult";
     }
 
+    @NeedMemberAndMovieTitle
     @GetMapping("/movie/detail")
-    public String getMovie(@RequestParam("movieTitle") String movieTitle,
-                           Authentication authentication,Model model) {
-        String email = authentication.getName();
-        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,email);
+    public String getMovie(Member member, Movie movie,
+                           Model model) {
+        MovieDto.Response movieRepDto=movieService.pickMovie(member,movie);
         model.addAttribute("movie", movieRepDto);
         return "movie/movieDetail";
     }
 
+    @NeedMemberAndMovieTitle
     @PostMapping("/movie/saw-movie")
-    public String postSawCount(@RequestParam("movieTitle") String movieTitle,
+    public String postSawCount(Member member, Movie movie,
                                @RequestParam("movieSawCount") int movieSawCount,
-                               Authentication authentication, RedirectAttributes redirectAttributes) {
-        String email = authentication.getName();
-        movieService.updateSawCount(movieTitle, email,movieSawCount);
-        redirectAttributes.addAttribute("movieTitle", movieTitle);
+                               RedirectAttributes redirectAttributes) {
+
+        movieService.updateSawCount(member, movie,movieSawCount);
+        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
         return "redirect:/movie/detail";
     }
 
+    @NeedMemberAndMovieTitle
     @PostMapping("/movie/want-movie")
-    public String postWantMovie(@RequestParam("movieTitle") String movieTitle,
+    public String postWantMovie(Member member, Movie movie,
                                 @RequestParam(value = "wantMovie", defaultValue = "off") String isWant,
-                                Authentication authentication,
                                 RedirectAttributes redirectAttributes) {
-        String email = authentication.getName();
-        movieService.updateWantMovie(movieTitle, email, isWant);
-        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        movieService.updateWantMovie(member, movie, isWant);
+        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
         return "redirect:/movie/detail";
     }
 
+    @NeedMemberAndMovieTitle
     @PostMapping("/movie/comment")
-    public String postComment(@RequestParam("movieTitle") String movieTitle,
+    public String postComment(Member member, Movie movie,
                               @ModelAttribute CommentDto.Post commentDto,
-                              Authentication authentication,
                               RedirectAttributes redirectAttributes) {
-        String email = authentication.getName();
-        movieService.writeMovieComment(movieTitle, email, commentDto);
-        redirectAttributes.addAttribute("movieTitle", movieTitle);
+        movieService.writeMovieComment(member, movie, commentDto);
+        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
         return "redirect:/movie/detail";
     }
 
@@ -146,9 +148,10 @@ public class MovieController {
     }
 
     // 수정할 영화 페이지 가져오기
+    @NeedMemberAndMovieTitle
     @GetMapping("/admin/movie/patch")
-    public String adminGetMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
-        MovieDto.Response movieRepDto=movieService.pickMovie(movieTitle,"admin@gmail.com");
+    public String adminGetMovie(Member member, Movie movie, Model model) {
+        MovieDto.Response movieRepDto=movieService.pickMovie(member,movie);
         model.addAttribute("movie", movieRepDto);
         return "movie/moviePatch";
     }

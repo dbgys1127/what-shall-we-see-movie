@@ -62,26 +62,21 @@ public class MemberService {
     }
 
     // 2. 회원 개인 이미지 수정시 메소드
-    public MemberDto.Response updateMemberImage(MultipartFile multipartFile, String email) throws IOException {
-        Member findMember = is_exist_member(email);
-        isUpdateImage(multipartFile, findMember);
-        MemberDto.Response memberRepDto = getMemberRepDto(findMember);
+    public MemberDto.Response updateMemberImage(MultipartFile multipartFile, Member member) throws IOException {
+        isUpdateImage(multipartFile, member);
+        MemberDto.Response memberRepDto = getMemberRepDto(member);
 
         return memberRepDto;
     }
 
     // 3. 회원 비밀번호 수정시 메소드
-    public MemberDto.Response updateMemberPassword(MemberDto.Patch memberDto, String email) {
-        Member findMember = is_exist_member(email);
-        findMember.setPassword(passwordEncoder.encode(memberDto.getPassword()));
-        Member member = memberRepository.save(findMember);
-        MemberDto.Response memberRepDto = getMemberRepDto(findMember);
-
+    public MemberDto.Response updateMemberPassword(MemberDto.Patch memberDto, Member member) {
+        member.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+        MemberDto.Response memberRepDto = getMemberRepDto(member);
         return memberRepDto;
     }
 
-    public MemberDto.Response getMyInfo(String email) {
-        Member member = is_exist_member(email);
+    public MemberDto.Response getMyInfo(Member member) {
         MemberDto.Response memberRepDto = getMemberRepDto(member);
         memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
         memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
@@ -92,18 +87,16 @@ public class MemberService {
         );
         return memberRepDto;
     }
-    @Cacheable(value = "mySawMovie",key = "#email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
-    public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, String email) {
-        Member member = is_exist_member(email);
+    @Cacheable(value = "mySawMovie",key = "#member.email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
+    public PagingResponseDto<MemberDto.MemberSawMovieResponseDto> findMySawMovieList(int page, Member member) {
         Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("movieSawCount").descending()));
         List<SawMovie> sawMovies = pageInfo.getContent();
         List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
         return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
     }
 
-    @Cacheable(value = "myWantMovie",key = "#email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
-    public PagingResponseDto<MemberDto.MemberWantMovieResponseDto> findMyWantMovieList(int page, String email) {
-        Member member = is_exist_member(email);
+    @Cacheable(value = "myWantMovie",key = "#member.email.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
+    public PagingResponseDto<MemberDto.MemberWantMovieResponseDto> findMyWantMovieList(int page, Member member) {
         Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAtForWantMovie").descending()));
         List<WantMovie> wantMovies = pageInfo.getContent();
         List<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = MemberDto.getMemberWantMovieResponseDtoList(wantMovies);
