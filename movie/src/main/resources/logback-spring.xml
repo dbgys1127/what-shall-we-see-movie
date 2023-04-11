@@ -6,17 +6,17 @@
 
     <!--로컬 로그-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>INFO</level>-->
+<!--            <onMatch>ACCEPT</onMatch>-->
+<!--            <onMismatch>DENY</onMismatch>-->
+<!--        </filter>-->
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
     <!--CloudWatch 로그-->
-    <appender name = "AWS_CLOUD_WATCH_LOG" class="ca.pjer.logback.AwsLogsAppender">
+    <appender name = "AWS_CLOUD_WATCH_INFO_LOG" class="ca.pjer.logback.AwsLogsAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -25,8 +25,46 @@
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
-        <logGroupName>movie-log</logGroupName> <!--CloudWatch log Group Name-->
-        <logStreamUuidPrefix>movie-log</logStreamUuidPrefix>
+        <logGroupName>movie-info-log</logGroupName> <!--CloudWatch log Group Name-->
+        <logStreamUuidPrefix>movie-info-log</logStreamUuidPrefix>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents> <!--배치의 최대 이벤트 갯수-->
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis> <!--마지막 처리를 하고 시간이 지나면 cloud watch로 로그를 쏨-->
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis> <!--로그가 전송되는 동안 코드가 계속 실행되는 것을 차단하고 값을 0으로 세팅하면 전송중에 발생되는 모든 로그를 버립니다.-->
+        <retentionTimeDays>0</retentionTimeDays> <!--로그보존기간 0 = 무제한-->
+        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+    </appender>
+    <appender name = "AWS_CLOUD_WATCH_ERROR_LOG" class="ca.pjer.logback.AwsLogsAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <logGroupName>movie-error-log</logGroupName> <!--CloudWatch log Group Name-->
+        <logStreamUuidPrefix>movie-error-log</logStreamUuidPrefix>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents> <!--배치의 최대 이벤트 갯수-->
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis> <!--마지막 처리를 하고 시간이 지나면 cloud watch로 로그를 쏨-->
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis> <!--로그가 전송되는 동안 코드가 계속 실행되는 것을 차단하고 값을 0으로 세팅하면 전송중에 발생되는 모든 로그를 버립니다.-->
+        <retentionTimeDays>0</retentionTimeDays> <!--로그보존기간 0 = 무제한-->
+        <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+        <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+    </appender>
+    <appender name = "AWS_CLOUD_WATCH_WARN_LOG" class="ca.pjer.logback.AwsLogsAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <logGroupName>movie-warn-log</logGroupName> <!--CloudWatch log Group Name-->
+        <logStreamUuidPrefix>movie-warn-log</logStreamUuidPrefix>
         <logRegion>ap-northeast-2</logRegion>
         <maxBatchLogEvents>50</maxBatchLogEvents> <!--배치의 최대 이벤트 갯수-->
         <maxFlushTimeMillis>30000</maxFlushTimeMillis> <!--마지막 처리를 하고 시간이 지나면 cloud watch로 로그를 쏨-->
@@ -39,6 +77,9 @@
     <springProfile name="!aws">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
+<!--            <appender-ref ref="AWS_CLOUD_WATCH_INFO_LOG"/>-->
+<!--            <appender-ref ref="AWS_CLOUD_WATCH_ERROR_LOG"/>-->
+<!--            <appender-ref ref="AWS_CLOUD_WATCH_WARN_LOG"/>-->
         </root>
     </springProfile>
 </configuration>
