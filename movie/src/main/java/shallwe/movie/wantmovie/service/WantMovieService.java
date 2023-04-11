@@ -40,6 +40,7 @@ public class WantMovieService {
         setMovieRelation(findMovie,wantMovie);
 
         wantMovieRepository.save(wantMovie);
+        log.info("영화 찜 등록완료 -> 회원 이메일 : {}, 영화 제목 : {}",findMember.getEmail(),findMovie.getMovieTitle());
     }
 
     public void deleteWantMovie(Member findMember, Movie findMovie) {
@@ -48,6 +49,7 @@ public class WantMovieService {
             return;
         }
         wantMovieRepository.delete(findWantMovie);
+        log.info("영화 찜 등록취소 -> 회원 이메일 : {}, 영화 제목 : {}",findMember.getEmail(),findMovie.getMovieTitle());
     }
 
     public void setMemberRelation(Member member, WantMovie wantMovie) {

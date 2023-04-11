@@ -10,9 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shallwe.movie.comment.dto.CommentDto;
@@ -21,10 +19,8 @@ import shallwe.movie.dto.PagingResponseDto;
 import shallwe.movie.exception.BusinessLogicException;
 import shallwe.movie.exception.ExceptionCode;
 import shallwe.movie.member.entity.Member;
-import shallwe.movie.member.service.MemberService;
 import shallwe.movie.movie.dto.MovieDto;
 import shallwe.movie.movie.entity.Movie;
-import shallwe.movie.movie.repository.MovieRedisRepository;
 import shallwe.movie.movie.repository.MovieRepository;
 import shallwe.movie.s3.S3UploadService;
 import shallwe.movie.sawmovie.entity.SawMovie;
@@ -32,7 +28,6 @@ import shallwe.movie.sawmovie.service.SawMovieService;
 import shallwe.movie.wantmovie.entity.WantMovie;
 import shallwe.movie.wantmovie.service.WantMovieService;
 
-import javax.persistence.LockModeType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +41,6 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final SawMovieService sawMovieService;
     private final WantMovieService wantMovieService;
-    private final MemberService memberService;
     private final CommentService commentService;
     private final S3UploadService s3UploadService;
 
@@ -84,6 +78,7 @@ public class MovieService {
             @CacheEvict(value = "mySawMovie",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void updateSawCount(Member member, Movie movie, int movieSawCount) {
+        log.info("시청횟수 등록 시도 -> 회원 이메일 : {}, 영화 제목 : {}, 시청횟수 : {}",member.getEmail(),movie.getMovieTitle(),movieSawCount);
         sawMovieService.saveSawMovie(movie, member, movieSawCount);
     }
 
@@ -93,8 +88,10 @@ public class MovieService {
     })
     public void updateWantMovie(Member member, Movie movie, String isWant) {
         if (isWant.equals("on")) {
+            log.info("영화 찜 상태변경 시도 -> 회원 이메일 : {}, 영화 제목 : {}, 찜등록  : {}",member.getEmail(),movie.getMovieTitle());
             wantMovieService.saveWantMovie(member, movie);
         } else {
+            log.info("영화 찜 상태변경 시도 -> 회원 이메일 : {}, 영화 제목 : {}, 찜등록 취소  : {}",member.getEmail(),movie.getMovieTitle());
             wantMovieService.deleteWantMovie(member,movie);
         }
     }
@@ -104,21 +101,25 @@ public class MovieService {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void writeMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
+        log.info("댓글 등록 시도 -> 회원 이메일 : {}, 영화 제목 : {}",member.getEmail(),movie.getMovieTitle());
         commentService.saveMovieComment(member, movie, commentDto);
     }
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",key = "#movieTitle",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "movieOne",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void addMovieCommentClaim(Long commentId) {
+        log.info("댓글 신고 등록 시도 -> 신고 대상 댓글 : {}",commentId);
         commentService.addMovieCommentClaim(commentId);
     }
 
     public void deleteMovieComment(Long commentId) {
+        log.info("댓글 삭제 시도 -> 삭제 대상 댓글 : {}",commentId);
         commentService.deleteMovieComment(commentId);
     }
     // ============================ 관리자 요청 처리 메소드 ==============================
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
+        log.info("영화 등록 시도 -> 영화 제목 : {}",movieDto.getMovieTitle());
         verifyExistsTitle(movieDto.getMovieTitle());
         Movie movie = Movie.builder()
                 .movieTitle(movieDto.getMovieTitle())
@@ -132,6 +133,7 @@ public class MovieService {
         Movie savedMovie = movieRepository.save(movie);
 
         MovieDto.Response movieRepDto = getMovieRepDto(savedMovie);
+        log.info("영화 등록 완료 -> 영화 제목 : {}",movieDto.getMovieTitle());
         return movieRepDto;
     }
 
@@ -142,6 +144,7 @@ public class MovieService {
      */
     @Cacheable(value = "allMovie",key = "#sort.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> findAllMovie(int page, String sort) {
+        log.info("영화 목록 조회 -> 조회 페이지 : {}, 조회 정렬 기준 : {}",page,sort);
         Page<Movie> pageInfo = movieRepository.findAll(PageRequest.of(page,10,Sort.by(sort).descending()));
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
 
@@ -155,14 +158,16 @@ public class MovieService {
      */
     @Cacheable(value = "searchMovie",key = "#title.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> searchMovieByTitle(String title, int page, String sort) {
-
+        log.info("영화 검색 시도 -> 검색어 : {}",title);
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
         Page<Movie> pageInfo = movieRepository.findMovieByTitleWithPaging(title, pageable);
         List<MovieDto.Response> movieRepDtoList = getMovieList(pageInfo);
+        log.info("영화 검색 결과 -> 검색어 : {}, 검색된 결과 : {}",title,pageInfo.getTotalElements());
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
     }
 
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
+        log.info("영화 수정 시도 -> 수정 대상 영화 제목 : {}",movieDto.getMovieTitle());
         Movie movie = is_exist_movie(movieDto.getMovieTitle());
         isUpdateImage(multipartFile,movie);
         movie.setMovieTitle(movieDto.getMovieTitle());
@@ -170,11 +175,13 @@ public class MovieService {
         movie.setMovieOpenDate(movieDto.getMovieOpenDate());
         movie.setMovieGenre(movieDto.getMovieGenre());
         movie.setMovieDescription(movieDto.getMovieDescription());
-
+        log.info("영화 수정 완료 -> 수정 대상 영화 아이디 : {}",movie.getMovieId());
         return getMovieRepDto(movie);
     }
     public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
+        log.info("영화 삭제 시도 -> 삭제 대상 영화 제목 : {}",movieTitle);
         movieRepository.deleteByMovieTitle(movieTitle);
+        log.info("영화 삭제 완료 -> 삭제 대상 영화 제목 : {}",movieTitle);
         return findAllMovie(0, "movieId");
     }
 
@@ -182,13 +189,19 @@ public class MovieService {
 
     public void verifyExistsTitle(String movieTitle) {
         Optional<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
+        log.info("영화 DB 중복 조회 시도 -> 영화 제목 : {}",movieTitle);
         if (movie.isPresent()) {
+            log.error("영화 DB 중복 확인 -> 영화 제목 : {}",movieTitle);
             throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);
         }
     }
 
     public Movie is_exist_movie(String movieTitle) {
+        log.info("영화 DB 조회 시도 -> 영화 제목 : {}",movieTitle);
         Optional<Movie> optionalMovie = movieRepository.findByMovieTitle(movieTitle); // DB에서 회원 조회
+        if (optionalMovie.isEmpty()) {
+            log.error("영화 DB 조회 실패 -> 영화 제목 : {}",movieTitle);
+        }
         Movie findMovie = optionalMovie.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MOVIE_CANNOT_FIND));
         return findMovie;
     }

@@ -34,7 +34,7 @@ public class CommentService {
 
         setMemberRelation(member,comment);
         setMovieRelation(movie,comment);
-
+        log.info("댓글 등록 완료 -> 회원 이메일 : {}, 영화 제목 : {}",member.getEmail(),movie.getMovieTitle());
         return commentRepository.save(comment);
     }
 
@@ -44,9 +44,11 @@ public class CommentService {
         int claimCount = comment.getClaimCount();
         claimCount++;
         comment.setClaimCount(claimCount);
+        log.info("댓글 신고 등록 완료 -> 신고 대상 댓글 : {}, 누적 신고 횟수 : {}",commentId,comment.getClaimCount());
     }
     public void deleteMovieComment(Long commentId) {
         commentRepository.delete(is_exist_comment(commentId));
+        log.info("댓글 삭제 완료 -> 삭제된 댓글 : {}",commentId);
     }
 
     public void setMemberRelation(Member member, Comment comment) {

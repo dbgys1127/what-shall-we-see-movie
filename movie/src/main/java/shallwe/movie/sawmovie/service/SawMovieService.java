@@ -50,7 +50,7 @@ public class SawMovieService {
         setMovieRelation(movie,sawMovie);
         setMemberRelation(member,sawMovie);
         sawMovieRepository.save(sawMovie);
-        log.info("Test 평균시청횟수 = {}",movie.getAvgSawCount());
+        log.info("시청횟수 완료 -> 회원 이메일 : {}, 영화 제목 : {}, 평균시청횟수 : {}",member.getEmail(),movie.getMovieTitle(),movie.getAvgSawCount());
     }
 
     public void setMemberRelation(Member member, SawMovie sawMovie) {

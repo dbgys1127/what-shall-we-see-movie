@@ -40,6 +40,9 @@ dependencies {
 	//aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//log
+	implementation "ca.pjer:logback-awslogs-appender:1.6.0"
+
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
