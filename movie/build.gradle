@@ -43,11 +43,13 @@ dependencies {
 	//log
 	implementation "ca.pjer:logback-awslogs-appender:1.6.0"
 
+	//img resizing
+	implementation 'com.github.downgoon:marvin:1.5.5'
+	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
+
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
-	//embedded-redis
-	//implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 
 	//jsp
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'

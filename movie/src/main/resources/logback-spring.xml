@@ -82,4 +82,11 @@
 <!--            <appender-ref ref="AWS_CLOUD_WATCH_WARN_LOG"/>-->
         </root>
     </springProfile>
+    <springProfile name="aws">
+        <root level="INFO">
+            <appender-ref ref="AWS_CLOUD_WATCH_INFO_LOG"/>
+            <appender-ref ref="AWS_CLOUD_WATCH_ERROR_LOG"/>
+            <appender-ref ref="AWS_CLOUD_WATCH_WARN_LOG"/>
+        </root>
+    </springProfile>
 </configuration>
