@@ -41,13 +41,16 @@ public class SawMovieService {
         if (Optional.ofNullable(findMovie).isEmpty()) {
             sawMovie = new SawMovie();
             sawMovie.setMovieSawCount(movieSawCount);
-
+            setMovieRelation(movie,sawMovie);
+            log.info("sawMovie new");
+            calculateAvgCount(movie);
         } else {
             sawMovie = findMovie;
             sawMovie.setMovieSawCount(movieSawCount);
+            calculateAvgCount(movie);
+            log.info("sawMovie exist");
         }
 
-        setMovieRelation(movie,sawMovie);
         setMemberRelation(member,sawMovie);
         sawMovieRepository.save(sawMovie);
         log.info("시청횟수 완료 -> 회원 이메일 : {}, 영화 제목 : {}, 평균시청횟수 : {}",member.getEmail(),movie.getMovieTitle(),movie.getAvgSawCount());
@@ -61,10 +64,16 @@ public class SawMovieService {
     public void setMovieRelation(Movie movie, SawMovie sawMovie) {
         sawMovie.setMovie(movie);
         movie.getSawMovies().add(sawMovie);
+    }
+
+    private static void calculateAvgCount(Movie movie) {
+        log.info("sawMovie size = {}", movie.getSawMovies().size());
         int sum =0;
         for (SawMovie updateSawMovie : movie.getSawMovies()) {
             sum+= updateSawMovie.getMovieSawCount();
         }
-        movie.setAvgSawCount((double) sum/movie.getSawMovies().size());
+        log.info("sawMovie total sum = {}",sum);
+        double avgSawCount = (double) sum / movie.getSawMovies().size();
+        movie.setAvgSawCount(Math.round(avgSawCount*10)/10.0);
     }
 }

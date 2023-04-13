@@ -17,6 +17,7 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,9 +63,7 @@ public class MemberDto {
 
         private Member.MemberStatus memberStatus;
 
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        private LocalDateTime createdAt;
+        private String createdAt;
 
         private List<String> roles;
 
@@ -138,11 +137,7 @@ public class MemberDto {
         private Long commentId;
         private String commentDetail;
         private String movieTitle;
-
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        private LocalDateTime createdAt;
-
+        private String createdAt;
         private String createdBy;
         private int claimCount;
     }
@@ -156,7 +151,7 @@ public class MemberDto {
                         .commentId(comment.getCommentId())
                         .commentDetail(comment.getCommentDetail())
                         .movieTitle(comment.getMovie().getMovieTitle())
-                        .createdAt(comment.getCreatedAt())
+                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                         .createdBy(comment.getCreatedBy())
                         .claimCount(comment.getClaimCount())
                         .build())

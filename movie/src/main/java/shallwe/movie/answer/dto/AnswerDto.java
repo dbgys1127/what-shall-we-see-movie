@@ -24,6 +24,6 @@ public class AnswerDto {
         private Long answerId;
         private String answerDescription;
         private String createdBy;
-        private LocalDateTime createdAt;
+        private String createdAt;
     }
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
 <head>
@@ -27,7 +28,10 @@
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
                 <td> <a href="">${admin.email}</a></td>
-                <td>${admin.createdAt}</td>
+                <td>
+                    <fmt:parseDate value="${admin.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </td>
                 <td><button type="button" onclick="location.href='/admin/administrator/delete?email=${admin.email}';">삭제</button></td>
             </tr>
         </c:forEach>

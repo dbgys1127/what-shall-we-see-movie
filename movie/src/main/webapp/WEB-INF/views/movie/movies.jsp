@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
 <head>
@@ -30,7 +31,10 @@
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
                 <td> <a href="/admin/movie/patch?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
-                <td>${movie.createdAt}</td>
+                <td>
+                    <fmt:parseDate value="${movie.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </td>
                 <td>평균시청순</td>
                 <td><button type="button" onclick="location.href='/admin/movie/delete?movieTitle=${movie.movieTitle}';">삭제</button></td>
             </tr>

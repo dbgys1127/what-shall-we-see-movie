@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix = "c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -11,7 +13,10 @@
     <th>문의 작성일</th>
     <th>처리 상태</th>
     <tr>
-        <td>${inquiry.createdAt}</td>
+        <td>
+            <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+            <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+        </td>
         <td>${inquiry.inquiryStatus}</td>
     </tr>
     <tr><td>문의 제목: ${inquiry.inquiryTitle}</td></tr>
@@ -25,7 +30,10 @@
         <tr><td>${answer.answerDescription}</td></tr>
         <tr>
             <td>${answer.createdBy}</td>
-            <td>${answer.createdAt}</td>
+            <td>
+                <fmt:parseDate value="${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+            </td>
         </tr>
     </c:forEach>  
 </table>

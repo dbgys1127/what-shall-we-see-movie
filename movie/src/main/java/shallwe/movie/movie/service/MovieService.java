@@ -29,6 +29,7 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -218,6 +219,7 @@ public class MovieService {
                     .movieGenre(movie.getMovieGenre())
                     .movieDescription(movie.getMovieDescription())
                     .avgSawCount(movie.getAvgSawCount())
+                    .createdAt(movie.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                     .build();
 
             movieRepDtoList.add(movieRepDto);

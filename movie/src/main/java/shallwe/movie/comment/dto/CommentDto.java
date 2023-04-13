@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,10 +39,7 @@ public class CommentDto {
         private Long commentId;
         private String commentDetail;
         private String createdBy;
-
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        private LocalDateTime createdAt;
+        private String createdAt;
         private int claimCount;
     }
 
@@ -54,7 +52,7 @@ public class CommentDto {
                         .commentId(comment.getCommentId())
                         .commentDetail(comment.getCommentDetail())
                         .createdBy(comment.getCreatedBy())
-                        .createdAt(comment.getCreatedAt())
+                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                         .claimCount(comment.getClaimCount())
                         .build())
                 .collect(Collectors.toList());

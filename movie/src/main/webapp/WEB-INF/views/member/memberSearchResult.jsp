@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
 <head>
@@ -25,7 +26,10 @@
         <c:forEach var="member" items="${pageData.data}">
             <tr>
                 <td> <a href="/admin/member/warning?email=${member.email}">${member.email}</a></td>
-                <td>${member.createdAt}</td>
+                <td>
+                    <fmt:parseDate value="${member.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </td>
                 <td>${member.warningCard}</td>
                 <td>${member.memberStatus}</td>
             </tr>

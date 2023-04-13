@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,11 +49,7 @@ public class InquiryDto {
         private String inquiryDescription;
         private Inquiry.InquiryStatus inquiryStatus;
         private String createdBy;
-
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        private LocalDateTime createdAt;
-
+        private String createdAt;
         private List<AnswerDto.Response> answers;
     }
     public static List<AnswerDto.Response> getAnswerResponseDtoList(List<Answer> answers) {
@@ -64,7 +61,7 @@ public class InquiryDto {
                         .answerId(answer.getAnswerId())
                         .answerDescription(answer.getAnswerDescription())
                         .createdBy(answer.getCreatedBy())
-                        .createdAt(answer.getCreatedAt())
+                        .createdAt(answer.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                         .build())
                 .collect(Collectors.toList());
     }

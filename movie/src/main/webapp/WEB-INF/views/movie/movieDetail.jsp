@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix = "c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -33,7 +34,10 @@
             <tr><td>${comment.commentDetail}</td></tr>
                 <tr>
                     <td><a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a></td>
-                    <td>${comment.createdAt}</td>
+                    <td>
+                        <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                        <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                    </td>
                     <td>${comment.claimCount}</td>
                 </tr>
                 <tr>

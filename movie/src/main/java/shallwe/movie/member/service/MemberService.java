@@ -26,6 +26,7 @@ import shallwe.movie.wantmovie.entity.WantMovie;
 import shallwe.movie.wantmovie.service.WantMovieService;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -251,7 +252,7 @@ public class MemberService {
     public static MemberDto.Response getAdminRepDto(Member member) {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .email(member.getEmail())
-                .createdAt(member.getCreatedAt())
+                .createdAt(member.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .warningCard(member.getWarningCard())
                 .memberStatus(member.getMemberStatus())
                 .build();

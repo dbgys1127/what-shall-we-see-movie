@@ -20,6 +20,7 @@ import shallwe.movie.member.entity.Member;
 import shallwe.movie.member.service.MemberService;
 import shallwe.movie.wantmovie.entity.WantMovie;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class InquiryService {
                 .inquiryTitle(inquiry.getInquiryTitle())
                 .inquiryDescription(inquiry.getInquiryDescription())
                 .inquiryStatus(inquiry.getInquiryStatus())
-                .createdAt(inquiry.getCreatedAt())
+                .createdAt(inquiry.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .createdBy(inquiry.getCreatedBy())
                 .answers(InquiryDto.getAnswerResponseDtoList(inquiry.getAnswers()))
                 .build();
@@ -108,7 +109,7 @@ public class InquiryService {
                     .inquiryDescription(inquiry.getInquiryDescription())
                     .inquiryStatus(inquiry.getInquiryStatus())
                     .createdBy(inquiry.getCreatedBy())
-                    .createdAt(inquiry.getCreatedAt())
+                    .createdAt(inquiry.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                     .build();
             inquiryRepDtoList.add(inquiryRepDto);
         }

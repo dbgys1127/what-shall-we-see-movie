@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
 <head>
@@ -21,7 +22,10 @@
         <tr><td>${comment.commentDetail}</td></tr>
             <tr>
                 <td><a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a></td>
-                <td>${comment.createdAt}</td>
+                <td>
+                    <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </td>
                 <td>신고내역:${comment.claimCount}회</td>
                 <td>
                     <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">

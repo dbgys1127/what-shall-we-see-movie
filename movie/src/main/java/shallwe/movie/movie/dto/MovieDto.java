@@ -109,10 +109,7 @@ public class MovieDto {
         @JsonSerialize(using = LocalDateSerializer.class)
         @JsonDeserialize(using = LocalDateDeserializer.class)
         private LocalDate movieOpenDate;
-
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        private LocalDateTime createdAt;
+        private String createdAt;
 
         private int memberSawCount;
 
@@ -128,7 +125,7 @@ public class MovieDto {
         public Response(String movieTitle, String moviePoster,
                         String movieDescription, int movieRunningTime,
                         Movie.MovieGenre movieGenre, LocalDate movieOpenDate,
-                        LocalDateTime createdAt, double avgSawCount,String isWant,
+                        String createdAt, double avgSawCount,String isWant,
                         String currentMember,
                         List<CommentDto.Response> comments) {
             this.movieTitle = movieTitle;
