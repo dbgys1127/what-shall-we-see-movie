@@ -50,7 +50,7 @@
             <tr>
                 <td><a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
                 <td><a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
-                <td>평균시청순</td>
+                <td>${movie.avgSawCount}</td>
             </tr>
         </c:forEach>
     </table>

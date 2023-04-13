@@ -33,7 +33,7 @@
                     <fmt:parseDate value="${movie.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                     <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
                 </td>
-                <td>평균시청순</td>
+                <td>${movie.avgSawCount}</td>
                 <td><button type="button" onclick="location.href='/admin/movie/delete?movieTitle=${movie.movieTitle}';">삭제</button></td>
             </tr>
         </c:forEach>
