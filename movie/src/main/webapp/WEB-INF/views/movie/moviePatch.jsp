@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2> 영화수정 화면 </h2>
-<form action="/admin/movie/patch" method="post" enctype="multipart/form-data">
+<form action="/admin/movie/patch?preMovieTitle=${movie.movieTitle}" method="post" enctype="multipart/form-data">
 <ul>
     <img src="${movie.moviePoster}" />
     <li><input type="file" name="moviePoster" accept=".jpg,.png,.jpeg"></li>

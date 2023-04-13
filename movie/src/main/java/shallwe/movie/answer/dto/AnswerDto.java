@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +21,7 @@ public class AnswerDto {
     @Getter
     @Setter
     @Builder
-    public static class Response {
+    public static class Response implements Serializable {
         private Long answerId;
         private String answerDescription;
         private String createdBy;

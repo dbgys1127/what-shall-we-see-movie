@@ -36,7 +36,7 @@
         <tr>
             <td>${answer.createdBy}</td>
             <td>
-                <fmt:parseDate value="$${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <fmt:parseDate value="${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </td>
         </tr>

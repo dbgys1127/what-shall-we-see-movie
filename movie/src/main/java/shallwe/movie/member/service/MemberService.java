@@ -2,7 +2,9 @@ package shallwe.movie.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,6 +51,10 @@ public class MemberService {
 
     // ============================ 일반 유저 요청 처리 메소드 ==============================
     // 1. 회원가입 처리 메소드
+    @Caching(evict = {
+            @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public MemberDto.Response createMember(MemberDto.Post memberDto) {
         log.info("회원 가입 시도 -> 가입 예정 이메일 : {}",memberDto.getEmail());
         verifyExistsEmail(memberDto.getEmail());
@@ -151,6 +157,7 @@ public class MemberService {
     }
 
     // 2. 관리자가 관리하고 싶은 회원을 선택할때 사용됨
+    @Cacheable(value = "member",key="#email",cacheManager = "contentCacheManager")
     public MemberDto.Response pickMember(String email) {
         log.info("회원 상세조회 시도 -> 조회 대상 : {}",email);
         Member member = is_exist_member(email);
@@ -160,6 +167,11 @@ public class MemberService {
     }
 
     // 3. 댓글 신고가 접수된 회원을 admin이 경고를 주거나 차단하는 메서드
+    @Caching(evict = {
+            @CacheEvict(value = "member",key = "#email",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public MemberDto.Response giveWarning(String email,String warning, String block) {
         Member member = is_exist_member(email);
         log.info("회원 경고/상태 수정 시도 -> 대상 회원 : {}",email);
@@ -179,6 +191,10 @@ public class MemberService {
     }
 
     // 4. 관리자 추가 처리 메소드
+    @Caching(evict = {
+            @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public MemberDto.Response createAdmin(MemberDto.Post memberDto) {
         log.info("관리자 가입 시도 -> 가입 예정 이메일 : {}",memberDto.getEmail());
         verifyExistsEmail(memberDto.getEmail());
@@ -192,7 +208,10 @@ public class MemberService {
         log.info("관리자 가입 성공 -> 가입 이메일 : {}",savedMember.getEmail());
         return memberRepDto;
     }
-
+    @Caching(evict = {
+            @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public PagingResponseDto<MemberDto.Response> deleteAdmin(String email) {
         log.info("관리자 삭제 시도 -> 삭제 예정 이메일 : {}",email);
         memberRepository.deleteByEmail(email);

@@ -71,7 +71,6 @@ public class MovieService {
         return movieRepDto;
     }
 
-
     @Caching(evict = {
             @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
@@ -114,11 +113,19 @@ public class MovieService {
         commentService.addMovieCommentClaim(commentId);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "movieOne",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
+    })
     public void deleteMovieComment(Long commentId) {
         log.info("댓글 삭제 시도 -> 삭제 대상 댓글 : {}",commentId);
         commentService.deleteMovieComment(commentId);
     }
     // ============================ 관리자 요청 처리 메소드 ==============================
+    @Caching(evict = {
+            @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public MovieDto.Response createMovie(MultipartFile multipartFile, MovieDto.Post movieDto) throws IOException {
         log.info("영화 등록 시도 -> 영화 제목 : {}",movieDto.getMovieTitle());
         verifyExistsTitle(movieDto.getMovieTitle());
@@ -167,9 +174,16 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "mySawMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myWantMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
         log.info("영화 수정 시도 -> 수정 대상 영화 제목 : {}",movieDto.getMovieTitle());
-        Movie movie = is_exist_movie(movieDto.getMovieTitle());
+        Movie movie = is_exist_movie(movieDto.getPreMovieTitle());
         isUpdateImage(multipartFile,movie);
         movie.setMovieTitle(movieDto.getMovieTitle());
         movie.setMovieRunningTime(movieDto.getMovieRunningTime());
@@ -179,6 +193,14 @@ public class MovieService {
         log.info("영화 수정 완료 -> 수정 대상 영화 아이디 : {}",movie.getMovieId());
         return getMovieRepDto(movie);
     }
+
+    @Caching(evict = {
+            @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "mySawMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myWantMovie",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public PagingResponseDto<MovieDto.Response> deleteMovie(String movieTitle) {
         log.info("영화 삭제 시도 -> 삭제 대상 영화 제목 : {}",movieTitle);
         movieRepository.deleteByMovieTitle(movieTitle);

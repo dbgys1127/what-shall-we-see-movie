@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -63,11 +64,18 @@ public class InquiryService {
                 .build();
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public void deleteInquiry(Long inquiryId) {
         log.info("문의 삭제 시도 -> 삭제 대상 문의 : {}",inquiryId);
         inquiryRepository.delete(is_exist_inquiry(inquiryId));
         log.info("문의 삭제 완료 -> 삭제 완료 문의 : {}",inquiryId);
     }
+
+    @Caching(evict = {
+            @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
         log.info("답변 등록 시도 -> 답변 대상 문의 : {}",inquiryId);
         Inquiry inquiry = is_exist_inquiry(inquiryId);
@@ -80,6 +88,10 @@ public class InquiryService {
             log.info("답변 상태 대기 등록 -> 대상 문의 : {}, 대기",inquiryId);
         }
     }
+
+    @Caching(evict = {
+            @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
+    })
     public void deleteAnswer(Long inquiryId) {
         log.info("답변 삭제 시도");
         answerService.deleteAnswer(inquiryId);

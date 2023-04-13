@@ -63,6 +63,9 @@ public class MovieDto {
 
         @NotNull
         @Size(max=20)
+        private String preMovieTitle;
+        @NotNull
+        @Size(max=20)
         private String movieTitle;
 
         @NotNull
