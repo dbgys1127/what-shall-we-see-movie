@@ -53,7 +53,7 @@
                 <td>${comment.commentDetail}</td>
             </tr>
             <tr>
-                <td>${comment.movieTitle}</td>
+                <td><a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a></td>
                 <td>
                     <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                     <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>

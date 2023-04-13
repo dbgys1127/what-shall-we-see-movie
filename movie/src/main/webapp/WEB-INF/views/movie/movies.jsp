@@ -21,7 +21,7 @@
 <!-- 정렬 기준 -->
 <ul class="sort">
     <li class="${pageData.sort eq 'movieId' ? 'active':''}"><a href="/admin/movie?page=1&sort=movieId">등록일</a></li>
-    <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/movie?page=1&sort=xxx">평균 시청순</a></li>
+    <li class="${pageData.sort eq 'avgSawCount' ? 'active':''}" ><a href="/admin/movie?page=1&sort=avgSawCount">평균 시청순</a></li>
 </ul>
     <table style="border: 1px solid black;" >
     <!-- 표 헤더 -->

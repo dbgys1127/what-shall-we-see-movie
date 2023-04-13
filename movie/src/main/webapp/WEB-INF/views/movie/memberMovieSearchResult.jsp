@@ -11,6 +11,7 @@
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
     .active a{color:red;}
+    .active div{color: red;}
 
 </style>
 <body>
@@ -22,13 +23,18 @@
 </form>
 <!-- 정렬 기준 -->
 <ul class="sort">
-    <li class="${pageData.sort eq 'avgSawCount' ? 'active':''}"><a href="/movie?page=1&sort=avgSawCount">평균 시청순</a></li>
     <li class="${pageData.sort eq 'movieOpenDate' ? 'active':''}" ><a href="/movie?page=1&sort=movieOpenDate">상영일자순</a></li>
-    <li>장르별</li>
+    <li class="${pageData.sort eq 'avgSawCount' ? 'active':''}"><a href="/movie?page=1&sort=avgSawCount">평균 시청순</a></li>
+    <li class="${pageData.genre eq '' ? '':'active'}"><div>장르별</div></li>
     <form action = "/movie/search/genre" method="get">
         <li>        
             <select name="movieGenre">
-                <option value="">=== 선택 ===</option>
+                <c:if test="${pageData.genre ne ''}">
+                    <option value="">현재 장르 : ${pageData.genre}</option>
+                </c:if>
+                <c:if test="${pageData.genre eq ''}">
+                    <option value="">=== 선택 ===</option>
+                </c:if>
                 <option value="코미디">코미디</option>
                 <option value="액션">액션</option>
                 <option value="범죄">범죄</option>
@@ -45,11 +51,15 @@
     <!-- 표 헤더 -->
         <th>포스터</th>
         <th>영화제목</th>
+        <th>상영일자</th>
+        <th>장르</th>
         <th>평균 시청수</th>
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
                 <td><a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
                 <td><a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                <td>${movie.movieOpenDate}</td>
+                <td>${movie.movieGenre}</td>
                 <td>${movie.avgSawCount}</td>
             </tr>
         </c:forEach>

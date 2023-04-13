@@ -21,7 +21,6 @@
     <!-- 정렬 기준 -->
     <ul class="sort">
         <li class="${pageData.sort eq 'memberId' ? 'active':''}"><a href="/admin/member?page=1&sort=memberId">가입일</a></li>
-        <li><a href="">시청한 영화수</a></li>
         <li class="${pageData.sort eq 'warningCard' ? 'active':''}" ><a href="/admin/member?page=1&sort=warningCard">경고수</a></li>
         <li class="${pageData.sort eq 'memberStatus' ? 'active':''}"><a href="/admin/member?page=1&sort=memberStatus">차단멤버</a></li>
     </ul>

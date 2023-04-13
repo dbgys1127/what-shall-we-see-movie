@@ -51,20 +51,16 @@ public class MemberController {
 
     @NeedMember
     @PostMapping("/mypage/myImage")
-    public String patchMyImage(Member member,@RequestPart("myImage") MultipartFile multipartFile,
-                               Model model) throws IOException {
-        MemberDto.Response patchMember = memberService.updateMemberImage(multipartFile, member);
-        model.addAttribute("member", patchMember);
-        return "member/mypage";
+    public String patchMyImage(Member member,@RequestPart("myImage") MultipartFile multipartFile) throws IOException {
+        memberService.updateMemberImage(multipartFile, member);
+        return "redirect:/mypage";
     }
 
     @NeedMember
     @PostMapping("/mypage/myPassword")
-    public String patchMyPassword(Member member,@ModelAttribute @Valid MemberDto.Patch memberDto,
-                                  Model model) throws IOException {
-        MemberDto.Response patchMember = memberService.updateMemberPassword(memberDto, member);
-        model.addAttribute("member", patchMember);
-        return "member/mypage";
+    public String patchMyPassword(Member member,@ModelAttribute @Valid MemberDto.Patch memberDto) throws IOException {
+        memberService.updateMemberPassword(memberDto, member);
+        return "redirect:/mypage";
     }
 
     @NeedMember

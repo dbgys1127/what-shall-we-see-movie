@@ -10,7 +10,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 300)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 600)
 @EnableCaching
 public class MovieApplication extends SpringBootServletInitializer {
 	@Override
