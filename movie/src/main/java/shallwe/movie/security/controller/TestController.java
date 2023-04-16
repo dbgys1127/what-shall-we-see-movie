@@ -16,6 +16,6 @@ public class TestController {
     @GetMapping("/")
     public String welcomePage() {
         log.info("now port {}",port);
-        return "index";
+        return "allMovie";
     }
 }
