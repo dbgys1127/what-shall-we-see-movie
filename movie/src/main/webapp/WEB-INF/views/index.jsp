@@ -9,6 +9,8 @@
 <body>
 <h2> Security Test </h2>
 <ul>
+    ${nowMember}
+    ${sessionId}
     <h2> war 덮어쓰기 확인 </h2>
 
     <li><a href="/">홈 화면 </a></li>

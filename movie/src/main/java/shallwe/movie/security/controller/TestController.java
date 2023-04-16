@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -14,8 +15,9 @@ public class TestController {
     @Value("${server.port}")
     private String port;
     @GetMapping("/")
-    public String welcomePage() {
+    public String welcomePage(RedirectAttributes redirectAttributes) {
         log.info("now port {}",port);
-        return "allMovie";
+        redirectAttributes.addAttribute("page", 1);
+        return "redirect:/movie";
     }
 }
