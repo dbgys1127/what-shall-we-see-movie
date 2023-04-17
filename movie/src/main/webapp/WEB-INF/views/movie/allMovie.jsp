@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title> 무봐? 시큐리티 테스트 홈 화면 </title>
+    <title> 무봐?</title>
 </head>
 
 <style>
@@ -14,20 +14,15 @@
     .active div{color: red;}
 </style>
 <body>
-<h2> 영화 </h2>
-
-<form action = "/movie/search/title" method="get">
-    <input type = "text" name="movieTitle" placeholder = "검색할 영화를 입력하세요."/>
-    <button type="submit">검색</button>
-</form>
 <!-- 정렬 기준 -->
 <ul class="sort">
     <li class="${pageData.sort eq 'movieOpenDate' ? 'active':''}" ><a href="/movie?page=1&sort=movieOpenDate">상영일자순</a></li>
     <li class="${pageData.sort eq 'avgSawCount' ? 'active':''}"><a href="/movie?page=1&sort=avgSawCount">평균 시청순</a></li>
     <li>장르별</li>
+    <li>
     <form action = "/movie/search/genre" method="get">
         <li>        
-            <select name="movieGenre">
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="movieGenre">
                 <option value="">=== 선택 ===</option>
                 <option value="코미디">코미디</option>
                 <option value="액션">액션</option>
@@ -40,24 +35,29 @@
         </li>
         <button type="submit">적용</button>
     </form>
+    </li>
 </ul>
-    <table style="border: 1px solid black;" >
-    <!-- 표 헤더 -->
-        <th>포스터</th>
-        <th>영화제목</th>
-        <th>상영일자</th>
-        <th>장르</th>
-        <th>평균 시청수</th>
-        <c:forEach var="movie" items="${pageData.data}">
-            <tr>
-                <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
-                <td> <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
-                <td>${movie.movieOpenDate}</td>
-                <td>${movie.movieGenre}</td>
-                <td>${movie.avgSawCount}</td>
-            </tr>
-        </c:forEach>
-    </table>
+<c:forEach var="movie" items="${pageData.data}" varStatus="loop">
+    <c:if test="${loop.index % 5 == 0}">
+        <div class="row">
+    </c:if>
+        <div class="col-sm">
+        <div class="card" style="width: 100%;">
+            <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}" class="card-img-top" style="width: 100%;"></a>
+        <div class="card-header">
+            <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">개봉일 : ${movie.movieOpenDate}</li>
+            <li class="list-group-item">장르 : ${movie.movieGenre}</li>
+            <li class="list-group-item">평균 시청횟수 :${movie.avgSawCount}</li>
+        </ul>
+        </div>
+        </div>
+    <c:if test="${(loop.index + 1) % 5 == 0 || loop.last}">
+        </div>
+    </c:if>
+</c:forEach>
     <!-- 페이징 단추 -->
     <div class="pull-right">
         <ul class="pagination">

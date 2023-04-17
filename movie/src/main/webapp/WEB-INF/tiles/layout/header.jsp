@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix = "c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -17,10 +18,9 @@
          transition: none;   
         }
     </style>
-
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #101936;">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">무봐</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/logout-form">로그아웃</a>
                     </li>
-
             </ul>
             <form class="d-flex" action="/movie/search/title" method="get" role="search">
               <input class="form-control me-2" type="text" name="movieTitle"  placeholder="검색할 영화를 입력하세요." aria-label="Search">
