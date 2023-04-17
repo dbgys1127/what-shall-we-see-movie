@@ -9,7 +9,7 @@
         <put-attribute name="member-movie-content" value="/WEB-INF/tiles/layout/member-movie-content.jsp" />
         <put-attribute name="content" value="" />
     </definition>
-    <definition name="*/*" extends="member_movie_layout">
-        <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+    <definition name="movie/member-movie-list/*" extends="member_movie_layout">
+        <put-attribute name="content" value="/WEB-INF/views/movie/member-movie-list/{1}.jsp" />
     </definition>    
 </tiles-definitions>

@@ -4,67 +4,90 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
 <h2> 영화 상세화면 </h2>
-<ul>
-    <img src="${movie.moviePoster}" />
-    <li>영화제목: ${movie.movieTitle}</li>
-    <li>상영시간: ${movie.movieRunningTime}</li>
-    <li>개봉일: ${movie.movieOpenDate}</li>
-    <li>장르: ${movie.movieGenre}</li>
-    <li>영화 설명: ${movie.movieDescription}</li>
-    <form action = "/movie/saw-movie?movieTitle=${movie.movieTitle}" method="post">
-        <li><input type="text" name="movieSawCount" placeholder="${movie.avgSawCount}"></li>
-        <button type="submit">시청 횟수 등록</button>
-    </form>
-    <li>나의 시청횟수: ${movie.memberSawCount}</li>
-    <form action = "/movie/want-movie?movieTitle=${movie.movieTitle}" method="post">
-        <input type="checkbox" name="wantMovie" <c:if test="${movie.isWant eq 'on'}">checked</c:if> />
-    <button type="submit">찜 등록</button>
-    </form>
-    <form action="/movie/comment?movieTitle=${movie.movieTitle}" method="post">
-        <input type="text" name="commentDetail" placeholder="댓글을 등록하세요">
-        <button type="submit">댓글 등록</button>
-    </form>
-    
-    <table style="border: 1px solid black;" >
-        <c:forEach var="comment" items="${movie.comments}">    
-            <tr><td>${comment.commentDetail}</td></tr>
-                <tr>
-                    <td><a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a></td>
-                    <td>
-                        <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
-                        <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-                    </td>
-                    <td>${comment.claimCount}</td>
-                </tr>
-                <tr>
-                    <td>
-                        <form action="/movie/comment/claim?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                            <button type="submit">신고</button>
-                        </form>
-                    </td>
-                    <c:if test = "${movie.currentMember eq comment.createdBy}">
-                        <td>
-                            <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                                <button type="submit">수정</button>
-                            </form>
-                        </td>
-                        </c:if>
-                    <c:if test = "${movie.currentMember eq comment.createdBy}">
-                    <td>
-                        <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                            <button type="submit">삭제</button>
-                        </form>
-                    </td>
-                    </c:if>
-                </tr>
-        </c:forEach>   
-    </table>
-    
-    <button type="button"><a href="/">메인</a></button>
-</ul>
+<div class="container text-center" style="border: 1px solid;">
+    <div class="row">
+            <div class="col-md-6 col-sm-6"><img src="${movie.moviePoster}" width="100%" /></div>
+            <div class="col-md-6 col-sm-6">        
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">영화제목: ${movie.movieTitle}</li>
+                    <li class="list-group-item">상영시간: ${movie.movieRunningTime}</li>
+                    <li class="list-group-item">개봉일: ${movie.movieOpenDate}</li>
+                    <li class="list-group-item">장르: ${movie.movieGenre}</li>
+                    <li class="list-group-item">영화 설명: ${movie.movieDescription}</li>
+                </ul>
+            </div>
+    </div>
+    <br>
+    <div class="row">
+        <form action="/movie/saw-movie?movieTitle=${movie.movieTitle}" method="post" class="d-flex">
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2">나의 시청 횟수</div>
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2"><input type="text" name="movieSawCount" placeholder="${movie.avgSawCount}" class="form-control form-control-sm" width="100px"></div>
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2"><button type="submit" class="btn btn-dark">등록</button></div>
+        </form>
+        <form action = "/movie/want-movie?movieTitle=${movie.movieTitle}" method="post" class="d-flex">
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2">영화 찜 등록</div>
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2"><input type="checkbox" name="wantMovie" <c:if test="${movie.isWant eq 'on'}">checked</c:if> /></div>
+            <div class="col-md-2 col-sm-2 flex-grow-1 me-2"><button type="submit" class="btn btn-dark">등록</button></div>
+        </form>
+    </div>
+    <div class="row">
+        <form action="/movie/comment?movieTitle=${movie.movieTitle}" method="post" style="margin-bottom: 0;">
+            <div class="col-md-12 col-sm-12">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-start">
+                        <label class="form-label" >댓글 작성</label>
+                    </div>
+                    <textarea class="form-control" style="text-align: left; border: 1px solid; border-radius:4px;" name="commentDetail" placeholder="댓글을 등록하세요"></textarea>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="offset-md-10 flex-grow-1 me-2"></div>
+        <div class="col-md-2 col-sm-2 flex-grow-1 me-2"><button type="submit" class="btn btn-dark" style="float: right;">댓글 등록</button></div>
+        </form>
+    </div>
+    <c:forEach var="comment" items="${movie.comments}">    
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
+                ${comment.commentDetail}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 flex-grow-1 me-2">
+                <a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <c:out value="${comment.claimCount}"></c:out> 회
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <form action="/movie/comment/claim?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                    <button type="submit" class="btn btn-dark">신고</button>
+                </form>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                    <button type="submit" class="btn btn-dark">수정</button>
+                </form>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                    <button type="submit" class="btn btn-dark">삭제</button>
+                </form>
+            </div>
+        </div>
+    </c:forEach>    
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
 </body>
 </html>

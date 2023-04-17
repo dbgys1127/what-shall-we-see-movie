@@ -34,7 +34,7 @@ public class MovieController {
                             @RequestParam(value = "sort", defaultValue = "movieOpenDate") String sort, Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page - 1, sort);
         model.addAttribute("pageData", pageRepDto);
-        return "movie/allMovie";
+        return "movie/member-movie-list/allMovie";
     }
 
     @GetMapping("/movie/search/title")
@@ -43,7 +43,7 @@ public class MovieController {
                                   Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovieByTitle(movieTitle,page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
-        return "movie/memberMovieSearchResult";
+        return "movie/member-movie-list/memberMovieSearchResult";
     }
 
     @GetMapping("/movie/search/genre")
@@ -52,7 +52,7 @@ public class MovieController {
                                          Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovieByGenre(movieGenre,page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
-        return "movie/memberMovieSearchResult";
+        return "movie/member-movie-list/memberMovieSearchResult";
     }
 
     @NeedMemberAndMovieTitle

@@ -40,7 +40,7 @@
                     <option value="로맨스">로맨스</option>
                 </select>
             </li>
-            <button type="submit">적용</button>
+            <button type="submit" class="btn btn-sm btn-dark">적용</button>
          </form>
         </li>
     </div>
