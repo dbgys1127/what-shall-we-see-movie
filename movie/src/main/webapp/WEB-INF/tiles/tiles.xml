@@ -3,11 +3,13 @@
         "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
-	<definition name="tiles_layout" template="/WEB-INF/tiles/layout/layout.jsp">
+	<definition name="member_movie_layout" template="/WEB-INF/tiles/layout/member-movie-list-layout.jsp">
         <put-attribute name="header" value="/WEB-INF/tiles/layout/header.jsp" />
+        <put-attribute name="member-movie-sort" value="/WEB-INF/tiles/layout/member-movie-sort.jsp" />
+        <put-attribute name="member-movie-content" value="/WEB-INF/tiles/layout/member-movie-content.jsp" />
         <put-attribute name="content" value="" />
     </definition>
-    <definition name="*/*" extends="tiles_layout">
+    <definition name="*/*" extends="member_movie_layout">
         <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
-    </definition>
+    </definition>    
 </tiles-definitions>
