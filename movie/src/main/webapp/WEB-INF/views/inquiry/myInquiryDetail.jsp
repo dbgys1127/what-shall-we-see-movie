@@ -9,33 +9,57 @@
 </head>
 <body>
 <h2> 문의 상세화면 </h2>
-<table>
-    <th>문의 작성일</th>
-    <th>처리 상태</th>
-    <tr>
-        <td>
+<div class="container" style="border: 1px solid;">
+    문의
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-md-12 flex-grow-1 me-2">
+            ${inquiry.inquiryTitle}
+        </div>
+    </div>
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
+            ${inquiry.inquiryDescription}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 flex-grow-1 me-2">
             <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
             <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-        </td>
-        <td>${inquiry.inquiryStatus}</td>
-    </tr>
-    <tr><td>문의 제목: ${inquiry.inquiryTitle}</td></tr>
-    <tr><td>문의 내용: ${inquiry.inquiryDescription}</td></tr>
-    <tr>
-        <td><button type="submit"><a href="/inquiry/patch?inquiryId=${inquiry.inquiryId}" >수정하기</a></button></td>
-        
-        <td><button type="button"><a href="/">메인</a></button></td>
-    </tr>
-     <c:forEach var="answer" items="${inquiry.answers}">    
-        <tr><td>${answer.answerDescription}</td></tr>
-        <tr>
-            <td>${answer.createdBy}</td>
-            <td>
+        </div>
+        <div class="col-md-1 flex-grow-1 me-2">
+            <c:out value="${inquiry.inquiryStatus}"></c:out>
+        </div>
+        <div class="col-md-1 flex-grow-1 me-2">
+            <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
+                <button type="submit" class="btn btn-dark">수정</button>
+            </form>
+        </div>
+        <div class="col-md-1 flex-grow-1 me-2">
+            <form action="/inquiry/delete?inquiryId=${inquiry.inquiryId}" method="post">
+                <button type="submit" class="btn btn-dark">삭제</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="border: 1px solid;">
+    답변
+    <c:forEach var="answer" items="${inquiry.answers}">   
+        <div class="row">
+            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
+                ${answer.answerDescription}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 flex-grow-1 me-2">
+                ${answer.createdBy}
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
                 <fmt:parseDate value="${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-            </td>
-        </tr>
+            </div>
+        </div>
     </c:forEach>  
-</table>
+</div>
 </body>
 </html>

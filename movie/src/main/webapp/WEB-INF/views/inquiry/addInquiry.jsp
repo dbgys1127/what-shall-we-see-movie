@@ -6,15 +6,17 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <body>
-<h2> 문의 등록 화면 </h2>
-<form action="/inquiry" method="post">
-    <input type="text" name="inquiryTitle" placeholder="제목을 입력하세요.">
-    <br>
-    <input type="text" name="inquiryDescription" placeholder="내용을 입력하세요." />
-    <br>
-    <button type="submit">입력완료</button>
+<h2 style="text-align: center;"> 문의 등록 </h2>
+<form action="/inquiry" method="post" style="text-align: center;">        
+    <div class="form-floating mb-3 offset-md-3 col-md-6">
+        <input type="text" class="form-control" id="floatingInput" name="inquiryTitle">
+        <label for="floatingInput">제목을 입력하세요</label>
+    </div>
+    <div class="form-floating mb-3 offset-md-3 col-md-6">
+        <input type="text" class="form-control" id="floatingPassword" name="inquiryDescription">
+        <label for="floatingPassword">내용을 입력하세요</label>
+    </div>
+    <button type="submit" class="btn btn-dark">입력완료</button>
 </form>
-    <button type="button"><a href="/">입력취소</a></button>
-
 </body>
 </html>

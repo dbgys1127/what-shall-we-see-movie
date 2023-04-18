@@ -15,38 +15,51 @@
 <body>
 <h2> 시청한 영화 목록 </h2>
 <br>
-
-<table style="border: 1px solid black;" >
-    <!-- 표 헤더 -->
-        <th>포스터</th>
-        <th>영화제목</th>
-        <th>나의 시청횟수</th>
-        <c:forEach var="movie" items="${pageData.data}">
-            <tr>
-                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}"/></a></td>
-                <td><a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
-                <td>${movie.sawCount}</td>
-            </tr>
-        </c:forEach>
-       
-</table>
-    <!-- 페이징 단추 -->
-    <div class="pull-right">
-        <ul class="pagination">
-                <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/mypage/saw-movie?page=${pageData.startPage-1}">Prev</a></li>
-                </c:if>
-
-                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
-                    <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/mypage/saw-movie?page=${num}">${num}</a>
-                    </li>
-                </c:forEach>
-
-                <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/mypage/saw-movie?page=${pageData.endPage+1}">Next</a></li>
-                </c:if>
+<c:forEach var="movie" items="${pageData.data}" varStatus="loop">
+    <c:if test="${loop.index % 5 == 0}">
+        <div class="row">
+    </c:if>
+        <div class="col-sm">
+        <div class="card" style="width: 100%;">
+            <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}" class="card-img-top" style="width: 100%;"></a>
+        <div class="card-header">
+            <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">나의 시청횟수 : ${movie.sawCount}</li>
         </ul>
-    </div>
+        </div>
+        </div>
+    <c:if test="${(loop.index + 1) % 5 == 0 || loop.last}">
+        </div>
+    </c:if>
+    <br>
+</c:forEach>
+<!-- 페이징 단추 -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+            <c:if test="${pageData.prev}">
+                <li class="page-item">
+                    <a class="page-link" href="/mypage/saw-movie?page=${pageData.startPage-1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            </c:if>
+
+            <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
+                <li class = "page-item ${pageData.nowPage eq num ? 'active':''}" aria-current="page">
+                    <a class="page-link" href="/mypage/saw-movie?page=${num}">${num}</a>
+                </li>
+            </c:forEach>
+
+            <c:if test="${pageData.next}">
+                <li class="page-item">
+                    <a class="page-link" href="/mypage/saw-movie?page=${pageData.endPage+1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </c:if>
+    </ul>
+</nav>
 </body>
 </html>

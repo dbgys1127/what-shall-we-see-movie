@@ -88,7 +88,7 @@ public class MovieController {
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/comment")
     public String postComment(Member member, Movie movie,
-                              @ModelAttribute CommentDto.Post commentDto,
+                              @ModelAttribute @Valid CommentDto.Post commentDto,
                               RedirectAttributes redirectAttributes) {
         movieService.writeMovieComment(member, movie, commentDto);
         redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());

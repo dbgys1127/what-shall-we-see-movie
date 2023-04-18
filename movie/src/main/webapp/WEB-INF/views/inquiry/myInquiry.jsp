@@ -16,44 +16,60 @@
 </style>
 <body>
 <h2>문의</h2>
-<button type="button" onclick="location.href='/inquiry/add-inquiry-form';">문의 추가</button>
-<table style="border: 1px solid black;" >
+<div class="container text-center" style="border: 1px solid;">
     <c:forEach var="inquiry" items="${pageData.data}">    
-        <tr><td><a href="/inquiry/detail?inquiryId=${inquiry.inquiryId}">${inquiry.inquiryTitle}</a></td></tr>
-            <tr>
-                <td>
-                    <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
-                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-                </td>
-                <td>${inquiry.inquiryStatus}</td>
-                <td>
-                    <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
-                        <button type="submit">수정</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="/inquiry/delete?inquiryId=${inquiry.inquiryId}" method="post">
-                        <button type="submit">삭제</button>
-                    </form>
-                </td>
-            </tr>
-    </c:forEach>   
-</table>
-    <!-- 페이징 단추 -->
-    <div class="pull-right">
-        <ul class="pagination">
-                <c:if test="${pageData.prev}">
-                    <li class="paginate_button previous"><a href="/inquiry?page=${pageData.startPage-1}">Prev</a></li>
-                </c:if>
-                <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
-                    <li class = "${pageData.nowPage eq num ? 'active':''}">
-                        <a href="/inquiry?page=${num}">${num}</a>
-                    </li>
-                </c:forEach>
-                <c:if test="${pageData.next}">
-                    <li class="paginate_button next"><a href="/inquiry?page=${pageData.endPage+1}">Next</a></li>
-                </c:if>
-        </ul>
-    </div>
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
+                <a href="/inquiry/detail?inquiryId=${inquiry.inquiryId}">${inquiry.inquiryTitle}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 flex-grow-1 me-2">
+                <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <c:out value="${inquiry.inquiryStatus}"></c:out>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
+                    <button type="submit" class="btn btn-dark">수정</button>
+                </form>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <form action="/inquiry/delete?inquiryId=${inquiry.inquiryId}" method="post">
+                    <button type="submit" class="btn btn-dark">삭제</button>
+                </form>
+            </div>
+        </div>
+    </c:forEach>    
+    <button type="button" onclick="location.href='/inquiry/add-inquiry-form';" class="btn btn-dark" style="text-align: center;">문의 추가</button>
+</div>
+<!-- 페이징 단추 -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+            <c:if test="${pageData.prev}">
+                <li class="page-item">
+                    <a class="page-link" href="/inquiry?page=${pageData.startPage-1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            </c:if>
+
+            <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
+                <li class = "page-item ${pageData.nowPage eq num ? 'active':''}" aria-current="page">
+                    <a class="page-link" href="/inquiry?page=${num}">${num}</a>
+                </li>
+            </c:forEach>
+
+            <c:if test="${pageData.next}">
+                <li class="page-item">
+                    <a class="page-link" href="/inquiry?page=${pageData.endPage+1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </c:if>
+    </ul>
+</nav>
 </body>
 </html>

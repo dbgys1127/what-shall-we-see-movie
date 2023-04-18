@@ -9,6 +9,13 @@
         <put-attribute name="member-movie-content" value="/WEB-INF/tiles/layout/member-movie-content.jsp" />
         <put-attribute name="content" value="" />
     </definition>
+    <definition name="base" template="/WEB-INF/tiles/layout/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/layout/header.jsp" />
+        <put-attribute name="content" value="" />
+    </definition>
+    <definition name="*/*" extends="base">
+        <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+    </definition>
     <definition name="movie/member-movie-list/*" extends="member_movie_layout">
         <put-attribute name="content" value="/WEB-INF/views/movie/member-movie-list/{1}.jsp" />
     </definition>    
