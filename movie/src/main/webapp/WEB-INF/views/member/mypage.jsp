@@ -8,61 +8,104 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <body>
-<h2> Mypage </h2>
-<img src="${member.memberImage}" />
-<br>
-<button type="button"><a href="/mypage/myImage">대표 이미지 수정</a></button>
-<button type="button"><a href="/mypage/myPassword">비밀번호 수정</a></button>
-<div>
-    <h3>시청한 총 영화수 : ${member.sawMoviesTotalCount}</h3>
-<table style="border: 1px solid black;" >
-    <!-- 표 헤더 -->
-        <th>포스터</th>
-        <th>영화제목</th>
-        <th>나의 시청횟수</th>
+<div class="container text-center" style="border: 1px solid;">
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="${member.memberImage}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <form action="/mypage/myImage" method="get">
+                <button type="submit" class="btn btn-dark">대표 이미지 수정</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form action="/mypage/myPassword" method="get">
+                <button type="submit" class="btn btn-dark">비밀번호 수정</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div style="display: flex; justify-content: space-between;">
+<div class="container" style="border: 1px solid; width: 31%; height: 500px; display: inline-block; position: relative;">
+        <h3>시청한 영화수 : ${member.sawMoviesTotalCount}</h3>
         <c:forEach var="sawMovie" items="${member.sawMovies}">
-            <tr>
-                <td><a href="/movie/detail?movieTitle=${sawMovie.movieTitle}"><img src="${sawMovie.moviePoster}"/></a></td>
-                <td><a href="/movie/detail?movieTitle=${sawMovie.movieTitle}">${sawMovie.movieTitle}</a></td>
-                <td>${sawMovie.sawCount}</td>
-            </tr>
+        <div class="row" style="justify-content: center;">
+            <div class="col-2">
+                <a href="/movie/detail?movieTitle=${sawMovie.movieTitle}">
+                    <img src="${sawMovie.moviePoster}" style="width: 50px;"/>
+                </a>
+            </div>
+            <div class="col-2" style="width: 50%;">        
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="/movie/detail?movieTitle=${sawMovie.movieTitle}">
+                            ${sawMovie.movieTitle}
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        시청횟수: ${sawMovie.sawCount}
+                    </li>
+                </ul>
+            </div>
+        </div>
         </c:forEach>
-        <h3><a href="/mypage/saw-movie">더보기</a></h3>
-</table>
+        <form action="/mypage/saw-movie" method="get" style="position: absolute; bottom: 10px; right: 10px;">
+            <button type="submit" class="btn btn-dark">더보기</button>
+        </form>
 </div>
-<div>
-    <h3>찜한 총 영화수 : ${member.wantMoviesTotalCount}</h3>
-<table style="border: 1px solid black;" >
-    <!-- 표 헤더 -->
-        <th>포스터</th>
-        <th>영화제목</th>
+<div class="container" style="border: 1px solid;width: 31%; height: 500px; display: inline-block; position: relative;">
+        <h3>찜한 영화수 : ${member.wantMoviesTotalCount}</h3>
         <c:forEach var="wantMovie" items="${member.wantMovies}">
-            <tr>
-                <td><a href="/movie/detail?movieTitle=${wantMovie.movieTitle}"><img src="${wantMovie.moviePoster}"/></a></td>
-                <td><a href="/movie/detail?movieTitle=${wantMovie.movieTitle}">${wantMovie.movieTitle}</a></td>
-            </tr>
+            <div class="row" style="justify-content: center;">
+            <div class="col-sm-2">
+                <a href="/movie/detail?movieTitle=${wantMovie.movieTitle}">
+                    <img src="${wantMovie.moviePoster}" style="width: 50px;"/>
+                </a>
+            </div>
+            <div class="col-sm-2" style="width: 50%;">        
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="/movie/detail?movieTitle=${wantMovie.movieTitle}">
+                            ${wantMovie.movieTitle}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         </c:forEach>
-        <h3><a href="/mypage/want-movie">더보기</a></h3>
-</table>
-</div>
-<div>
-<h3>댓글 : ${member.commentCount}</h3>
-<table style="border: 1px solid black;" >
+        <form action="/mypage/want-movie" method="get" style="position: absolute; bottom: 10px; right: 10px;">
+            <button type="submit" class="btn btn-dark">더보기</button>
+        </form>
+</div>    
+<div class="container" style="border: 1px solid; width: 31%; height: 500px; display: inline-block; position: relative;">
+        <h3>댓글 수 : ${member.commentCount}</h3>
         <c:forEach var="comment" items="${member.comments}">
-            <tr>
-                <td>${comment.commentDetail}</td>
-            </tr>
-            <tr>
-                <td><a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a></td>
-                <td>
+        <div class="row" style="justify-content: center;">
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-sm-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
+                    ${comment.commentDetail}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-1 flex-grow-1 me-2">
+                    <a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a>
+                </div>
+                <div class="col-sm-1 flex-grow-1 me-2">
                     <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                     <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-                </td>
-                <td>신고횟수:${comment.claimCount}회</td>
-            </tr>
+                </div>
+                <div class="col-sm-1 flex-grow-1 me-2">
+                    <c:out value="신고내역:${comment.claimCount}회"></c:out>
+                </div>
+            </div>
+        <div>
         </c:forEach>
-        <h3><a href="/mypage/comment">더보기</a></h3>
-</table>
+        <form action="/mypage/comment" method="get" style="position: absolute; bottom: 10px; right: 10px;">
+            <button type="submit" class="btn btn-dark">더보기</button>
+        </form>
+</div>  
 </div>
 </body>
 </html>

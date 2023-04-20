@@ -61,6 +61,6 @@ public class MemberFormController {
     }
     @GetMapping("/admin/administrator/add-admin-form")
     public String adminAddAdmin() {
-        return "member/addAdmin";
+        return "member/admin/addAdmin";
     }
 }

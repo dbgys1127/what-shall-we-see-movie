@@ -13,10 +13,18 @@
         <put-attribute name="header" value="/WEB-INF/tiles/layout/header.jsp" />
         <put-attribute name="content" value="" />
     </definition>
+    <definition name="admin" template="/WEB-INF/tiles/layout/admin-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/layout/header.jsp" />
+        <put-attribute name="sidebar" value="/WEB-INF/tiles/layout/sidebar.jsp"/>
+        <put-attribute name="content" value="" />
+    </definition>
     <definition name="*/*" extends="base">
         <put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
     </definition>
     <definition name="movie/member-movie-list/*" extends="member_movie_layout">
         <put-attribute name="content" value="/WEB-INF/views/movie/member-movie-list/{1}.jsp" />
     </definition>    
+    <definition name="member/admin/*" extends="admin">
+        <put-attribute name="content" value="/WEB-INF/views/member/admin/{1}.jsp"/>
+    </definition>
 </tiles-definitions>

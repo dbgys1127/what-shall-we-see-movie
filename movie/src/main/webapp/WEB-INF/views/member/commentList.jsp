@@ -35,10 +35,6 @@
                 <c:out value="신고내역:${comment.claimCount}회"></c:out>
             </div>
             <div class="col-md-1 flex-grow-1 me-2">
-                <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
-                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
                 <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
                     <button type="submit" class="btn btn-dark">수정</button>
                 </form>

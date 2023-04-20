@@ -91,11 +91,11 @@ public class MemberDto {
         private int sawCount;
     }
 
-    public static List<MemberSawMovieResponseDto> getMemberSawMovieResponseDtoList(List<SawMovie> sawMovies) {
+    public static List<MemberSawMovieResponseDto> getMemberSawMovieResponseDtoList(List<SawMovie> sawMovies, int size) {
         return sawMovies
                 .stream()
                 .sorted(Comparator.comparing(SawMovie::getMovieSawCount).reversed())
-                .limit(10)
+                .limit(size)
                 .map(sawMovie -> MemberSawMovieResponseDto
                         .builder()
                         .moviePoster(sawMovie.getMovie().getMoviePoster())
@@ -115,11 +115,11 @@ public class MemberDto {
         private String movieTitle;
     }
 
-    public static List<MemberWantMovieResponseDto> getMemberWantMovieResponseDtoList(List<WantMovie> wantMovies) {
+    public static List<MemberWantMovieResponseDto> getMemberWantMovieResponseDtoList(List<WantMovie> wantMovies, int size) {
         return wantMovies
                 .stream()
                 .sorted(Comparator.comparing(WantMovie::getWantMovieId).reversed())
-                .limit(10)
+                .limit(size)
                 .map(wantMovie -> MemberWantMovieResponseDto
                         .builder()
                         .moviePoster(wantMovie.getMovie().getMoviePoster())
@@ -142,10 +142,10 @@ public class MemberDto {
         private int claimCount;
     }
 
-    public static List<MemberCommentResponseDto> getMemberCommentResponseDtoList(List<Comment> comments) {
+    public static List<MemberCommentResponseDto> getMemberCommentResponseDtoList(List<Comment> comments, int size) {
         return comments
                 .stream()
-                .limit(10)
+                .limit(size)
                 .map(comment -> MemberCommentResponseDto
                         .builder()
                         .commentId(comment.getCommentId())

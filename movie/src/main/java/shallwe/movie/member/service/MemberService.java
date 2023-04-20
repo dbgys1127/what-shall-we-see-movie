@@ -88,9 +88,9 @@ public class MemberService {
     public MemberDto.Response getMyInfo(Member member) {
         log.info("마이페이지 조회 -> 조회 대상 이메일 : {}",member.getEmail());
         MemberDto.Response memberRepDto = getMemberRepDto(member);
-        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies()));
-        memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies()));
-        memberRepDto.setComments(MemberDto.getMemberCommentResponseDtoList(member.getComments())
+        memberRepDto.setSawMovies(MemberDto.getMemberSawMovieResponseDtoList(member.getSawMovies(),5));
+        memberRepDto.setWantMovies(MemberDto.getMemberWantMovieResponseDtoList(member.getWantMovies(),5));
+        memberRepDto.setComments(MemberDto.getMemberCommentResponseDtoList(member.getComments(),5)
                 .stream()
                 .sorted(Comparator.comparing(MemberDto.MemberCommentResponseDto::getCommentId).reversed())
                 .collect(Collectors.toList())
@@ -102,7 +102,7 @@ public class MemberService {
         log.info("마이페이지 나의 시청영화 목록 조회 -> 조회 회원 : {}, 조회 페이지 : {}",member.getEmail(),page);
         Page<SawMovie> pageInfo = sawMovieService.getSawMovieList(member, PageRequest.of(page, 10, Sort.by("movieSawCount").descending()));
         List<SawMovie> sawMovies = pageInfo.getContent();
-        List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies);
+        List<MemberDto.MemberSawMovieResponseDto> sawMovieResponseDtoList = MemberDto.getMemberSawMovieResponseDtoList(sawMovies,10);
         return new PagingResponseDto<>(sawMovieResponseDtoList,pageInfo);
     }
 
@@ -111,7 +111,7 @@ public class MemberService {
         log.info("마이페이지 나의 찜영화 목록 조회 -> 조회 회원 : {}, 조회 페이지 : {}",member.getEmail(),page);
         Page<WantMovie> pageInfo = wantMovieService.getWantMovieList(member, PageRequest.of(page, 10, Sort.by("createdAtForWantMovie").descending()));
         List<WantMovie> wantMovies = pageInfo.getContent();
-        List<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = MemberDto.getMemberWantMovieResponseDtoList(wantMovies);
+        List<MemberDto.MemberWantMovieResponseDto> wantMovieResponseDtoList = MemberDto.getMemberWantMovieResponseDtoList(wantMovies,10);
         return new PagingResponseDto<>(wantMovieResponseDtoList,pageInfo);
     }
 
@@ -120,7 +120,7 @@ public class MemberService {
         log.info("마이페이지 나의 댓글 목록 조회 -> 조회 회원 : {}, 조회 페이지 : {}",email,page);
         Page<Comment> pageInfo = commentService.getCommentList(email, PageRequest.of(page, 10, Sort.by(sort).descending()));
         List<Comment> comments = pageInfo.getContent();
-        List<MemberDto.MemberCommentResponseDto> commentResponseDtoList = MemberDto.getMemberCommentResponseDtoList(comments);
+        List<MemberDto.MemberCommentResponseDto> commentResponseDtoList = MemberDto.getMemberCommentResponseDtoList(comments,10);
         return new PagingResponseDto<>(commentResponseDtoList, pageInfo);
     }
 
