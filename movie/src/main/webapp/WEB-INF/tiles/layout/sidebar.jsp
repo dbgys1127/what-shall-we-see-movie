@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 160px; height: 100%; display:inline-block; margin-right: 0px;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 160px; height: 100%; display: inline-block !important; margin-right: 0px; position: fixed;">
         <hr>
         <h4>회원관리</h4>
         <ul class="nav nav-pills flex-column mb-auto">

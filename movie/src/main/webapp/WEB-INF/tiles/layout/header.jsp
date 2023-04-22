@@ -33,28 +33,28 @@
               </li>
     <c:choose>
         <c:when test="${empty nowMember}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login-form">로그인</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/join-form">회원가입</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login-form">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/join-form">회원가입</a>
+                </li>
         </c:when>
         <c:otherwise>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/inquiry">문의</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/mypage">마이페이지</a>
-                    </li>
-                    <c:if test="${nowMemberAuth eq 'ROLE_ADMIN'}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin">관리자페이지</a>
-                        </li>
-                    </c:if>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout-form">로그아웃</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/inquiry">문의</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/mypage">마이페이지</a>
+                </li>
+                <c:if test="${nowMemberAuth eq 'ROLE_ADMIN'}">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">관리자페이지</a>
+                </li>
+                </c:if>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout-form">로그아웃</a>
+                </li>
             </ul>
             <form class="d-flex" action="/movie/search/title" method="get" role="search">
               <input class="form-control me-2" type="text" name="movieTitle"  placeholder="검색할 영화를 입력하세요." aria-label="Search">
@@ -64,7 +64,7 @@
     </c:choose>
           </div>
         </div>
-      </nav>
+    </nav>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
 </body>

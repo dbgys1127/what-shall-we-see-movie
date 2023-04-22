@@ -30,7 +30,7 @@ public class MovieController {
     //==========================사용자 화면 컨트롤러=========================
 
     @GetMapping("/movie")
-    public String getMovies(@RequestParam("page") int page,
+    public String getMovies(@RequestParam(value = "page",defaultValue = "1") int page,
                             @RequestParam(value = "sort", defaultValue = "movieOpenDate") String sort, Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page - 1, sort);
         model.addAttribute("pageData", pageRepDto);

@@ -6,7 +6,7 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <body>
-  <form action="/admin/administrator/add" method="post" style="text-align: center; margin-left: auto; margin-right: auto;">
+  <form action="/admin/administrator/add" method="post">
     <h2 style="text-align: center;"> 관리자 추가 </h2>
     <div class="form-floating mb-3" >
       <input type="text" class="form-control" id="floatingInput" name="email">

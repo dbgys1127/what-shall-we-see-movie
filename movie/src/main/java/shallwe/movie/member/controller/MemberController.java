@@ -99,7 +99,7 @@ public class MemberController {
         model.addAttribute("email", memberRepDto.getEmail());
         model.addAttribute("warningCard", memberRepDto.getWarningCard());
         model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
-        return "member/warning";
+        return "member/admin/warning";
     }
 
     @PostMapping("/admin/member/warning")
@@ -110,7 +110,7 @@ public class MemberController {
         model.addAttribute("email", memberRepDto.getEmail());
         model.addAttribute("warningCard", memberRepDto.getWarningCard());
         model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
-        return "member/warning";
+        return "member/admin/warning";
     }
 
     @GetMapping("/admin/member")
@@ -119,7 +119,7 @@ public class MemberController {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@", page - 1, sort);
         log.info("MEM_startPage={}", pageRepDto.getStartPage());
         model.addAttribute("pageData", pageRepDto);
-        return "member/member";
+        return "member/admin/member";
     }
 
     @GetMapping("/admin/member/search")
@@ -127,7 +127,7 @@ public class MemberController {
                                     @RequestParam(value = "email", required = false) String email, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember(email, page - 1, "memberId");
         model.addAttribute("pageData", pageRepDto);
-        return "member/memberSearchResult";
+        return "member/admin/memberSearchResult";
     }
 
     @GetMapping("/admin/administrator")
@@ -135,7 +135,7 @@ public class MemberController {
                                  @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin("@", page - 1, sort);
         model.addAttribute("pageData", pageRepDto);
-        return "member/admins";
+        return "member/admin/admins";
     }
 
     @GetMapping("/admin/administrator/search")
@@ -143,7 +143,7 @@ public class MemberController {
                                          @RequestParam(value = "email", required = false) String email, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchAdmin(email, page - 1, "memberId");
         model.addAttribute("pageData", pageRepDto);
-        return "member/admins";
+        return "member/admin/admins";
     }
 
     @PostMapping("/admin/administrator/add")
