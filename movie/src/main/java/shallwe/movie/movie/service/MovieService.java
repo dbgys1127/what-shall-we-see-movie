@@ -182,14 +182,26 @@ public class MovieService {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager")
     })
     public MovieDto.Response updateMovie(MultipartFile multipartFile, MovieDto.Patch movieDto) throws IOException {
-        log.info("영화 수정 시도 -> 수정 대상 영화 제목 : {}",movieDto.getMovieTitle());
+        log.info("영화 수정 시도 -> 수정 대상 영화 제목 : {}",movieDto.getPreMovieTitle());
         Movie movie = is_exist_movie(movieDto.getPreMovieTitle());
+        log.info("preMovieTitle={}, existMovieTitle={}",movieDto.getPreMovieTitle(),movie.getMovieTitle());
         isUpdateImage(multipartFile,movie);
-        movie.setMovieTitle(movieDto.getMovieTitle());
-        movie.setMovieRunningTime(movieDto.getMovieRunningTime());
+        log.info("patch movieTitle exist? = {}",Optional.ofNullable(movieDto.getMovieTitle()).isPresent());
+        if (!movieDto.getMovieTitle().equals("")) {
+            movie.setMovieTitle(movieDto.getMovieTitle());
+        }
+        if (!movieDto.getMovieGenre().equals("")) {
+            movie.setMovieGenre(movieDto.getMovieGenre());
+        }
+        if (!movieDto.getMovieDescription().equals("")) {
+            movie.setMovieDescription(movieDto.getMovieDescription());
+        }
+        if (!movieDto.getMovieRunningTime().equals("")) {
+            movie.setMovieRunningTime(Integer.parseInt(movieDto.getMovieRunningTime()));
+        }
+
         movie.setMovieOpenDate(movieDto.getMovieOpenDate());
-        movie.setMovieGenre(movieDto.getMovieGenre());
-        movie.setMovieDescription(movieDto.getMovieDescription());
+
         log.info("영화 수정 완료 -> 수정 대상 영화 아이디 : {}",movie.getMovieId());
         return getMovieRepDto(movie);
     }

@@ -57,7 +57,7 @@ public class MemberFormController {
     @GetMapping("/admin")
     public String adminPage() {
         log.info("now port {}",port);
-        return "member/admin";
+        return "redirect:admin/member";
     }
     @GetMapping("/admin/administrator/add-admin-form")
     public String adminAddAdmin() {

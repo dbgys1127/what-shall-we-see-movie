@@ -10,7 +10,7 @@ public class MovieFormController {
 
     @GetMapping("/admin/movie/add-movie-form")
     public String adminAddMovie() {
-        return "movie/addMovie";
+        return "movie/admin/addMovie";
     }
 
 }

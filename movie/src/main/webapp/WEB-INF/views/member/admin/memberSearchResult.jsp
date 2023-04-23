@@ -7,7 +7,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
-
+<script>
+    $(document).ready(function(){
+      $("#user").addClass("now-click");
+    });
+</script>
 <style>
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
@@ -50,19 +54,19 @@
             <ul class="pagination justify-content-center">
                 <c:if test="${pageData.prev}">
                     <li class="page-item">
-                        <a class="page-link" href="/admin/member?page=${pageData.startPage-1}&sort=${pageData.sort}" aria-label="Previous">
+                        <a class="page-link" href="/admin/member/search?page=${pageData.startPage-1}&sort=${pageData.sort}&email=${pageData.target}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                 </c:if>
                 <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
                     <li class = "page-item ${pageData.nowPage eq num ? 'active':''}" aria-current="page">
-                        <a class="page-link" href="/admin/member?page=${num}&sort=${pageData.sort}">${num}</a>
+                        <a class="page-link" href="/admin/member/search?page=${num}&sort=${pageData.sort}&email=${pageData.target}">${num}</a>
                     </li>
                 </c:forEach>
                 <c:if test="${pageData.next}">
                     <li class="page-item">
-                        <a class="page-link" href="/admin/member?page=${pageData.endPage+1}&sort=${pageData.sort}" aria-label="Next">
+                        <a class="page-link" href="/admin/member/search?page=${pageData.endPage+1}&sort=${pageData.sort}&email=${pageData.target}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

@@ -6,16 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> 무봐? </title>
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <style>
         nav.navbar a, .navbar-brand:hover{color: white;}
-        .nav-item a:hover{
+        .nav-item a:hover, .now-click{
             color: white;
             background-color: #EB4F5A;
             border-radius: 15px;
         }
         .nav-link{
          transition: none;   
+        }
+        ul{
+            list-style:none;
         }
     </style>
 </head>
@@ -34,26 +38,26 @@
     <c:choose>
         <c:when test="${empty nowMember}">
                 <li class="nav-item">
-                    <a class="nav-link" href="/login-form">로그인</a>
+                    <a class="nav-link" id="h-login" href="/login-form">로그인</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/join-form">회원가입</a>
+                    <a class="nav-link" id="h-join" href="/join-form">회원가입</a>
                 </li>
         </c:when>
         <c:otherwise>
                 <li class="nav-item">
-                    <a class="nav-link" href="/inquiry">문의</a>
+                    <a class="nav-link" id="h-inquiry" href="/inquiry">문의</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/mypage">마이페이지</a>
+                    <a class="nav-link" id="h-mypage" href="/mypage">마이페이지</a>
                 </li>
                 <c:if test="${nowMemberAuth eq 'ROLE_ADMIN'}">
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin">관리자페이지</a>
+                    <a class="nav-link" id="h-admin" href="/admin">관리자페이지</a>
                 </li>
                 </c:if>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout-form">로그아웃</a>
+                    <a class="nav-link" id="h-logout" href="/logout-form">로그아웃</a>
                 </li>
             </ul>
             <form class="d-flex" action="/movie/search/title" method="get" role="search">

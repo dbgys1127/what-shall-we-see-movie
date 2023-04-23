@@ -19,7 +19,7 @@
         <label for="floatingInput">이메일을 입력하세요</label>
     </div>
     <div class="form-floating mb-3 offset-md-3 col-md-6">
-        <input type="text" class="form-control" id="floatingPassword" name="password">
+        <input type="password" class="form-control" id="floatingPassword" name="password">
         <label for="floatingPassword">비밀번호를 입력하세요</label>
     </div>
     <button type="submit" class="btn btn-dark">로그인</button>

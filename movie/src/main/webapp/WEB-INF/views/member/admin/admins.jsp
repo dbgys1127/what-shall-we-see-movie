@@ -7,7 +7,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
-
+<script>
+    $(document).ready(function(){
+      $("#admin").addClass("now-click");
+    });
+</script>
 <style>
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
@@ -38,8 +42,8 @@
     </c:forEach>
     </table>
     <input class="form-control me-2" type="text" name="email" placeholder="검색할 회원을 입력하세요." aria-label="Search" style="width:50%; height: 50%; display: inline-block;">
-    <button type="button" onclick="location.href='/admin/administrator/add-admin-form';" class="btn btn-dark" style="display: inline-block;">관리자추가</button>
     <button type="submit" class="btn btn-dark" style="margin-left: auto; display: inline-block;">검색</button>
+    <button type="button" onclick="location.href='/admin/administrator/add-admin-form';" class="btn btn-dark" style="display: inline-block;">관리자추가</button>
     <br><br>
     <!-- 페이징 단추 -->
     <div style="display: block;">

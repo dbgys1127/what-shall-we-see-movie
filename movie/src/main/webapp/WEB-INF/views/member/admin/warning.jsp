@@ -6,6 +6,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+    $(document).ready(function(){
+      $("#user").addClass("now-click");
+    });
+</script>
 <body>
     <form action = "/admin/member/warning?email=${email}" method="post">
         <h2 style="text-align: center;"> 회원 경고 </h2>

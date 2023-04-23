@@ -9,7 +9,7 @@
 </head>
 <script>
     $(document).ready(function(){
-      $("#h-inquiry").addClass("now-click");
+      $("#comment").addClass("now-click");
     });
 </script>
 <style>
@@ -18,42 +18,44 @@
     .active a{color:red;}
 </style>
 <body>
-<h2>문의</h2>
+<h2> 신고 댓글 목록 </h2>
+<br>
 <div class="container text-center" style="border: 1px solid;">
-    <c:forEach var="inquiry" items="${pageData.data}">    
+    <c:forEach var="comment" items="${pageData.data}">    
         <div class="row" style="margin-top: 15px;">
             <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
-                <a href="/inquiry/detail?inquiryId=${inquiry.inquiryId}">${inquiry.inquiryTitle}</a>
+                ${comment.commentDetail}
             </div>
         </div>
         <div class="row">
             <div class="col-md-1 flex-grow-1 me-2">
-                <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a>
+            </div>
+            <div class="col-md-1 flex-grow-1 me-2">
+                <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </div>
             <div class="col-md-1 flex-grow-1 me-2">
-                <c:out value="${inquiry.inquiryStatus}"></c:out>
+                <c:out value="신고내역:${comment.claimCount}회"></c:out>
             </div>
             <div class="col-md-1 flex-grow-1 me-2">
-                <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
-                    <button type="submit" class="btn btn-dark">수정</button>
-                </form>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <form action="/inquiry/delete?inquiryId=${inquiry.inquiryId}" method="post">
+                <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
                     <button type="submit" class="btn btn-dark">삭제</button>
                 </form>
             </div>
         </div>
     </c:forEach>    
-    <button type="button" onclick="location.href='/inquiry/add-inquiry-form';" class="btn btn-dark" style="text-align: center;">문의 추가</button>
 </div>
+<br>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
             <c:if test="${pageData.prev}">
                 <li class="page-item">
-                    <a class="page-link" href="/inquiry?page=${pageData.startPage-1}" aria-label="Previous">
+                    <a class="page-link" href="/admin/comment?page=${pageData.startPage-1}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -61,13 +63,13 @@
 
             <c:forEach var="num" begin="${pageData.startPage}" end="${pageData.endPage}">
                 <li class = "page-item ${pageData.nowPage eq num ? 'active':''}" aria-current="page">
-                    <a class="page-link" href="/inquiry?page=${num}">${num}</a>
+                    <a class="page-link" href="/admin/comment?page=${num}">${num}</a>
                 </li>
             </c:forEach>
 
             <c:if test="${pageData.next}">
                 <li class="page-item">
-                    <a class="page-link" href="/inquiry?page=${pageData.endPage+1}" aria-label="Next">
+                    <a class="page-link" href="/admin/comment?page=${pageData.endPage+1}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

@@ -72,7 +72,7 @@ public class InquiryController {
                         Model model) {
         PagingResponseDto<InquiryDto.Response> pageData=inquiryService.getInquiryList("@",page-1,sort);
         model.addAttribute("pageData", pageData);
-        return "inquiry/adminInquiry";
+        return "inquiry/admin/adminInquiry";
     }
 
     @PostMapping("/admin/inquiry/answer")
@@ -98,7 +98,7 @@ public class InquiryController {
     String getAdminInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
         InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);
         model.addAttribute("inquiry", inquiryRepDto);
-        return "inquiry/adminInquiryDetail";
+        return "inquiry/admin/adminInquiryDetail";
     }
 
 

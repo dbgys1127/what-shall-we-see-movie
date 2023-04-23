@@ -77,12 +77,10 @@ public class MovieController {
 
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/want-movie")
-    public String postWantMovie(Member member, Movie movie,
-                                @RequestParam(value = "wantMovie", defaultValue = "off") String isWant,
-                                RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public void postWantMovie(Member member, Movie movie,
+                                @RequestParam(value = "wantMovie", defaultValue = "off") String isWant) {
         movieService.updateWantMovie(member, movie, isWant);
-        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
-        return "redirect:/movie/detail";
     }
 
     @NeedMemberAndMovieTitle
@@ -131,7 +129,7 @@ public class MovieController {
                                   @RequestParam(value = "sort",defaultValue = "movieId") String sort, Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.findAllMovie(page-1, sort);
         model.addAttribute("pageData", pageRepDto);
-        return "movie/movies";
+        return "movie/admin/movies";
     }
 
     /** 관리자 영화 검색 메서드
@@ -144,7 +142,7 @@ public class MovieController {
                                     Model model) {
         PagingResponseDto<MovieDto.Response> pageRepDto = movieService.searchMovieByTitle(movieTitle,page - 1, "movieId");
         model.addAttribute("pageData", pageRepDto);
-        return "movie/movieSearchResult";
+        return "movie/admin/movieSearchResult";
     }
 
     // 수정할 영화 페이지 가져오기
@@ -153,7 +151,7 @@ public class MovieController {
     public String adminGetMovie(Member member, Movie movie, Model model) {
         MovieDto.Response movieRepDto=movieService.pickMovie(member,movie);
         model.addAttribute("movie", movieRepDto);
-        return "movie/moviePatch";
+        return "movie/admin/moviePatch";
     }
 
     // 영화 내용 수정

@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+    $(document).ready(function(){
+      $("#h-inquiry").addClass("now-click");
+    });
+</script>
 <body>
 <h2 style="text-align: center;"> 문의 등록 </h2>
 <form action="/inquiry" method="post" style="text-align: center;">        

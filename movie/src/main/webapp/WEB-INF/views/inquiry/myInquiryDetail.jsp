@@ -7,6 +7,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+    $(document).ready(function(){
+      $("#h-inquiry").addClass("now-click");
+    });
+</script>
 <body>
 <h2> 문의 상세화면 </h2>
 <div class="container" style="border: 1px solid;">

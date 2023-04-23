@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+  $(document).ready(function(){
+    $("#admin").addClass("now-click");
+  });
+</script>
 <body>
   <form action="/admin/administrator/add" method="post">
     <h2 style="text-align: center;"> 관리자 추가 </h2>

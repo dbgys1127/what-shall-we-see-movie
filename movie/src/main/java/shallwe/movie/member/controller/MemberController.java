@@ -114,7 +114,7 @@ public class MemberController {
     }
 
     @GetMapping("/admin/member")
-    public String adminGetMembers(@RequestParam("page") int page,
+    public String adminGetMembers(@RequestParam(value = "page", defaultValue = "1") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.searchMember("@", page - 1, sort);
         log.info("MEM_startPage={}", pageRepDto.getStartPage());
@@ -167,6 +167,6 @@ public class MemberController {
                                       Model model) {
         PagingResponseDto<MemberDto.MemberCommentResponseDto> commentResponseDtoList = memberService.findMyCommentList(page - 1, "@",sort);
         model.addAttribute("pageData", commentResponseDtoList);
-        return "member/claimCommentList";
+        return "member/admin/claimCommentList";
     }
 }
