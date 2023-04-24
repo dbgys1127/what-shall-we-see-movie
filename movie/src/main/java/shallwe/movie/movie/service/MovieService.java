@@ -55,8 +55,6 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
 
-
-    @Cacheable(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager",unless = "#result == null")
     public MovieDto.Response pickMovie(Member member, Movie movie) {
         SawMovie sawMovie=sawMovieService.getSawMovie(member, movie);
         WantMovie wantMovie = wantMovieService.getWantMovie(member, movie);
@@ -67,12 +65,10 @@ public class MovieService {
         } else {
             movieRepDto.setIsWant("on");
         }
-
         return movieRepDto;
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "mySawMovie",allEntries = true,cacheManager = "contentCacheManager"),
@@ -83,7 +79,6 @@ public class MovieService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
             @CacheEvict(value = "myWantMovie",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void updateWantMovie(Member member, Movie movie, String isWant) {
@@ -97,7 +92,6 @@ public class MovieService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",key = "#movie.movieTitle",cacheManager = "contentCacheManager"),
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void writeMovieComment(Member member, Movie movie, CommentDto.Post commentDto) {
@@ -105,7 +99,6 @@ public class MovieService {
         commentService.saveMovieComment(member, movie, commentDto);
     }
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void addMovieCommentClaim(Long commentId) {
@@ -114,7 +107,6 @@ public class MovieService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "movieOne",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void deleteMovieComment(Long commentId) {

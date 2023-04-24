@@ -25,7 +25,6 @@
                   movieTitle: $("#movieTitle").val()
                 , wantMovie : "off"
             } 
-            // ajax 통신
             $.ajax({
                 type : "POST",            
                 url : "/movie/want-movie",   
@@ -33,6 +32,7 @@
                 success : function(res){ 
                     $(".heart").removeClass("heart-on");
                     $(".heart").addClass("heart-off");
+                    location.reload(true);
                 }
             });
         }else{
@@ -40,7 +40,6 @@
                   movieTitle: $("#movieTitle").val()
                 , wantMovie : "on"
             } 
-            // ajax 통신
             $.ajax({
                 type : "POST",            
                 url : "/movie/want-movie", 
@@ -48,9 +47,55 @@
                 success : function(res){ 
                     $(".heart").removeClass("heart-off");
                     $(".heart").addClass("heart-on");
+                    location.reload(true);
                 }
             });
         }
+    });
+    $(document).on("click", ".sawcount", function(){
+        var isPlus=$(this).hasClass("plus-sawcount");
+        if(isPlus){
+            var params = {
+                  movieTitle: $("#movieTitle").val()
+                , movieSawCount : parseInt($("#movieSawCount").val())+1
+            } 
+            $.ajax({
+                type : "POST",            
+                url : "/movie/saw-movie",   
+                data : params,           
+                success : function(res){ 
+                    location.reload(true);
+                }
+            });
+        }else{
+            var params = {
+                  movieTitle: $("#movieTitle").val()
+                , movieSawCount : parseInt($("#movieSawCount").val())-1
+            } 
+            // ajax 통신
+            $.ajax({
+                type : "POST",            
+                url : "/movie/saw-movie",   
+                data : params,           
+                success : function(res){ 
+                    location.reload(true);
+                }
+            });
+        }
+    });
+    $(document).on("click", ".save-comment", function(){
+        var params = {
+            movieTitle: $("#movieTitle").val()
+            , commentDetail : $("#commentDetail").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/movie/comment",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
     });
 </script>
 <style>
@@ -107,11 +152,20 @@
                     <col width="33%" /> 
                 </colgroup>
                 <th>무봐 평균 시청횟수</th>
-                <th>나의 시청횟수</th>
+                <th>
+                    나의 시청횟수
+                </th>
                 <th>찜</th>
                 <tr>
                     <td><p class="content-frame">${movie.avgSawCount}회</p></td>
-                    <td><p class="content-frame">${movie.memberSawCount}</p></td>
+                    <td>
+                        <p class="content-frame">
+                            <button type="button" class="content-frame sawcount plus-sawcount" style="border: none;">+</button>
+                            <input type="hidden" id="movieSawCount" name="movieSawCount" value="${movie.memberSawCount}"/>
+                            ${movie.memberSawCount}
+                            <button type="button" class="content-frame sawcount minus-sawcount" style="border: none;">-</button>
+                        </p>
+                    </td>
                     <td>
                         <p class="content-frame heart heart-${movie.isWant}" style="width: 33px; height: 33px;">
                             <input type="hidden" name="wantMovie" value="${movie.isWant}"/>
@@ -121,14 +175,13 @@
             </table>
         </div>
     </div>
-        <form action="/movie/comment?movieTitle=${movie.movieTitle}" method="post" style="margin-bottom: 0; height: 150px;">
-            <div>
-                <label>댓글 작성</label>
-                <textarea class="form-control" name="commentDetail" placeholder="댓글을 등록하세요"></textarea>
-            </div>
-
-        <button type="submit" class="content-frame" style="float: right; border: none; margin-top: 10px;">댓글 등록</button>
-        </form>
+    <div>
+        <label>댓글 작성</label>
+        <textarea class="form-control" id="commentDetail" name="commentDetail" placeholder="댓글을 등록하세요"></textarea>
+        <div style="text-align: right; margin-bottom: 10px;">
+            <button type="button" class="content-frame save-comment" style="border: none; margin-top: 10px;">댓글 등록</button>
+        </div>
+    </div>
     <c:forEach var="comment" items="${movie.comments}">    
         <div>
             <div class="content-frame" style="width: 100%; display: block;">
@@ -151,16 +204,18 @@
                     <button type="submit" class="btn btn-dark" >댓글신고</button>
                 </form>
             </div>
-            <div style="margin: 5px; display:inline-block;">
-                <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                    <button type="submit" class="btn btn-dark">수정</button>
-                </form>
-            </div>
-            <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
-                <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                    <button type="submit" class="btn btn-dark">삭제</button>
-                </form>
-            </div>
+            <c:if test = "${movie.currentMember eq comment.createdBy}">
+                <div style="margin: 5px; display:inline-block;">
+                    <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                        <button type="submit" class="btn btn-dark">수정</button>
+                    </form>
+                </div>
+                <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                    <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
+                        <button type="submit" class="btn btn-dark">삭제</button>
+                    </form>
+                </div>
+            </c:if>
         </div>
     </c:forEach>    
 </div>

@@ -66,6 +66,7 @@ public class MovieController {
 
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/saw-movie")
+    @ResponseBody
     public String postSawCount(Member member, Movie movie,
                                @RequestParam("movieSawCount") int movieSawCount,
                                RedirectAttributes redirectAttributes) {
@@ -85,12 +86,10 @@ public class MovieController {
 
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/comment")
-    public String postComment(Member member, Movie movie,
-                              @ModelAttribute @Valid CommentDto.Post commentDto,
-                              RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public void postComment(Member member, Movie movie,
+                              @ModelAttribute @Valid CommentDto.Post commentDto) {
         movieService.writeMovieComment(member, movie, commentDto);
-        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
-        return "redirect:/movie/detail";
     }
 
     @PostMapping("/movie/comment/claim")
