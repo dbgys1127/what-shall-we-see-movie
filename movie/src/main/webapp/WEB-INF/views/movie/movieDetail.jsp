@@ -97,6 +97,32 @@
             }
         });
     });
+    $(document).on("click", ".delete-comment", function(){
+        var params = {
+            commentId : $("#commentId").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/movie/comment/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
+    $(document).on("click", ".add-claim", function(){
+        var params = {
+            commentId : $("#commentId").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/movie/comment/claim",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .content-frame{
@@ -200,9 +226,8 @@
                 <c:out value="신고횟수 : ${comment.claimCount}"></c:out> 회
             </div>
             <div style="margin: 5px; display:inline-block;">
-                <form action="/movie/comment/claim?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                    <button type="submit" class="btn btn-dark" >댓글신고</button>
-                </form>
+                <input type="hidden" id="commentId" value="${comment.commentId}"/>
+                <button type="submit" class="btn btn-dark add-claim" >댓글신고</button>
             </div>
             <c:if test = "${movie.currentMember eq comment.createdBy}">
                 <div style="margin: 5px; display:inline-block;">
@@ -211,9 +236,8 @@
                     </form>
                 </div>
                 <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
-                    <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                        <button type="submit" class="btn btn-dark">삭제</button>
-                    </form>
+                    <input type="hidden" id="commentId" value="${comment.commentId}"/>
+                    <button type="button" class="btn btn-dark delete-comment">삭제</button>
                 </div>
             </c:if>
         </div>

@@ -6,10 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shallwe.movie.answer.dto.AnswerDto;
 import shallwe.movie.aop.NeedEmail;
@@ -31,20 +28,20 @@ public class InquiryController {
     //============================ 사용자 ==========================
 
     @GetMapping("/inquiry/add-inquiry-form")
-    String getInquiryAddForm() {
+    public String getInquiryAddForm() {
         return "inquiry/addInquiry";
     }
 
     @NeedMember
     @PostMapping("/inquiry")
-    String postInquiry(Member member, @ModelAttribute @Valid InquiryDto.Post inquiryDto) {
+    @ResponseBody
+    public void postInquiry(Member member, @ModelAttribute @Valid InquiryDto.Post inquiryDto) {
         inquiryService.saveInquiry(member, inquiryDto);
-        return "redirect:/inquiry";
     }
 
     @NeedEmail
     @GetMapping("/inquiry")
-    String getMyInquiryList(String email,@RequestParam(value = "page",defaultValue = "1") int page,
+    public String getMyInquiryList(String email,@RequestParam(value = "page",defaultValue = "1") int page,
                         @RequestParam(value = "sort",defaultValue = "createdAt") String sort,
                         Model model) {
         PagingResponseDto<InquiryDto.Response> pageData=inquiryService.getInquiryList(email,page-1,sort);
@@ -53,21 +50,21 @@ public class InquiryController {
     }
 
     @GetMapping("/inquiry/detail")
-    String getMyInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
+    public String getMyInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
         InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);
         model.addAttribute("inquiry", inquiryRepDto);
         return "inquiry/myInquiryDetail";
     }
 
     @PostMapping("/inquiry/delete")
-    String deleteInquiry(@RequestParam("inquiryId") Long inquiryId) {
+    @ResponseBody
+    public void deleteInquiry(@RequestParam("inquiryId") Long inquiryId) {
         inquiryService.deleteInquiry(inquiryId);
-        return "redirect:/inquiry";
     }
     //============================관리자 ==========================
 
     @GetMapping("/admin/inquiry")
-    String getInquiryListForAdmin(@RequestParam(value = "page",defaultValue = "1") int page,
+    public String getInquiryListForAdmin(@RequestParam(value = "page",defaultValue = "1") int page,
                         @RequestParam(value = "sort",defaultValue = "createdAt") String sort,
                         Model model) {
         PagingResponseDto<InquiryDto.Response> pageData=inquiryService.getInquiryList("@",page-1,sort);
@@ -76,7 +73,7 @@ public class InquiryController {
     }
 
     @PostMapping("/admin/inquiry/answer")
-    String postAnswer(@RequestParam("inquiryId") Long inquiryId,
+    public String postAnswer(@RequestParam("inquiryId") Long inquiryId,
                       @RequestParam(value = "inquiryStatus",defaultValue = "off") String inquiryStatus,
                       @ModelAttribute @Valid AnswerDto.Post answerDto,
                       RedirectAttributes redirectAttributes) {
@@ -86,7 +83,7 @@ public class InquiryController {
     }
 
     @PostMapping("/admin/inquiry/answer/delete")
-    String deleteAnswer(@RequestParam("answerId") Long answerId,
+    public String deleteAnswer(@RequestParam("answerId") Long answerId,
                         @RequestParam("inquiryId") Long inquiryId,
                         RedirectAttributes redirectAttributes) {
         inquiryService.deleteAnswer(answerId);
@@ -95,11 +92,9 @@ public class InquiryController {
     }
 
     @GetMapping("/admin/inquiry/detail")
-    String getAdminInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
+    public String getAdminInquiry(@RequestParam("inquiryId") Long inquiryId, Model model) {
         InquiryDto.Response inquiryRepDto = inquiryService.getInquiry(inquiryId);
         model.addAttribute("inquiry", inquiryRepDto);
         return "inquiry/admin/adminInquiryDetail";
     }
-
-
 }

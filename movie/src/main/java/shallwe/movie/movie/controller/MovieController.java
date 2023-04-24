@@ -67,13 +67,9 @@ public class MovieController {
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/saw-movie")
     @ResponseBody
-    public String postSawCount(Member member, Movie movie,
-                               @RequestParam("movieSawCount") int movieSawCount,
-                               RedirectAttributes redirectAttributes) {
-
+    public void postSawCount(Member member, Movie movie,
+                               @RequestParam("movieSawCount") int movieSawCount) {
         movieService.updateSawCount(member, movie,movieSawCount);
-        redirectAttributes.addAttribute("movieTitle", movie.getMovieTitle());
-        return "redirect:/movie/detail";
     }
 
     @NeedMemberAndMovieTitle
@@ -93,20 +89,16 @@ public class MovieController {
     }
 
     @PostMapping("/movie/comment/claim")
-    public String postCommentClaim(@RequestParam("movieTitle") String movieTitle,
-                                   @RequestParam("commentId") Long commentId,
+    @ResponseBody
+    public void postCommentClaim(@RequestParam("commentId") Long commentId,
                                    RedirectAttributes redirectAttributes) {
         movieService.addMovieCommentClaim(commentId);
-        redirectAttributes.addAttribute("movieTitle", movieTitle);
-        return "redirect:/movie/detail";
     }
+
     @PostMapping("/movie/comment/delete")
-    public String deleteComment(@RequestParam("movieTitle") String movieTitle,
-                                @RequestParam("commentId") Long commentId,
-                                RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public void deleteComment(@RequestParam("commentId") Long commentId) {
         movieService.deleteMovieComment(commentId);
-        redirectAttributes.addAttribute("movieTitle", movieTitle);
-        return "redirect:/movie/detail";
     }
 
     //==========================관리자 화면 컨트롤러=========================

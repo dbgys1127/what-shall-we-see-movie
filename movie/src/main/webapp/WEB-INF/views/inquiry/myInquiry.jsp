@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix = "fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <html>
 <head>
     <meta charset="UTF-8">
@@ -11,42 +10,85 @@
     $(document).ready(function(){
       $("#h-inquiry").addClass("now-click");
     });
+    $(document).on("click", ".save-inquiry", function(){
+        var params = {
+            inquiryTitle: $("#inquiryTitle").val()
+            , inquiryDescription : $("#inquiryDescription").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/inquiry",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
+    $(document).on("click", ".delete-inquiry", function(){
+        var params = {
+            inquiryId : $("#inquiryId").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/inquiry/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
     .active a{color:red;}
+    .content-frame{
+        width: fit-content;
+        margin: 0 auto;
+        border-radius: 5px;
+        padding: 6px 12px;
+        background: #EB4F5A;
+        color: white;
+    }
 </style>
 <body>
-<h2>문의</h2>
-<div class="container text-center" style="border: 1px solid;">
+<div style="margin: 50px;">
+    <h2 style="text-align: center;">문의</h2>
+    <div style="text-align: left;">
+        <label>문의 작성</label>
+        <input type="text" class="form-control" id="inquiryTitle" name="inquiryTitle" placeholder="문의 제목을 등록하세요" />
+        <textarea class="form-control" id="inquiryDescription" name="inquiryDescription" placeholder="문의 내용을 등록하세요"></textarea>
+        <div style="text-align: right; margin: 10px;">
+            <button type="button" class="btn btn-dark save-inquiry">문의 추가</button>
+        </div>
+    </div>
+    <hr>
+    <label>문의 목록</label>
     <c:forEach var="inquiry" items="${pageData.data}">    
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
-                <a href="/inquiry/detail?inquiryId=${inquiry.inquiryId}">${inquiry.inquiryTitle}</a>
+        <div>
+            <div class="content-frame" style="width: 100%; display: block;">
+                <a href="/inquiry/detail?inquiryId=${inquiry.inquiryId}" style="color: white;">${inquiry.inquiryTitle}</a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1 flex-grow-1 me-2">
+        <div style="text-align: right;">
+            <div class="content-frame" style="margin: 5px; display:inline-block;">
                 <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </div>
-            <div class="col-md-1 flex-grow-1 me-2">
+            <div class="content-frame" style="margin: 5px; display:inline-block;">
                 <c:out value="${inquiry.inquiryStatus}"></c:out>
             </div>
-            <div class="col-md-1 flex-grow-1 me-2">
+            <div style="margin: 5px; display:inline-block;">
                 <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
                     <button type="submit" class="btn btn-dark">수정</button>
                 </form>
             </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <form action="/inquiry/delete?inquiryId=${inquiry.inquiryId}" method="post">
-                    <button type="submit" class="btn btn-dark">삭제</button>
-                </form>
+            <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                <input type="hidden" id="inquiryId" value="${inquiry.inquiryId}"/>
+                <button type="button" class="btn btn-dark delete-inquiry">삭제</button>
             </div>
         </div>
-    </c:forEach>    
-    <button type="button" onclick="location.href='/inquiry/add-inquiry-form';" class="btn btn-dark" style="text-align: center;">문의 추가</button>
+    </c:forEach>  
 </div>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">

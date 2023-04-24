@@ -7,7 +7,9 @@ public enum ExceptionCode {
     MEMBER_CANNOT_FIND(404,"Member can't find"),
 
     ALREADY_EXISTS_THIS_MOVIE(404,"Already exists this movie"),
-    MOVIE_CANNOT_FIND(404,"Movie can't find");
+    MOVIE_CANNOT_FIND(404,"Movie can't find"),
+
+    SAWCOUNT_MUST_BE_POSTIVE(404,"Sawcount must be postive");
     @Getter
     private int code;
 

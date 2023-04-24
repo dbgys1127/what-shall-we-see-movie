@@ -75,6 +75,9 @@ public class MovieService {
     })
     public void updateSawCount(Member member, Movie movie, int movieSawCount) {
         log.info("시청횟수 등록 시도 -> 회원 이메일 : {}, 영화 제목 : {}, 시청횟수 : {}",member.getEmail(),movie.getMovieTitle(),movieSawCount);
+        if (movieSawCount < 0) {
+            throw new BusinessLogicException(ExceptionCode.SAWCOUNT_MUST_BE_POSTIVE);
+        }
         sawMovieService.saveSawMovie(movie, member, movieSawCount);
     }
 
