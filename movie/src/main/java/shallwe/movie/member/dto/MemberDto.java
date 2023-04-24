@@ -113,6 +113,7 @@ public class MemberDto {
     public static class MemberWantMovieResponseDto implements Serializable {
         private String moviePoster;
         private String movieTitle;
+        private double avgSawCount;
     }
 
     public static List<MemberWantMovieResponseDto> getMemberWantMovieResponseDtoList(List<WantMovie> wantMovies, int size) {
@@ -124,6 +125,7 @@ public class MemberDto {
                         .builder()
                         .moviePoster(wantMovie.getMovie().getMoviePoster())
                         .movieTitle(wantMovie.getMovie().getMovieTitle())
+                        .avgSawCount(wantMovie.getMovie().getAvgSawCount())
                         .build())
                 .collect(Collectors.toList());
     }

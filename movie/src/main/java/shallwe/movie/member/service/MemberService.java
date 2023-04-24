@@ -257,6 +257,7 @@ public class MemberService {
         MemberDto.Response memberRepDto = MemberDto.Response.builder()
                 .memberImage(findMember.getMemberImage())
                 .email(findMember.getEmail())
+                .createdAt(findMember.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .password(findMember.getPassword())
                 .roles(findMember.getRoles())
                 .sawMoviesTotalCount(findMember.getSawMovies().size())

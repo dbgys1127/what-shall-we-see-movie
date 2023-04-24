@@ -58,9 +58,9 @@ public class MemberController {
 
     @NeedMember
     @PostMapping("/mypage/myPassword")
-    public String patchMyPassword(Member member,@ModelAttribute @Valid MemberDto.Patch memberDto) throws IOException {
+    @ResponseBody
+    public void patchMyPassword(Member member,@ModelAttribute @Valid MemberDto.Patch memberDto) throws IOException {
         memberService.updateMemberPassword(memberDto, member);
-        return "redirect:/mypage";
     }
 
     @NeedMember

@@ -17,21 +17,25 @@
 <br>
 <c:forEach var="movie" items="${pageData.data}" varStatus="loop">
     <c:if test="${loop.index % 5 == 0}">
-        <div class="row">
+    <div class="row">
     </c:if>
-        <div class="col-sm">
-        <div class="card" style="width: 100%;">
-            <a href="/movie/detail?movieTitle=${movie.movieTitle}"><img src="${movie.moviePoster}" class="card-img-top" style="width: 100%;"></a>
-        <div class="card-header">
-            <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a>
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">나의 시청횟수 : ${movie.sawCount}</li>
-        </ul>
-        </div>
+        <div class="col-md">
+            <div class="card" style="width: 140px;">
+                <div style="width: 138px; height: 200px;">
+                    <a href="/movie/detail?movieTitle=${movie.movieTitle}">
+                        <img src="${movie.moviePoster}" class="card-img-top" style="width: 100%; height: 100%;">
+                    </a>
+                </div>
+            <div class="card-header" style="text-align: center; height: 40px;">
+                <a href="/movie/detail?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a>
+            </div>
+            <ul class="list-group list-group-flush" style="font-size: 11px;">
+                <li class="list-group-item">나의 시청횟수 : ${movie.sawCount}</li>
+            </ul>
+            </div>
         </div>
     <c:if test="${(loop.index + 1) % 5 == 0 || loop.last}">
-        </div>
+    </div>
     </c:if>
     <br>
 </c:forEach>
