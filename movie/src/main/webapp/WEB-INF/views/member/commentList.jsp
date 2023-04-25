@@ -8,9 +8,10 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <script>
-        $(document).on("click", ".delete-comment", function(){
+    $(document).on("click", ".delete-comment", function(){
+        var commentIdVal = $(this).siblings("#commentId").val();
         var params = {
-            commentId : $("#commentId").val()
+            commentId : commentIdVal
         } 
         $.ajax({
             type : "POST",            
@@ -49,7 +50,7 @@
                 <a href="/movie/detail?movieTitle=${comment.movieTitle}" style="color: white;">${comment.movieTitle}</a>
             </div>
             <div class="content-frame" style="margin: 5px; display:inline-block;">
-                <fmt:parseDate value="${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </div>
             <div class="content-frame" style="margin: 5px; display:inline-block;">

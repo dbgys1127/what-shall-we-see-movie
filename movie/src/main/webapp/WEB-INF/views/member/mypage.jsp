@@ -25,11 +25,19 @@
 <style>
     .content-frame{
         width: fit-content;
-        margin: 0 auto;
         border-radius: 5px;
         padding: 6px 12px;
         background: #EB4F5A;
         color: white;
+    }
+    .table-content tr td{
+        position: relative;
+    }
+    .table-content tr td > div{
+        width: 70%;
+        height: fit-content;
+        position: absolute;
+        top: 15px;
     }
 </style>
 <body>
@@ -68,7 +76,7 @@
         <br>
         <div>
             <div>
-                <table style="width: 100%; text-align: center; ">
+                <table style="width: 100%; text-align: center;" class="table-content">
                     <colgroup>
                         <col width="30%" /> 
                         <col width="30%" /> 
@@ -90,6 +98,7 @@
                     </th>
                     <tr>
                         <td>
+                            <div>
                             <c:forEach var="sawMovie" items="${member.sawMovies}">
                                 <div style="width: 35; height: 50px; display: inline-block;">
                                     <img src="${sawMovie.moviePoster}" style="width: 100%; height: 100%;" />
@@ -107,8 +116,10 @@
                             <form action="/mypage/saw-movie" method="get">
                                 <button type="submit" class="btn btn-dark">더보기</button>
                             </form>
+                            </div>
                         </td>
                         <td>
+                            <div>
                             <c:forEach var="wantMovie" items="${member.wantMovies}">
                                 <div style="width: 35; height: 50px; display: inline-block;">
                                     <img src="${wantMovie.moviePoster}" style="width: 100%; height: 100%;" />
@@ -125,9 +136,12 @@
                             </c:forEach>
                             <form action="/mypage/want-movie" method="get">
                                 <button type="submit" class="btn btn-dark">더보기</button>
-                            </form>       
+                            </form>  
+                            </div>
+     
                         </td>
                         <td style="font-size: 10px;">
+                            <div>
                             <c:forEach var="comment" items="${member.comments}">    
                                 <div>
                                     <div class="content-frame" style="width: 100%; display: block; text-align: left;">
@@ -147,9 +161,11 @@
                                     </div>    
                                 </div>
                             </c:forEach>  
+                            <hr>
                             <form action="/mypage/comment" method="get">
                                 <button type="submit" class="btn btn-dark">더보기</button>
                             </form>
+                            </div>
                         </td>
                     </tr>
                 </table>

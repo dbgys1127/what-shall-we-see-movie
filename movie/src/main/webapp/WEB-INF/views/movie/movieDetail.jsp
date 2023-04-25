@@ -98,8 +98,9 @@
         });
     });
     $(document).on("click", ".delete-comment", function(){
+        var commentIdVal = $(this).siblings("#commentId").val();
         var params = {
-            commentId : $("#commentId").val()
+            commentId : commentIdVal
         } 
         $.ajax({
             type : "POST",            

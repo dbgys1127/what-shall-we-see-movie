@@ -25,9 +25,10 @@
         });
     });
     $(document).on("click", ".delete-inquiry", function(){
+        var inquiryIdVal = $(this).siblings("#inquiryId").val();
         var params = {
-            inquiryId : $("#inquiryId").val()
-        } 
+            inquiryId : inquiryIdVal
+        }; 
         $.ajax({
             type : "POST",            
             url : "/inquiry/delete",   

@@ -24,18 +24,14 @@
 <h2 style="text-align: center;"> 영화수정 화면 </h2>
 <br>
 <div class="row">
-    <div class="col-md-6">
-        <div class="card" style="width: 100%;">
-            <img src="${movie.moviePoster}" class="card-img-top" style="width: 100%;">
-        <div class="card-header">
-            <div class="mb-3">
-                <input class="form-control" type="file" id="formFileMultiple" name="moviePoster" accept=".jpg,.png,.jpeg" placeholder="${movie.moviePoster}" >
-            </div>
-        </div>
+    <div class="col-md-4">
+        <div class="card" style="width: 175px; height:250px;">
+            <img src="${movie.moviePoster}" class="card-img-top" style="width: 175px; height:250px;">
         </div>
     </div>
     <div class="col-md-6">
             <ul class="list-group list-group-flush">
+                <li class="list-group-item"><input class="form-control" type="file" id="formFileMultiple" name="moviePoster" accept=".jpg,.png,.jpeg" placeholder="${movie.moviePoster}" ></li>
                 <li class="list-group-item"><input type="text" name="movieTitle" placeholder="제목 : ${movie.movieTitle}"></li>
                 <li class="list-group-item"><input type="text" name="movieRunningTime" placeholder="상영시간 : ${movie.movieRunningTime}"></li>
                 <li class="list-group-item"><input type="date" name="movieOpenDate" value="${movie.movieOpenDate}"></li>
