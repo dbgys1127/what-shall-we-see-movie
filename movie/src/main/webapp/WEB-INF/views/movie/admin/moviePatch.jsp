@@ -9,6 +9,9 @@
     $(document).ready(function(){
       $("#movie").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
@@ -20,6 +23,7 @@
 
 </style>
 <body>
+<div style="margin: 50px;">
 <form action="/admin/movie/patch?preMovieTitle=${movie.movieTitle}" method="post" enctype="multipart/form-data">
 <h2 style="text-align: center;"> 영화수정 화면 </h2>
 <br>
@@ -57,5 +61,6 @@
 <br>
 <button type="submit" class="btn btn-dark">영화 수정</button>
 </form>
+</div>
 </body>
 </html>

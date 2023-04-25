@@ -8,6 +8,9 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <script>
+    $(document).ready(function(){
+      $("#h-mypage").addClass("now-click");
+    });
     $(document).on("click", ".patch-password", function(){
         var params = {
             password : $("#password").val()

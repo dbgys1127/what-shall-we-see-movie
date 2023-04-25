@@ -9,8 +9,12 @@
     $(document).ready(function(){
       $("#movie").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
 </script>
 <body>
+<div style="margin: 50px;">
 <form action="/admin/movie" method="post" enctype="multipart/form-data">
     <h2 style="text-align: center;"> 영화 등록 화면 </h2>
     <br>
@@ -52,5 +56,6 @@
     <br>
     <button type="submit" class="btn btn-dark">영화 등록</button>
 </form>
+</div>
 </body>
 </html>

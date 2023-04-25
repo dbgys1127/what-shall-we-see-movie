@@ -39,6 +39,7 @@
 <body>
 <div style="margin: 50px;">
     <h2 style="text-align: center;">나의 댓글화면</h2>  
+    <div style="margin-top: 50px;">  
         <c:forEach var="comment" items="${pageData.data}">   
         <div>
             <div class="content-frame" style="width: 100%; display: block; color: white;">
@@ -67,6 +68,7 @@
             </div>
         </div>
         </c:forEach>
+        </div>
 </div>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">

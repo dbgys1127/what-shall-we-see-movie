@@ -38,7 +38,7 @@ public class MemberController {
         MemberDto.Response saveMember = memberService.createMember(memberDto);
         model.addAttribute("email", saveMember.getEmail());
         model.addAttribute("memberImage", saveMember.getMemberImage());
-        return "member/join";
+        return "member/login";
     }
 
     @NeedMember
@@ -103,16 +103,17 @@ public class MemberController {
     }
 
     @PostMapping("/admin/member/warning")
-    public String adminPatchWarning(@RequestParam("email") String email,
-                                    @RequestParam(value = "warning", defaultValue = "off") String warning,
-                                    @RequestParam(value = "block", defaultValue = "off") String block, Model model) {
-        MemberDto.Response memberRepDto = memberService.giveWarning(email, warning, block);
-        model.addAttribute("email", memberRepDto.getEmail());
-        model.addAttribute("warningCard", memberRepDto.getWarningCard());
-        model.addAttribute("memberStatus", memberRepDto.getMemberStatus());
-        return "member/admin/warning";
+    @ResponseBody
+    public void adminPatchWarning(@RequestParam("email") String email,
+                                    @RequestParam(value = "warning", defaultValue = "off") String warning) {
+        memberService.giveWarning(email, warning);
     }
-
+    @PostMapping("/admin/member/block")
+    @ResponseBody
+    public void adminPatchBlock(@RequestParam("email") String email,
+                                  @RequestParam(value = "block", defaultValue = "off") String block) {
+        memberService.giveBlock(email,block);
+    }
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam(value = "page", defaultValue = "1") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {

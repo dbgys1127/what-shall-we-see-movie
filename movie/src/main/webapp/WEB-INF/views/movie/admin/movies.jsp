@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#movie").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
     $(document).on("click", ".delete-movie", function(){
         var movieTitleVal = $(this).siblings("#movieTitle").val();
         var params = {

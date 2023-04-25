@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#admin").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
     $(document).on("click", ".delete-admin", function(){
         var emailVal = $(this).siblings("#email").val();
         var params = {
@@ -37,7 +40,7 @@
     <h2 style="text-align: center;"> 전체 관리자 </h2>
 <form action = "/admin/administrator/search" method="get">
 <!-- 정렬 기준 -->
-    <table class="table" >
+    <table class="table" style="margin-top: 50px;" >
     <!-- 표 헤더 -->
     <thead class="table-dark">
         <th>이메일</th>

@@ -5,8 +5,15 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+    $(document).ready(function(){
+      $("#h-login").addClass("now-click");
+    });
+</script>
 <body>
+<div style="margin: 50px;">
 <h2 style="text-align: center;"> 로그인 </h2>
+<div style="margin-top: 50px;">
 <form action="/process_login" method="post" style="text-align: center;">
     <c:if test="${param.error != null}">
         <div class="row alert alert-danger center offset-md-3 col-md-6" role="alert" >
@@ -24,5 +31,7 @@
     </div>
     <button type="submit" class="btn btn-dark">로그인</button>
 </form>
+</div>
+</div>
 </body>
 </html>

@@ -6,6 +6,11 @@
     <meta charset="UTF-8">
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
+<script>
+    $(document).ready(function(){
+      $("#h-movie").addClass("now-click");
+    });
+</script>
 <body>
     <!-- 페이징 단추 -->
     <nav aria-label="Page navigation example">

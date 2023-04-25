@@ -7,6 +7,9 @@
     <title> 무봐? 시큐리티 테스트 홈 화면 </title>
 </head>
 <script>
+    $(document).ready(function(){
+      $("#h-movie").addClass("now-click");
+    });
     $(document).on("click", ".more-btn", function(){
         $(this).toggleClass("on");
         var isMore = $(this).hasClass("on");

@@ -15,7 +15,7 @@
             background-color: #EB4F5A;
             border-radius: 15px;
         }
-        .nav-link{
+        .nav-link, .nav-item, .now-click{
          transition: none;   
         }
     </style>

@@ -9,7 +9,10 @@
 </head>
 <script>
     $(document).ready(function(){
-      $("#h-inquiry").addClass("now-click");
+      $("#inquiry").addClass("now-click");
+    });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
     });
     $(document).on("click", ".save-inquiry", function(){
         var params = {
@@ -64,7 +67,7 @@
     <div class="d-flex justify-content-end" style="margin: 10px;">
         <div class="btn-group btn-group-sm btn-group-right">
             <li><a href="/admin/inquiry?page=1&sort=createdAt" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'createdAt' ? 'active':''}">문의 일자순</a></li>
-            <li><a href="/admin/inquiry?page=1&sort=inquiryStatus" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'avgSawCount' ? 'active':''}">처리 상태</a></li>
+            <li><a href="/admin/inquiry?page=1&sort=inquiryStatus" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'inquiryStatus' ? 'active':''}">처리 상태</a></li>
         </div>
     </div>
         <c:forEach var="inquiry" items="${pageData.data}">    

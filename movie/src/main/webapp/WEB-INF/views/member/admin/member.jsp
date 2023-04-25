@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#user").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}

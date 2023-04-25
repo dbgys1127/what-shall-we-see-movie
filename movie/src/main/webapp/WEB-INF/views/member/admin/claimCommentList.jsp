@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#comment").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
     $(document).on("click", ".delete-comment", function(){
         var commentIdVal = $(this).siblings("#commentId").val();
         var params = {
@@ -42,7 +45,8 @@
 </style>
 <body>
     <div style="margin: 50px;">
-        <h2 style="text-align: center;">신고 댓글목록</h2>  
+        <h2 style="text-align: center;" style="margin-bottom: 50px;">신고 댓글목록</h2>  
+        <div style="margin-top: 50px;">
         <c:forEach var="comment" items="${pageData.data}">    
             <div>
                 <div class="content-frame" style="width: 100%; display: block; text-align: left; color: white; background: black;">
@@ -69,6 +73,7 @@
                 </div>
             </div>
         </c:forEach>    
+    </div>
     </div>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">

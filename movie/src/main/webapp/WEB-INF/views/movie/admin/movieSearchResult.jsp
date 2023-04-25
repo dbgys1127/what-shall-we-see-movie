@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#movie").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
@@ -18,6 +21,7 @@
     .active a{color:red;}
 </style>
 <body>
+<div style="margin: 50px;">
     <form action = "/admin/movie/search" method="get">
         <h2 style="text-align: center;"> 영화 검색결과 </h2>
         <br>
@@ -32,7 +36,7 @@
             <c:forEach var="movie" items="${pageData.data}">
                 <tr>
                 <!-- 표안에 보여질 관리자 정보 -->
-                    <td><a href="/admin/movie/patch?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                    <td><a href="/admin/movie/patch?movieTitle=${movie.movieTitle}" style="color: black;">${movie.movieTitle}</a></td>
                     <td>
                         <fmt:parseDate value="${movie.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                         <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
@@ -73,5 +77,6 @@
             </nav>
         </div>
     </form>
+</div>
 </body>
 </html>

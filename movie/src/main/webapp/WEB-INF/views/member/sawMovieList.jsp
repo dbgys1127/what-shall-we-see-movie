@@ -13,6 +13,7 @@
 
 </style>
 <body>
+<div style="margin: 50px;">
 <h2> 시청한 영화 목록 </h2>
 <br>
 <c:forEach var="movie" items="${pageData.data}" varStatus="loop">
@@ -65,5 +66,6 @@
             </c:if>
     </ul>
 </nav>
+</div>
 </body>
 </html>

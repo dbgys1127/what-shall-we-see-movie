@@ -172,24 +172,31 @@ public class MemberService {
             @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
     })
-    public MemberDto.Response giveWarning(String email,String warning, String block) {
+    public void giveWarning(String email,String warning) {
         Member member = is_exist_member(email);
         log.info("회원 경고/상태 수정 시도 -> 대상 회원 : {}",email);
         if (warning.equals("on")) {
             member.setWarningCard(member.getWarningCard()+1);
             log.info("회원 경고 완료 -> 경고 대상 회원 : {}, 대상 회원 누적 경고수 : {}",email,member.getWarningCard());
         }
+    }
+    @Caching(evict = {
+            @CacheEvict(value = "member",key = "#email",cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "searchAdmin",allEntries = true,cacheManager = "contentCacheManager")
+    })
+    public void giveBlock(String email, String block) {
+        Member member = is_exist_member(email);
+        log.info("회원 경고/상태 수정 시도 -> 대상 회원 : {}",email);
         if (block.equals("on")) {
             member.setMemberStatus(Member.MemberStatus.차단);
             log.info("회원 차단 등록 완료 -> 대상 회원 : {}",email);
         } else {
             member.setMemberStatus(Member.MemberStatus.활성);
+            member.setWarningCard(0);
             log.info("회원 활성 등록 완료 -> 대상 회원 : {}",email);
         }
-        MemberDto.Response memberRepDto = getAdminRepDto(member);
-        return memberRepDto;
     }
-
     // 4. 관리자 추가 처리 메소드
     @Caching(evict = {
             @CacheEvict(value = "searchMember",allEntries = true,cacheManager = "contentCacheManager"),
@@ -288,4 +295,7 @@ public class MemberService {
         }
         return memberRepDtoList;
     }
+
+
+
 }

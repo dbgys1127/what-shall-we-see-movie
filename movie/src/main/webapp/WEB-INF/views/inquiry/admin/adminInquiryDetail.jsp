@@ -11,6 +11,9 @@
     $(document).ready(function(){
       $("#inquiry").addClass("now-click");
     });
+    $(document).ready(function(){
+      $("#h-admin").addClass("now-click");
+    });
     $(document).on("click", ".save-answer", function(){
         var params = {
             inquiryId: $("#inquiryId").val()
@@ -51,8 +54,8 @@
                 url : "/admin/inquiry/answer/status",   
                 data : params,           
                 success : function(res){ 
-                    $(".check").removeClass("check-on");
-                    $(".check").addClass("check-off");
+                    $(".check").removeClass("check-처리");
+                    $(".check").addClass("check-대기");
                     location.reload(true);
                 }
             });
@@ -66,8 +69,8 @@
                 url : "/admin/inquiry/answer/status",   
                 data : params,           
                 success : function(res){ 
-                    $(".check").removeClass("check-off");
-                    $(".check").addClass("check-on");
+                    $(".check").removeClass("check-대기");
+                    $(".check").addClass("check-처리");
                     location.reload(true);
                 }
             });
@@ -98,7 +101,7 @@
 <body>
 <div style="margin: 50px;">
     <h2 style="text-align: center;">문의 상세화면</h2>
-<table class="table" >
+<table class="table" style="margin-top: 50px;" >
     <!-- 표 헤더 -->
         <thead class="table-dark">
             <th>작성자</th>
