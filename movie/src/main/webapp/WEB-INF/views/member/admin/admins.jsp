@@ -11,6 +11,20 @@
     $(document).ready(function(){
       $("#admin").addClass("now-click");
     });
+    $(document).on("click", ".delete-admin", function(){
+        var emailVal = $(this).siblings("#email").val();
+        var params = {
+            email : emailVal
+        }; 
+        $.ajax({
+            type : "POST",            
+            url : "/admin/administrator/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
@@ -19,8 +33,9 @@
 
 </style>
 <body>
-<form action = "/admin/administrator/search" method="get">
+<div style="margin: 50px;">
     <h2 style="text-align: center;"> 전체 관리자 </h2>
+<form action = "/admin/administrator/search" method="get">
 <!-- 정렬 기준 -->
     <table class="table" >
     <!-- 표 헤더 -->
@@ -37,7 +52,12 @@
                 <fmt:parseDate value="${admin.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </td>
-            <td><button type="button" onclick="location.href='/admin/administrator/delete?email=${admin.email}';" class="btn btn-dark">삭제</button></td>
+            <td>
+                <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                    <input type="hidden" id="email" value="${admin.email}"/>
+                    <button type="button" class="btn btn-dark delete-admin">삭제</button>
+                </div>                
+            </td>
         </tr>
     </c:forEach>
     </table>
@@ -72,5 +92,6 @@
         </nav>
     </div>
 </form>
+</div>
 </body>
 </html>

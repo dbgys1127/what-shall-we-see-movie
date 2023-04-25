@@ -11,45 +11,65 @@
     $(document).ready(function(){
       $("#comment").addClass("now-click");
     });
+    $(document).on("click", ".delete-comment", function(){
+        var commentIdVal = $(this).siblings("#commentId").val();
+        var params = {
+            commentId : commentIdVal
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/movie/comment/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
     .sort li{display: inline-block;}
     .active a{color:red;}
+    .content-frame{
+        width: fit-content;
+        margin: 0 auto;
+        border-radius: 5px;
+        padding: 6px 12px;
+        background: white;
+        color: black; 
+        border: 1px solid black;
+    }
 </style>
 <body>
-<h2> 신고 댓글 목록 </h2>
-<br>
-<div class="container text-center" style="border: 1px solid;">
-    <c:forEach var="comment" items="${pageData.data}">    
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
-                ${comment.commentDetail}
+    <div style="margin: 50px;">
+        <h2 style="text-align: center;">신고 댓글목록</h2>  
+        <c:forEach var="comment" items="${pageData.data}">    
+            <div>
+                <div class="content-frame" style="width: 100%; display: block; text-align: left; color: white; background: black;">
+                    ${comment.commentDetail}
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1 flex-grow-1 me-2">
-                <a href="/admin/member/warning-page?email=${comment.createdBy}">${comment.createdBy}</a>
+            <div style="text-align: right;">
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <a href="/admin/member/warning-page?email=${comment.createdBy}" style="color: black;">${comment.createdBy}</a>
+                </div>
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <a href="/movie/detail?movieTitle=${comment.movieTitle}" style="color: black;">${comment.movieTitle}</a>
+                </div>
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </div>
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <c:out value="신고내역:${comment.claimCount}회"></c:out>
+                </div>
+                <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                    <input type="hidden" id="commentId" value="${comment.commentId}"/>
+                    <button type="button" class="btn btn-dark delete-comment">삭제</button>
+                </div>
             </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <fmt:parseDate value="${comment.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
-                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <c:out value="신고내역:${comment.claimCount}회"></c:out>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <form action="/movie/comment/delete?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                    <button type="submit" class="btn btn-dark">삭제</button>
-                </form>
-            </div>
-        </div>
-    </c:forEach>    
-</div>
-<br>
+        </c:forEach>    
+    </div>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">

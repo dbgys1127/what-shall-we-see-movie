@@ -22,8 +22,9 @@
 
 </style>
 <body>
+<div style="margin: 50px;">
+<h2 style="text-align: center;"> 전체 회원 </h2>
 <form action = "/admin/member/search" method="get">
-    <h2 style="text-align: center;"> 전체 회원 </h2>
     <!-- 정렬 기준 -->
     <div class="d-flex justify-content-end">
         <div class="btn-group btn-group-sm btn-group-right">
@@ -45,7 +46,7 @@
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
                 <td>
-                    <a href="/admin/member/warning-page?email=${member.email}">${member.email}</a>
+                    <a href="/admin/member/warning-page?email=${member.email}" style="color: black;">${member.email}</a>
                 </td>
                 <td>
                     <fmt:parseDate value="${member.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
@@ -86,5 +87,6 @@
         </nav>
     </div>
 </form>
+</div>
 </body>
 </html>

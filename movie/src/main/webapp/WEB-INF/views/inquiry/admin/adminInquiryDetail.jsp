@@ -11,9 +11,93 @@
     $(document).ready(function(){
       $("#inquiry").addClass("now-click");
     });
+    $(document).on("click", ".save-answer", function(){
+        var params = {
+            inquiryId: $("#inquiryId").val()
+            , answerDescription : $("#answerDescription").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/admin/inquiry/answer",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
+    $(document).on("click", ".delete-answer", function(){
+        var answerIdVal = $(this).siblings("#answerId").val();
+        var params = {
+            answerId : answerIdVal
+        }; 
+        $.ajax({
+            type : "POST",            
+            url : "/admin/inquiry/answer/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
+    $(document).on("click", ".check", function(){
+        var isCheck=$(this).hasClass("check-처리");
+        if(isCheck){
+            var params = {
+                  inquiryId: $("#inquiryId").val()
+                , inquiryStatus : "off"
+            } 
+            $.ajax({
+                type : "POST",            
+                url : "/admin/inquiry/answer/status",   
+                data : params,           
+                success : function(res){ 
+                    $(".check").removeClass("check-on");
+                    $(".check").addClass("check-off");
+                    location.reload(true);
+                }
+            });
+        }else{
+            var params = {
+                  inquiryId: $("#inquiryId").val()
+                , inquiryStatus : "on"
+            } 
+            $.ajax({
+                type : "POST",            
+                url : "/admin/inquiry/answer/status",   
+                data : params,           
+                success : function(res){ 
+                    $(".check").removeClass("check-off");
+                    $(".check").addClass("check-on");
+                    location.reload(true);
+                }
+            });
+        }
+    });
 </script>
+<style>
+    .check-처리{
+        background-image: url("/image/checked.png");
+        background-size: cover;
+        background-color: white;
+    }
+    .check-대기{
+        background-image: url("/image/empty-check.png");
+        background-size: cover;
+        background-color: white;
+    }
+    .content-frame{
+        width: fit-content;
+        margin: 0 auto;
+        border-radius: 5px;
+        padding: 6px 12px;
+        background: white;
+        color: black; 
+        border: 1px solid black;
+    }
+</style>
 <body>
-<h2> 문의 상세화면 </h2>
+<div style="margin: 50px;">
+    <h2 style="text-align: center;">문의 상세화면</h2>
 <table class="table" >
     <!-- 표 헤더 -->
         <thead class="table-dark">
@@ -30,41 +114,59 @@
                     <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
                 </td>
                 <td>${inquiry.inquiryStatus}</td>
-<form action="/admin/inquiry/answer?inquiryId=${inquiry.inquiryId}" method="post">
-                <td><input type="checkbox" name="inquiryStatus" <c:if test="${inquiry.inquiryStatus eq '처리'}">checked</c:if> /></td>
+                <td>
+                    <p class="content-frame check check-${inquiry.inquiryStatus}" style="width: 22px; height: 22px;">
+                        <input type="hidden" id="inquiryId" name="inquiryId" value="${inquiry.inquiryId}"/>
+                        <input type="hidden" id="inquiryStatus" name="inquiryStatus" value="${inquiry.inquiryStatus}"/>
+                    </p>
+                </td>
             </tr>
-</table>
-<div class="row">
-    <h2 class="bg-dark"> ${inquiry.inquiryTitle} </h2>
-    <p class="bg-white">${inquiry.inquiryDescription}</p>
-</div>
-<div class="row">
-    <textarea class="form-control" name="answerDescription" placeholder="답변을 등록하세요."></textarea>
-    <button type="submit" class="btn btn-dark">답변등록</button>
-</div>
-</form>
-<div class="row">
+        </table>
+        <div style="text-align: left;">
+            <label>문의 제목</label>
+            <div class="content-frame" style="width: 100%; display: block; color: black;">
+                ${inquiry.inquiryTitle}
+            </div>
+            <label>문의 내용</label>
+            <div class="content-frame" style="width: 100%; display: block; color: black;">
+                ${inquiry.inquiryDescription}
+            </div>
+        </div>
+        <hr>
+        <div>
+            <input type="hidden" id="inquiryId" name="inquiryId" value="${inquiry.inquiryId}"/>
+            <textarea class="form-control" id="answerDescription" name="answerDescription" placeholder="댓글을 등록하세요"></textarea>
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button type="button" class="btn btn-dark save-answer" style="border: none; margin-top: 10px;">댓글 등록</button>
+            </div>
+        </div>
+    <div style="text-align: left;">
+        <label >답변 내역</label>
+    </div>
     <c:forEach var="answer" items="${inquiry.answers}">    
-        <tr><td>${answer.answerDescription}</td></tr>
-        <tr>
-            <td>${answer.createdBy}</td>
-            <td>
+        <div>
+            <div class="content-frame" style="width: 100%; display: block; text-align: left; color: white; background: black;">
+                ${answer.answerDescription}
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div class="content-frame" style="margin: 5px; display:inline-block;">
+                ${answer.createdBy}
+            </div>
+            <div class="content-frame" style="margin: 5px; display:inline-block;">
                 <fmt:parseDate value="${answer.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button type="submit">수정</button>
-            </td>
-            <td>
-                <form action="/admin/inquiry/answer/delete?inquiryId=${inquiry.inquiryId}&answerId=${answer.answerId}" method="post">
-                    <button type="submit">삭제</button>
-                </form>
-            </td>
-        </tr>
+            </div>
+            <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                <input type="hidden" id="answerId" value="${answer.answerId}"/>
+                <button type="button" class="btn btn-dark patch-answer">수정</button>
+            </div>
+            <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                <input type="hidden" id="answerId" value="${answer.answerId}"/>
+                <button type="button" class="btn btn-dark delete-answer">삭제</button>
+            </div>
+        </div>  
     </c:forEach>  
 </div>
-
 </body>
 </html>

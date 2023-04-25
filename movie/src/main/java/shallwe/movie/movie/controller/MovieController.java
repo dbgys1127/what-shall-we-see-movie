@@ -155,10 +155,9 @@ public class MovieController {
     }
 
     // 영화 삭제 메서드
-    @GetMapping("/admin/movie/delete")
-    public String adminDeleteMovie(@RequestParam("movieTitle") String movieTitle, Model model) {
-        PagingResponseDto<MovieDto.Response> pageRepDto=movieService.deleteMovie(movieTitle);
-        model.addAttribute("pageData", pageRepDto);
-        return "movie/movies";
+    @PostMapping("/admin/movie/delete")
+    @ResponseBody
+    public void adminDeleteMovie(@RequestParam("movieTitle") String movieTitle) {
+        movieService.deleteMovie(movieTitle);
     }
 }

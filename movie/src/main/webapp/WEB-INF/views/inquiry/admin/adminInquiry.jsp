@@ -9,7 +9,35 @@
 </head>
 <script>
     $(document).ready(function(){
-      $("#inquiry").addClass("now-click");
+      $("#h-inquiry").addClass("now-click");
+    });
+    $(document).on("click", ".save-inquiry", function(){
+        var params = {
+            inquiryTitle: $("#inquiryTitle").val()
+            , inquiryDescription : $("#inquiryDescription").val()
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/inquiry",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
+    $(document).on("click", ".delete-inquiry", function(){
+        var inquiryIdVal = $(this).siblings("#inquiryId").val();
+        var params = {
+            inquiryId : inquiryIdVal
+        }; 
+        $.ajax({
+            type : "POST",            
+            url : "/inquiry/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
     });
 </script>
 <style>
@@ -19,43 +47,46 @@
         text-align: right;
     }
     .active a{color:red;}
+    .content-frame{
+        width: fit-content;
+        margin: 0 auto;
+        border-radius: 5px;
+        padding: 6px 12px;
+        background: white;
+        color: black; 
+        border: 1px solid black;
+    }
 </style>
 <body>
-<h2> 문의 내역 </h2>
-<br>
-    <!-- 정렬 기준 -->
-    <div class="d-flex justify-content-end">
+    <div style="margin: 50px;">
+        <h2 style="text-align: center;">문의 목록</h2>
+            <!-- 정렬 기준 -->
+    <div class="d-flex justify-content-end" style="margin: 10px;">
         <div class="btn-group btn-group-sm btn-group-right">
             <li><a href="/admin/inquiry?page=1&sort=createdAt" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'createdAt' ? 'active':''}">문의 일자순</a></li>
             <li><a href="/admin/inquiry?page=1&sort=inquiryStatus" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'avgSawCount' ? 'active':''}">처리 상태</a></li>
         </div>
     </div>
-<br>
-<div class="container text-center" style="border: 1px solid;">
-    <c:forEach var="inquiry" items="${pageData.data}">    
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-md-12 flex-grow-1 me-2" style="text-align: left; border: 1px solid; border-radius:4px;">
-                <a href="/admin/inquiry/detail?inquiryId=${inquiry.inquiryId}">${inquiry.inquiryTitle}</a>
+        <c:forEach var="inquiry" items="${pageData.data}">    
+            <div style="text-align: left;">
+                <div class="content-frame" style="width: 100%; display: block; background: black;">
+                    <a href="/admin/inquiry/detail?inquiryId=${inquiry.inquiryId}" style="color: white;">${inquiry.inquiryTitle}</a>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1 flex-grow-1 me-2">
-                ${inquiry.createdBy}
+            <div style="text-align: right;">
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    ${inquiry.createdBy}
+                </div>
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
+                    <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
+                </div>
+                <div class="content-frame" style="margin: 5px; display:inline-block;">
+                    <c:out value="${inquiry.inquiryStatus}"></c:out>
+                </div>
             </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <a href="/movie/detail?movieTitle=${comment.movieTitle}">${comment.movieTitle}</a>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                <fmt:parseDate value="${inquiry.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
-                <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
-            </div>
-            <div class="col-md-1 flex-grow-1 me-2">
-                ${inquiry.inquiryStatus}
-            </div>
-        </div>
-    </c:forEach>    
-</div>
-<br>
+        </c:forEach>  
+    </div>
 <!-- 페이징 단추 -->
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">

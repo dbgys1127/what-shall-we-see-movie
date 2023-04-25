@@ -11,6 +11,20 @@
     $(document).ready(function(){
       $("#movie").addClass("now-click");
     });
+    $(document).on("click", ".delete-movie", function(){
+        var movieTitleVal = $(this).siblings("#movieTitle").val();
+        var params = {
+            movieTitle : movieTitleVal
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/admin/movie/delete",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
@@ -21,8 +35,9 @@
     .active a{color:red;}
 </style>
 <body>
-<form action = "/admin/movie/search" method="get">
+<div style="margin: 50px;">
     <h2 style="text-align: center;"> 영화 관리자 페이지 </h2>
+<form action = "/admin/movie/search" method="get">
     <br>
     <!-- 정렬 기준 -->
     <div class="d-flex justify-content-end">
@@ -43,13 +58,18 @@
         <c:forEach var="movie" items="${pageData.data}">
             <tr>
             <!-- 표안에 보여질 관리자 정보 -->
-                <td><a href="/admin/movie/patch?movieTitle=${movie.movieTitle}">${movie.movieTitle}</a></td>
+                <td><a href="/admin/movie/patch?movieTitle=${movie.movieTitle}" style="color: black;">${movie.movieTitle}</a></td>
                 <td>
                     <fmt:parseDate value="${movie.createdAt}" var="createdAt" pattern="yyyyMMdd"/>                       
                     <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
                 </td>
                 <td>${movie.avgSawCount}</td>
-                <td><button type="button" class="btn btn-dark" onclick="location.href='/admin/movie/delete?movieTitle=${movie.movieTitle}';">삭제</button></td>
+                <td>
+                    <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
+                        <input type="hidden" id="movieTitle" value="${movie.movieTitle}"/>
+                        <button type="button" class="btn btn-dark delete-movie">삭제</button>
+                    </div>                
+                </td>
             </tr>
         </c:forEach>
     </table>
@@ -84,5 +104,6 @@
         </nav>
     </div>
 </form>
+</div>
 </body>
 </html>

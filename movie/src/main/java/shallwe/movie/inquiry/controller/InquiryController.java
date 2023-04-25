@@ -73,22 +73,23 @@ public class InquiryController {
     }
 
     @PostMapping("/admin/inquiry/answer")
-    public String postAnswer(@RequestParam("inquiryId") Long inquiryId,
-                      @RequestParam(value = "inquiryStatus",defaultValue = "off") String inquiryStatus,
-                      @ModelAttribute @Valid AnswerDto.Post answerDto,
-                      RedirectAttributes redirectAttributes) {
-        inquiryService.saveAnswer(inquiryId, inquiryStatus, answerDto);
-        redirectAttributes.addAttribute("inquiryId", inquiryId);
-        return "redirect:/admin/inquiry/detail";
+    @ResponseBody
+    public void postAnswer(@RequestParam("inquiryId") Long inquiryId,
+                      @ModelAttribute @Valid AnswerDto.Post answerDto) {
+        inquiryService.saveAnswer(inquiryId,answerDto);
+    }
+
+    @PostMapping("/admin/inquiry/answer/status")
+    @ResponseBody
+    public void postAnswerStatus(@RequestParam("inquiryId") Long inquiryId,
+                                 @RequestParam(value = "inquiryStatus", defaultValue = "off") String inquiryStatus) {
+        inquiryService.updateAnswerStatus(inquiryId, inquiryStatus);
     }
 
     @PostMapping("/admin/inquiry/answer/delete")
-    public String deleteAnswer(@RequestParam("answerId") Long answerId,
-                        @RequestParam("inquiryId") Long inquiryId,
-                        RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public void deleteAnswer(@RequestParam("answerId") Long answerId) {
         inquiryService.deleteAnswer(answerId);
-        redirectAttributes.addAttribute("inquiryId", inquiryId);
-        return "redirect:/admin/inquiry/detail";
     }
 
     @GetMapping("/admin/inquiry/detail")

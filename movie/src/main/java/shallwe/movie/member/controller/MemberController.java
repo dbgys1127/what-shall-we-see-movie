@@ -154,11 +154,10 @@ public class MemberController {
         return "member/join";
     }
 
-    @GetMapping("/admin/administrator/delete")
-    public String adminDeleteAdmin(@RequestParam("email") String email, Model model) {
+    @PostMapping("/admin/administrator/delete")
+    @ResponseBody
+    public void adminDeleteAdmin(@RequestParam("email") String email) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.deleteAdmin(email);
-        model.addAttribute("pageData", pageRepDto);
-        return "member/admins";
     }
 
     @GetMapping("/admin/comment")

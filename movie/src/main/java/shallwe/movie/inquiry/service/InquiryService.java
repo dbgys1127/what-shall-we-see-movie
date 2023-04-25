@@ -76,10 +76,17 @@ public class InquiryService {
     @Caching(evict = {
             @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
     })
-    public void saveAnswer(Long inquiryId, String inquiryStatus, AnswerDto.Post answerDto) {
+    public void saveAnswer(Long inquiryId, AnswerDto.Post answerDto) {
         log.info("답변 등록 시도 -> 답변 대상 문의 : {}",inquiryId);
         Inquiry inquiry = is_exist_inquiry(inquiryId);
         answerService.saveAnswer(inquiry, answerDto);
+    }
+    @Caching(evict = {
+            @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
+    })
+    public void updateAnswerStatus(Long inquiryId, String inquiryStatus) {
+        log.info("답변 상태 변경 시도 -> 변경 대상 문의 : {}",inquiryId);
+        Inquiry inquiry = is_exist_inquiry(inquiryId);
         if (inquiryStatus.equals("on")) {
             inquiry.setInquiryStatus(Inquiry.InquiryStatus.처리);
             log.info("답변 상태 처리 등록 -> 대상 문의 : {}, 처리",inquiryId);
@@ -88,7 +95,6 @@ public class InquiryService {
             log.info("답변 상태 대기 등록 -> 대상 문의 : {}, 대기",inquiryId);
         }
     }
-
     @Caching(evict = {
             @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
     })
@@ -131,7 +137,4 @@ public class InquiryService {
         inquiry.setMember(member);
         member.getInquiries().add(inquiry);
     }
-
-
-
 }
