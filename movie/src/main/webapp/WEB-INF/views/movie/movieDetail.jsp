@@ -134,9 +134,32 @@
         });
     });
     $(document).on("click",".patch-comment-init", function(){
-        $("#patch-comment").removeAttr("disabled");
-        $("#patch-comment").removeClass("patch-comment-off");
-        $("#patch-comment").addClass("patch-comment-on");
+        var commentNum = $(this).attr("data-comment_num");
+        console.log(commentNum);
+        $("#commentnum-"+commentNum).removeAttr("disabled");
+        $("#commentnum-"+commentNum).removeClass("patch-comment-off");
+        $("#commentnum-"+commentNum).addClass("patch-comment-on");
+        $(this).html("수정완료");
+        $(this).removeClass("patch-comment-init");
+        $(this).addClass("patch-comment-fin");
+    });
+    $(document).on("click", ".patch-comment-fin", function(){
+        var commentNum = $(this).attr("data-comment_num");
+        var commentDetail = $("#commentnum-"+commentNum).val();
+        console.log(commentNum);
+        console.log(commentDetail);
+        var params = {
+            commentId : commentNum,
+            commentDetail : commentDetail
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/movie/comment/patch",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
     });
 </script>
 <style>
@@ -242,7 +265,7 @@
     <c:forEach var="comment" items="${movie.comments}">    
         <div>
             <div class="content-frame" style="width: 100%; display: block; padding: 0px;">
-                <input type="text" class="content-frame patch-comment-off" id="patch-comment" value=${comment.commentDetail} disabled/>
+                <input type="text" class="content-frame patch-comment-off" id="commentnum-${comment.commentId}" value="${comment.commentDetail}" disabled/>
             </div>
         </div>
         <div style="text-align: right;">
@@ -262,7 +285,7 @@
             </div>
             <c:if test = "${movie.currentMember eq comment.createdBy}">
                 <div style="margin: 5px; display:inline-block;">
-                    <button type="submit" class="btn btn-dark patch-comment-init">수정</button>
+                    <button type="button" class="btn btn-dark patch-comment-init" data-comment_num="${comment.commentId}">수정</button>
                 </div>
                 <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                     <input type="hidden" id="commentId" value="${comment.commentId}"/>
