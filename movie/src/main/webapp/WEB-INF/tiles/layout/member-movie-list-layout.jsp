@@ -8,8 +8,10 @@
 </head>
 <body>
     <tiles:insertAttribute name="header" />
-    <tiles:insertAttribute name="member-movie-sort"/>
-    <tiles:insertAttribute name="member-movie-content"/>
+    <div style="margin: auto 50px 50px 50px;">
+        <tiles:insertAttribute name="member-movie-sort"/>
+        <tiles:insertAttribute name="member-movie-content"/>
     <tiles:insertAttribute name="content" />
+</div>
 </body>
 </html>

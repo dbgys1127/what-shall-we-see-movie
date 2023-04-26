@@ -127,6 +127,11 @@
             }
         });
     });
+    $(document).on("click",".patch-comment-init", function(){
+        $("#patch-comment").removeAttr("disabled");
+        $("#patch-comment").removeClass("patch-comment-off");
+        $("#patch-comment").addClass("patch-comment-on");
+    });
 </script>
 <style>
     .content-frame{
@@ -146,6 +151,22 @@
         background-image: url("/image/empty_heart.png");
         background-size: cover;
         background-color: white;
+    }
+    .patch-comment-off{
+        background: none;
+        border: none;
+        color: white;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+    .patch-comment-on{
+        background: white;
+        border-radius: 5px;
+        color: black;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
     }
 </style>
 <body>
@@ -214,8 +235,8 @@
     </div>
     <c:forEach var="comment" items="${movie.comments}">    
         <div>
-            <div class="content-frame" style="width: 100%; display: block;">
-                ${comment.commentDetail}
+            <div class="content-frame" style="width: 100%; display: block; padding: 0px;">
+                <input type="text" class="content-frame patch-comment-off" id="patch-comment" value=${comment.commentDetail} disabled/>
             </div>
         </div>
         <div style="text-align: right;">
@@ -235,9 +256,7 @@
             </div>
             <c:if test = "${movie.currentMember eq comment.createdBy}">
                 <div style="margin: 5px; display:inline-block;">
-                    <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                        <button type="submit" class="btn btn-dark">수정</button>
-                    </form>
+                    <button type="submit" class="btn btn-dark patch-comment-init">수정</button>
                 </div>
                 <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                     <input type="hidden" id="commentId" value="${comment.commentId}"/>

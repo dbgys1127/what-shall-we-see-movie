@@ -88,6 +88,13 @@ public class MovieController {
         movieService.writeMovieComment(member, movie, commentDto);
     }
 
+    @PostMapping("/movie/comment/patch")
+    @ResponseBody
+    public void patchComment(@RequestParam("commentId") Long commentId, @ModelAttribute CommentDto.Patch commentDto){
+        movieService.patchMovieComment(commentId, commentDto);
+    }
+
+
     @PostMapping("/movie/comment/claim")
     @ResponseBody
     public void postCommentClaim(@RequestParam("commentId") Long commentId,

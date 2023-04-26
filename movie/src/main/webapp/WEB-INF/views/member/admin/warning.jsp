@@ -63,16 +63,6 @@
     });
 </script>
 <style>
-    .block{
-        background-image: url("/image/redcard.png");
-        background-size: cover;
-        background-color: white;
-    }
-    .warning{
-        background-image: url("/image/yellowcard.png");
-        background-size: cover;
-        background-color: white;
-    }
     .content-frame{
         width: fit-content;
         margin: 0 auto;
@@ -82,6 +72,19 @@
         color: black; 
         border: 1px solid black;
     }
+    .block{
+        background-image: url("/image/redcard.png");
+        background-size: cover;
+        background-color: white;
+        border: none;
+    }
+    .warning{
+        background-image: url("/image/yellowcard.png");
+        background-size: cover;
+        background-color: white;
+        border: none;
+    }
+
 </style>
 <body>
 <div style="margin: 50px;">

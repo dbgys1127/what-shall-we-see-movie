@@ -104,6 +104,12 @@ public class MovieService {
     @Caching(evict = {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
+    public void patchMovieComment(Long commentId, CommentDto.Patch commentDto) {
+        commentService.patchMovieComment(commentId, commentDto);
+    }
+    @Caching(evict = {
+            @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
+    })
     public void addMovieCommentClaim(Long commentId) {
         log.info("댓글 신고 등록 시도 -> 신고 대상 댓글 : {}",commentId);
         commentService.addMovieCommentClaim(commentId);
@@ -286,7 +292,4 @@ public class MovieService {
         }
         return movieRepDto;
     }
-
-
-
 }

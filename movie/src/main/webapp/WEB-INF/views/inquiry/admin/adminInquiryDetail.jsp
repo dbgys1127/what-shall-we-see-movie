@@ -78,16 +78,6 @@
     });
 </script>
 <style>
-    .check-처리{
-        background-image: url("/image/checked.png");
-        background-size: cover;
-        background-color: white;
-    }
-    .check-대기{
-        background-image: url("/image/empty-check.png");
-        background-size: cover;
-        background-color: white;
-    }
     .content-frame{
         width: fit-content;
         margin: 0 auto;
@@ -96,6 +86,18 @@
         background: white;
         color: black; 
         border: 1px solid black;
+    }
+    .check-처리{
+        background-image: url("/image/checked.png");
+        background-size: cover;
+        background-color: white;
+        border: none;
+    }
+    .check-대기{
+        background-image: url("/image/empty-check.png");
+        background-size: cover;
+        background-color: white;
+        border: none;
     }
 </style>
 <body>
@@ -138,9 +140,9 @@
         <hr>
         <div>
             <input type="hidden" id="inquiryId" name="inquiryId" value="${inquiry.inquiryId}"/>
-            <textarea class="form-control" id="answerDescription" name="answerDescription" placeholder="댓글을 등록하세요"></textarea>
+            <textarea class="form-control" id="answerDescription" name="answerDescription" placeholder="답변을 등록하세요"></textarea>
             <div style="text-align: right; margin-bottom: 10px;">
-                <button type="button" class="btn btn-dark save-answer" style="border: none; margin-top: 10px;">댓글 등록</button>
+                <button type="button" class="btn btn-dark save-answer" style="border: none; margin-top: 10px;">답변 등록</button>
             </div>
         </div>
     <div style="text-align: left;">

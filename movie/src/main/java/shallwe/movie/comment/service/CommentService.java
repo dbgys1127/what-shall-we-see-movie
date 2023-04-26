@@ -37,8 +37,10 @@ public class CommentService {
         log.info("댓글 등록 완료 -> 회원 이메일 : {}, 영화 제목 : {}",member.getEmail(),movie.getMovieTitle());
         return commentRepository.save(comment);
     }
-
-
+    public void patchMovieComment(Long commentId, CommentDto.Patch commentDto) {
+        Comment comment = is_exist_comment(commentId);
+        comment.setCommentDetail(commentDto.getCommentDetail());
+    }
     public void addMovieCommentClaim(Long commentId) {
         Comment comment = is_exist_comment(commentId);
         int claimCount = comment.getClaimCount();

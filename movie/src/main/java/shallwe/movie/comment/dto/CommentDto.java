@@ -30,6 +30,13 @@ public class CommentDto {
         private String commentDetail;
     }
 
+    @Getter
+    @Setter
+    @Builder
+    public static class Patch {
+        private String commentDetail;
+    }
+
     @Builder
     @Getter
     @Setter

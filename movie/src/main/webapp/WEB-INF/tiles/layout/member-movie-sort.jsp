@@ -21,7 +21,7 @@
 <body>
 <!-- 정렬 기준 -->
 <br>
-<div class="d-flex justify-content-end">
+<div class="d-flex" style="float: right;">
     <div class="btn-group btn-group-sm btn-group-right">
         <li><a href="/movie?page=1&sort=movieOpenDate" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'movieOpenDate' ? 'active':''}" aria-current="page">상영일자순</a></li>
         <li><a href="/movie?page=1&sort=avgSawCount" class="btn btn-sm btn-outline-dark ${pageData.sort eq 'avgSawCount' ? 'active':''}" aria-current="page">평균 시청순</a></li>
