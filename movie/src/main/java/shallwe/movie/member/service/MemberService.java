@@ -222,18 +222,20 @@ public class MemberService {
     public PagingResponseDto<MemberDto.Response> deleteAdmin(String email) {
         log.info("관리자 삭제 시도 -> 삭제 예정 이메일 : {}",email);
         memberRepository.deleteByEmail(email);
-        log.info("관리자 삭제 완료 -> 삭제 완 이메일 : {}",email);
+        log.info("관리자 삭제 완료 -> 삭제 완료 이메일 : {}",email);
         return searchAdmin("@",0,"memberId");
     }
 
     //================================= 중복 제거용 메소드 ================================
     //1. 회원 가입시 동일 이메일 중복 가입 방지용 메서드
-    public void verifyExistsEmail(String email) {
+    public int verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         log.info("회원 DB 중복 조회 시도 -> 회원 이메일 : {}",email);
         if (member.isPresent()) {
-            log.error("회원 DB 중복 확인 -> 회원 이메일 : {}",email);
-            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_YOUR_EMAIL);
+            log.error("회원 DB 중복 확인 -> 회원 이메일 : {}", email);
+            return 1;
+        } else {
+            return 0;
         }
     }
 

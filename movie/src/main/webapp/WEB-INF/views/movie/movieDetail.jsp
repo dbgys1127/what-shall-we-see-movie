@@ -57,6 +57,12 @@
     });
     $(document).on("click", ".sawcount", function(){
         var isPlus=$(this).hasClass("plus-sawcount");
+        var sawcount = parseInt($("#movieSawCount").val());
+
+        if(sawcount==0 && !isPlus){
+            return false;
+        }
+
         if(isPlus){
             var params = {
                   movieTitle: $("#movieTitle").val()

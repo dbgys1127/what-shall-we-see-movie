@@ -31,8 +31,13 @@ public class MemberController {
 
     //==========================사용자 화면 컨트롤러=========================
 
-    // 수정할 것
-    // 유효성 검증 실패에 대한 내용 view 전달 방법 필요
+    @PostMapping("/email/check")
+    @ResponseBody
+    public int checkEmail(@RequestParam("email") String email) {
+        int cnt = memberService.verifyExistsEmail(email);
+        return cnt;
+    }
+
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         MemberDto.Response saveMember = memberService.createMember(memberDto);

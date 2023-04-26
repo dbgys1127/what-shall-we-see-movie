@@ -9,11 +9,37 @@
     $(document).ready(function(){
       $("#h-join").addClass("now-click");
     });
+    function checkEmail(){
+        var email = $("#email").val();
+        var params = {
+                email: email
+        } 
+        $.ajax({
+            url:'/email/check',
+            type:'POST',
+            data: params,
+            success:function(cnt){ 
+                if(cnt == 0){
+                    $("#alert-danger-fail-email").hide();
+                    $("#alert-success-email").show();
+                } else {
+                    $("#alert-success-email").hide();
+                    $("#alert-danger-fail-email").show();
+                    $('#email').val('');
+                }
+            },
+            error:function(){
+                alert("에러입니다");
+            }
+        });
+    };
     $(function(){
         $("#alert-success").hide();
         $("#alert-danger").hide();
         $("#alert-danger-email").hide();
         $("#alert-danger-password").hide();
+        $("#alert-danger-fail-email").hide();
+        $("#alert-success-email").hide();
         $(".type-password").keyup(function(){
             var pwd1=$("#check-password1").val();
             var pwd2=$("#check-password2").val();
@@ -21,7 +47,9 @@
                 if(pwd1 == pwd2){
                     $("#alert-success").show();
                     $("#alert-danger").hide();
-                    $("#submit").removeAttr("disabled");
+                    if($("#alert-danger-email").css("display") == "none" && $("#alert-danger-password").css("display") == "none"){
+                        $("#submit").removeAttr("disabled");
+                    }
                 }else{
                     $("#alert-success").hide();
                     $("#alert-danger").show();
@@ -38,7 +66,32 @@
             var email = $("input[name=email]").val();
             if(email !=""){
                 if(regExp.test(email)){
-                    $("#submit").removeAttr("disabled");
+                    var email = $("#email").val();
+                    var params = {
+                            email: email
+                    } 
+                    $.ajax({
+                        url:'/email/check',
+                        type:'POST',
+                        data: params,
+                        success:function(cnt){ 
+                            if(cnt == 0){
+                                $("#alert-danger-fail-email").hide();
+                                $("#alert-success-email").show();
+                                $("#submit").attr("disabled", "disabled");
+                            } else {
+                                $("#alert-success-email").hide();
+                                $("#alert-danger-fail-email").show();
+                                $("#submit").attr("disabled", "disabled");
+                            }
+                        },
+                        error:function(){
+                            alert("에러입니다");
+                        }
+                    });
+                    if($("#alert-danger-email").css("display") == "none" && $("#alert-danger-password").css("display") == "none"){
+                        $("#submit").removeAttr("disabled");
+                    }
                     $("#alert-danger-email").hide();
                 }else{
                     $("#alert-danger-email").show();
@@ -46,6 +99,8 @@
                 }
             }else{
                 $("#alert-danger-email").hide();
+                $("#alert-success-email").hide();
+                $("#alert-danger-fail-email").hide();
             }
         });
         $("input[name=password]").keyup(function(){
@@ -54,7 +109,9 @@
             var password = $("input[name=password]").val();
             if(password !=""){
                 if(regExp.test(password)){
-                    $("#submit").removeAttr("disabled");
+                    if($("#alert-danger-email").css("display") == "none" && $("#alert-danger-password").css("display") == "none"){
+                        $("#submit").removeAttr("disabled");
+                    }
                     $("#alert-danger-password").hide();
                 }else{
                     $("#alert-danger-password").show();
@@ -72,8 +129,10 @@
 <div style="margin-top: 50px;">
 <form action="/join" method="post" style="text-align: center;">        
     <div class="form-floating mb-3 offset-md-3 col-md-6">
-        <input type="text" class="form-control" id="floatingInput" name="email">
+        <input type="text" class="form-control" id="email" name="email">
         <label for="floatingInput">이메일을 입력하세요</label>
+        <div class="alert alert-success" id="alert-success-email">사용가능한 이메일입니다.</div>
+        <div class="alert alert-danger" id="alert-danger-fail-email">이미 사용하고 있는 이메일입니다.</div>
     </div>
     <div class="form-floating mb-3 offset-md-3 col-md-6">
         <input type="password" class="form-control type-password" id="check-password1" name="password">
