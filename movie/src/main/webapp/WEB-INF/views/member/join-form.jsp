@@ -9,30 +9,6 @@
     $(document).ready(function(){
       $("#h-join").addClass("now-click");
     });
-    function checkEmail(){
-        var email = $("#email").val();
-        var params = {
-                email: email
-        } 
-        $.ajax({
-            url:'/email/check',
-            type:'POST',
-            data: params,
-            success:function(cnt){ 
-                if(cnt == 0){
-                    $("#alert-danger-fail-email").hide();
-                    $("#alert-success-email").show();
-                } else {
-                    $("#alert-success-email").hide();
-                    $("#alert-danger-fail-email").show();
-                    $('#email').val('');
-                }
-            },
-            error:function(){
-                alert("에러입니다");
-            }
-        });
-    };
     $(function(){
         $("#alert-success").hide();
         $("#alert-danger").hide();

@@ -18,6 +18,8 @@
     $("#alert-danger-movieRunningTime").hide();
     $("#alert-danger-movieOpenDate").hide();
     $("#alert-danger-movieDescription").hide();
+    $("#alert-success-movieTitle").hide();
+    $("#alert-danger-fail-movieTitle").hide();
     $("input, textarea, select").change(function(){
         var input1 = $("#input1").val();
         var input2 = $("#input2").val();
@@ -41,6 +43,29 @@
         var movieTitle = $("#input2").val();
         if(movieTitle !=""){
             if(regExp.test(movieTitle)){
+                var movieTitle = $("#input2").val();
+                var params = {
+                    movieTitle: movieTitle
+                } 
+                $.ajax({
+                    url:'/admin/movie/check',
+                    type:'POST',
+                    data: params,
+                    success:function(cnt){ 
+                        if(cnt == 0){
+                            $("#alert-danger-fail-movieTitle").hide();
+                            $("#alert-success-movieTitle").show();
+                            $("#submit").removeAttr("disabled");
+                        } else {
+                            $("#alert-success-movieTitle").hide();
+                            $("#alert-danger-fail-movieTitle").show();
+                            $("#submit").attr("disabled", "disabled");
+                        }
+                    },
+                    error:function(){
+                        alert("에러입니다");
+                    }
+                });
                 $("#alert-danger-movieTitle").hide();
             }else{
                 $("#alert-danger-movieTitle").show();
@@ -48,6 +73,8 @@
             }
         }else{
             $("#alert-danger-movieTitle").hide();
+            $("#alert-success-movieTitle").hide();
+            $("#alert-danger-fail-movieTitle").hide();
         }
         if($("#alert-danger-movieTitle").css("display") == "none" && $("#alert-danger-movieRunningTime").css("display") == "none" && $("#alert-danger-movieOpenDate").css("display") == "none" && $("#alert-danger-movieDescription").css("display") == "none"){
             $("#submit").removeAttr("disabled");
@@ -60,6 +87,7 @@
         if(movieRunningTime !=""){
             if(regExp.test(movieRunningTime)){
                 $("#alert-danger-movieRunningTime").hide();
+                $("#submit").attr("disabled", "disabled");
             }else{
                 $("#alert-danger-movieRunningTime").show();
                 $("#submit").attr("disabled", "disabled");
@@ -79,6 +107,7 @@
         if(movieOpenDate !=""){
             if(regExp.test(movieOpenDate) && movieOpenDate<=today){
                 $("#alert-danger-movieOpenDate").hide();
+                $("#submit").attr("disabled", "disabled");
             }else{
                 $("#alert-danger-movieOpenDate").show();
                 $("#submit").attr("disabled", "disabled");
@@ -97,6 +126,7 @@
         if(movieDescription !=""){
             if(regExp.test(movieDescription)){
                 $("#alert-danger-movieDescription").hide();
+                $("#submit").attr("disabled", "disabled");
             }else{
                 $("#alert-danger-movieDescription").show();
                 $("#submit").attr("disabled", "disabled");
@@ -128,7 +158,11 @@
         </div>
         <div class="col-md-6">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><input type="text" name="movieTitle" id="input2" placeholder="제목을 입력하세요."></li>
+                <li class="list-group-item">
+                    <input type="text" name="movieTitle" id="input2" placeholder="제목을 입력하세요.">
+                    <div class="alert alert-success" id="alert-success-movieTitle" style="width:50%; height: 40%; display: inline-block; font-size: 15px; padding: 5px; margin-bottom: 10px;">신규 영화입니다.</div>
+                    <div class="alert alert-danger" id="alert-danger-fail-movieTitle" style="width:50%; height: 40%; display: inline-block; font-size: 15px; padding: 5px; margin-bottom: 10px;">이미 등록된 영화입니다.</div>
+                </li>
                 <li class="list-group-item"><input type="text" name="movieRunningTime" id="input3" placeholder="상영시간을 입력하세요."></li>
                 <li class="list-group-item"><input type="date" name="movieOpenDate" id="input4"></li>
                 <li class="list-group-item">       

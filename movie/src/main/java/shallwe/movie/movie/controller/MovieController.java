@@ -110,6 +110,13 @@ public class MovieController {
 
     //==========================관리자 화면 컨트롤러=========================
 
+    @PostMapping("/admin/movie/check")
+    @ResponseBody
+    public int checkEmail(@RequestParam("movieTitle") String movieTitle) {
+        int cnt = movieService.verifyExistsTitle(movieTitle);
+        return cnt;
+    }
+
     @PostMapping("/admin/movie")
     public String postMovie(@RequestPart("moviePoster") MultipartFile multipartFile,
                             @ModelAttribute @Valid MovieDto.Post movieDto, Model model) throws IOException {

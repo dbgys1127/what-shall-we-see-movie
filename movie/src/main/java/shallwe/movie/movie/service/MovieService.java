@@ -223,12 +223,14 @@ public class MovieService {
 
     //================================= 중복 제거용 메소드 ================================
 
-    public void verifyExistsTitle(String movieTitle) {
+    public int verifyExistsTitle(String movieTitle) {
         Optional<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
         log.info("영화 DB 중복 조회 시도 -> 영화 제목 : {}",movieTitle);
         if (movie.isPresent()) {
             log.error("영화 DB 중복 확인 -> 영화 제목 : {}",movieTitle);
-            throw new BusinessLogicException(ExceptionCode.ALREADY_EXISTS_THIS_MOVIE);
+            return 1;
+        } else {
+            return 0;
         }
     }
 
