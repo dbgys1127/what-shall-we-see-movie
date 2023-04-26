@@ -24,6 +24,45 @@
             }
         });
     });
+    $(function(){
+        $("#alert-success").hide();
+        $("#alert-danger").hide();
+        $("#alert-danger-password").hide();
+        $(".type-password").keyup(function(){
+            var pwd1=$("#check-password1").val();
+            var pwd2=$("#check-password2").val();
+            if( pwd2 != ""){
+                if(pwd1 == pwd2){
+                    $("#alert-success").show();
+                    $("#alert-danger").hide();
+                    $("#submit").removeAttr("disabled");
+                }else{
+                    $("#alert-success").hide();
+                    $("#alert-danger").show();
+                    $("#submit").attr("disabled", "disabled");
+                }    
+            }else{
+                $("#alert-success").hide();
+                $("#alert-danger").hide();
+            }
+        });
+        $("input[name=password]").keyup(function(){
+            var pattern_password = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@!%*#?&])[A-Za-z\d@!%*#?&]{8,}$/;
+            var regExp = new RegExp(pattern_password);
+            var password = $("input[name=password]").val();
+            if(password !=""){
+                if(regExp.test(password)){
+                    $("#submit").removeAttr("disabled");
+                    $("#alert-danger-password").hide();
+                }else{
+                    $("#alert-danger-password").show();
+                    $("#submit").attr("disabled", "disabled");
+                }
+            }else{
+                $("#alert-danger-password").hide();
+            }
+        });
+    });
 </script>
 <style>
     .content-frame{
@@ -66,12 +105,20 @@
                             <button type="submit" class="btn btn-dark" style="display: inline-block;">수정</button>
                         </form>
                     </li>
-                    <hr>
                     <li>
-                        비밀번호 수정     
-                        <br>
-                        <input type="password" class="form-control" id="password" name="password" style="width:80%; height: 50%; display: inline-block;" placeholder="새로운 비밀번호를 입력하세요." >
-                        <button type="submit" class="btn btn-dark patch-password" style="display: inline-block;" >수정</button>
+                        비밀번호 수정    
+                    </li>
+                    <li>
+                        <div class="alert alert-success" id="alert-success" style="width:80%; height: 40%; display: inline-block; font-size: 15px; padding: 5px; margin-bottom: 2px;">비밀번호가 일치합니다.</div>
+                        <div class="alert alert-danger" id="alert-danger" style="width:80%; height: 40%; display: inline-block; font-size: 15px; padding: 5px; margin-bottom: 2px;">비밀번호가 일치하지 않습니다.</div>
+                        <div class="alert alert-danger" id="alert-danger-password" style="width:80%; height: 40%; display: inline-block; font-size: 15px; padding: 5px; margin-bottom: 2px;">최소 8자, 최소 하나의 문자, 숫자, 특수 문자를 기입하세요.</div>
+                    </li>
+                    <li>
+                        <input type="password" class="form-control type-password" id="check-password1" name="password" style="width:80%; height: 50%; display: inline-block;" placeholder="새로운 비밀번호를 입력하세요." >
+                    </li>
+                    <li>
+                        <input type="password" class="form-control type-password" id="check-password2" name="password-repeat" style="width:80%; height: 50%; display: inline-block;" placeholder="비밀번호를 재입력 해주세요.">
+                        <button type="submit" id="submit" class="btn btn-dark patch-password" style="display: inline-block;" disabled >수정</button>
                     </li>
                 </ul>
             </div>
