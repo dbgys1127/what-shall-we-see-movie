@@ -42,6 +42,11 @@ public class InquiryService {
         setMemberRelation(member,inquiry);
         return inquiryRepository.save(inquiry);
     }
+    public void patchInquiry(Long inquiryId, InquiryDto.Patch inquiryDto) {
+        Inquiry inquiry = is_exist_inquiry(inquiryId);
+        inquiry.setInquiryTitle(inquiryDto.getInquiryTitle());
+        inquiry.setInquiryDescription(inquiryDto.getInquiryDescription());
+    }
     @Cacheable(value = "allInquiry",key = "#email.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<InquiryDto.Response> getInquiryList(String email, int page, String sort) {
         log.info("나의 문의 목록 조회 -> 조회 회원 : {}, 조회 페이지 : {}, 조회 정렬 기준 : {}",email,page,sort);
@@ -140,6 +145,4 @@ public class InquiryService {
         inquiry.setMember(member);
         member.getInquiries().add(inquiry);
     }
-
-
 }

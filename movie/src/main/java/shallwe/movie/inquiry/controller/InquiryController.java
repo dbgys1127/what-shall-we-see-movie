@@ -39,6 +39,12 @@ public class InquiryController {
         inquiryService.saveInquiry(member, inquiryDto);
     }
 
+    @PostMapping("/inquiry/patch")
+    @ResponseBody
+    public void patchInquiry(@RequestParam("inquiryId") Long inquiryId, @ModelAttribute InquiryDto.Patch inquiryDto) {
+        inquiryService.patchInquiry(inquiryId, inquiryDto);
+    }
+
     @NeedEmail
     @GetMapping("/inquiry")
     public String getMyInquiryList(String email,@RequestParam(value = "page",defaultValue = "1") int page,

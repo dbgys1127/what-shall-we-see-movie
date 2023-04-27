@@ -24,6 +24,37 @@
             }
         });
     });
+    $(document).on("click",".patch-inquiry-init", function(){
+        var inquiryNum = $(this).attr("data-inquiry_num");
+        console.log(inquiryNum);
+        $("#inquirytitlenum-"+inquiryNum).removeAttr("disabled");
+        $("#inquirytitlenum-"+inquiryNum).removeClass("patch-inquiry-off");
+        $("#inquirytitlenum-"+inquiryNum).addClass("patch-inquiry-on");
+        $("#inquirydescriptionnum-"+inquiryNum).removeAttr("disabled");
+        $("#inquirydescriptionnum-"+inquiryNum).removeClass("patch-inquiry-off");
+        $("#inquirydescriptionnum-"+inquiryNum).addClass("patch-inquiry-on");
+        $(this).html("수정완료");
+        $(this).removeClass("patch-inquiry-init");
+        $(this).addClass("patch-inquiry-fin");
+    });
+    $(document).on("click", ".patch-inquiry-fin", function(){
+        var inquiryNum = $(this).attr("data-inquiry_num");
+        var inquiryTitle = $("#inquirytitlenum-"+inquiryNum).val();
+        var inquiryDescription = $("#inquirydescriptionnum-"+inquiryNum).val();
+        var params = {
+            inquiryId : inquiryNum,
+            inquiryTitle : inquiryTitle,
+            inquiryDescription : inquiryDescription
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/inquiry/patch",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .pagination li{display:inline-block;}
@@ -37,18 +68,34 @@
         background: #EB4F5A;
         color: white;
     }
+    .patch-inquiry-off{
+        background: none;
+        border: none;
+        color: white;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+    .patch-inquiry-on{
+        background: white;
+        border-radius: 5px;
+        color: black;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+    }
 </style>
 <body>
     <div style="margin: 50px;">
         <h2 style="text-align: center;">문의 상세화면</h2>  
             <div>
                 <label>문의 제목</label>
-                <div class="content-frame" style="width: 100%; display: block; color: white;">
-                    ${inquiry.inquiryTitle}
+                <div class="content-frame" style="width: 100%; display: block; color: white; border: none; padding: 0px;">
+                    <input type="text" class="content-frame patch-inquiry-off" id="inquirytitlenum-${inquiry.inquiryId}" value="${inquiry.inquiryTitle}" disabled/>
                 </div>
                 <label>문의 내용</label>
-                <div class="content-frame" style="width: 100%; display: block; color: white;">
-                    ${inquiry.inquiryDescription}
+                <div class="content-frame" style="width: 100%; display: block; color: white; border: none; padding: 0px;">
+                    <input type="text" class="content-frame patch-inquiry-off" id="inquirydescriptionnum-${inquiry.inquiryId}" value="${inquiry.inquiryDescription}" disabled/>
                 </div>
             </div>
             <div style="text-align: right;">
@@ -60,9 +107,7 @@
                     <c:out value="${inquiry.inquiryStatus}"></c:out>
                 </div>
                 <div style="margin: 5px; display:inline-block;">
-                    <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
-                        <button type="submit" class="btn btn-dark">수정</button>
-                    </form>
+                    <button type="button" class="btn btn-dark patch-inquiry-init" data-inquiry_num="${inquiry.inquiryId}">수정</button>
                 </div>
                 <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                     <input type="hidden" id="inquiryId" value="${inquiry.inquiryId}"/>

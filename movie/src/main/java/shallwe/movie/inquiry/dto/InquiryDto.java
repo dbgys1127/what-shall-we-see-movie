@@ -38,6 +38,14 @@ public class InquiryDto {
             this.inquiryDescription = inquiryDescription;
         }
     }
+    @Getter
+    @Setter
+    @Builder
+    public static class Patch {
+        private String inquiryTitle;
+
+        private String inquiryDescription;
+    }
     @Builder
     @Getter
     @Setter
