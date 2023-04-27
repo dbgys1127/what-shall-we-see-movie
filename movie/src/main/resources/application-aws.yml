@@ -1,0 +1,62 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${ENDPOINT}:${PORT}/movie_project_db?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: ${DB_ID}
+    password: ${DB_PASSWORD}
+
+  # redis setting
+  redis:
+    host: ${ENDPOINT}
+    port: 6379
+  session:
+    store-type: redis
+
+  # redis cache:
+  cache:
+    type: redis
+
+  mvc:
+    view:
+      static-path-pattern: /static/**
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+mail:
+  address:
+    admin: admin@gmail.com
+
+handlebars:
+  expose-session-attributes: true
+
+#https setting
+server:
+  servlet:
+    session:
+      timeout: 10m
+      cookie:
+        max-age: 10m
+        http-only: true
+  port: 8080
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: movie-project-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
