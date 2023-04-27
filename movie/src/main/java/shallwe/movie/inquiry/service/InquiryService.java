@@ -81,6 +81,9 @@ public class InquiryService {
         Inquiry inquiry = is_exist_inquiry(inquiryId);
         answerService.saveAnswer(inquiry, answerDto);
     }
+    public void patchAnswer(Long answerId, AnswerDto.Patch answerDto) {
+        answerService.patchAnswer(answerId, answerDto);
+    }
     @Caching(evict = {
             @CacheEvict(value = "allInquiry",allEntries = true,cacheManager = "contentCacheManager")
     })
@@ -137,4 +140,6 @@ public class InquiryService {
         inquiry.setMember(member);
         member.getInquiries().add(inquiry);
     }
+
+
 }

@@ -33,4 +33,9 @@ public class AnswerService {
         Answer findAnswer = optionalAnswer.orElseThrow(() -> new RuntimeException());
         return findAnswer;
     }
+
+    public void patchAnswer(Long answerId, AnswerDto.Patch answerDto) {
+        Answer answer = is_exist_answer(answerId);
+        answer.setAnswerDescription(answerDto.getAnswerDescription());
+    }
 }

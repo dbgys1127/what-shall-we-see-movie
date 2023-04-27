@@ -70,8 +70,8 @@
                 </div>
             </div>
             <hr>
-            <c:forEach var="answer" items="${inquiry.answers}">  
             <h2 style="text-align: center;">문의 답변</h2>  
+            <c:forEach var="answer" items="${inquiry.answers}">  
             <div>
                 <div class="content-frame" style="width: 100%; display: block; color: white;">
                     ${answer.answerDescription}

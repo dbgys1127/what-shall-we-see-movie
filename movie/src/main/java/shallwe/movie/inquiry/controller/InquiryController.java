@@ -79,6 +79,12 @@ public class InquiryController {
         inquiryService.saveAnswer(inquiryId,answerDto);
     }
 
+    @PostMapping("/admin/inquiry/answer/patch")
+    @ResponseBody
+    public void patchAnswer(@RequestParam("answerId") Long answerId, @ModelAttribute AnswerDto.Patch answerDto){
+        inquiryService.patchAnswer(answerId, answerDto);
+    }
+
     @PostMapping("/admin/inquiry/answer/status")
     @ResponseBody
     public void postAnswerStatus(@RequestParam("inquiryId") Long inquiryId,

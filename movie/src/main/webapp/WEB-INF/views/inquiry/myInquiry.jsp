@@ -79,11 +79,6 @@
             <div class="content-frame" style="margin: 5px; display:inline-block;">
                 <c:out value="${inquiry.inquiryStatus}"></c:out>
             </div>
-            <div style="margin: 5px; display:inline-block;">
-                <form action="/inquiry/patch?inquiryId=${inquiry.inquiryId}" method="post">
-                    <button type="submit" class="btn btn-dark">수정</button>
-                </form>
-            </div>
             <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                 <input type="hidden" id="inquiryId" value="${inquiry.inquiryId}"/>
                 <button type="button" class="btn btn-dark delete-inquiry">삭제</button>

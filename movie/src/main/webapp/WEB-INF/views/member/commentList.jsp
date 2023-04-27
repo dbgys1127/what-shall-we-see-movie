@@ -57,11 +57,6 @@
             <div class="content-frame" style="margin: 5px; display:inline-block;">
                 <c:out value="신고내역:${comment.claimCount}회"></c:out>
             </div>
-            <div style="margin: 5px; display:inline-block;">
-                <form action="/movie/comment/patch?movieTitle=${movie.movieTitle}&commentId=${comment.commentId}" method="post">
-                    <button type="submit" class="btn btn-dark">수정</button>
-                </form>
-            </div>
             <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                 <input type="hidden" id="commentId" value="${comment.commentId}"/>
                 <button type="button" class="btn btn-dark delete-comment">삭제</button>

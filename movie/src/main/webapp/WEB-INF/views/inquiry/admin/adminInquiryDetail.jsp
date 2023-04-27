@@ -76,6 +76,32 @@
             });
         }
     });
+    $(document).on("click",".patch-answer-init", function(){
+        var answerNum = $(this).attr("data-answer_num");
+        console.log(answerNum);
+        $("#answernum-"+answerNum).removeAttr("disabled");
+        $("#answernum-"+answerNum).removeClass("patch-answer-off");
+        $("#answernum-"+answerNum).addClass("patch-answer-on");
+        $(this).html("수정완료");
+        $(this).removeClass("patch-answer-init");
+        $(this).addClass("patch-answer-fin");
+    });
+    $(document).on("click", ".patch-answer-fin", function(){
+        var answerNum = $(this).attr("data-answer_num");
+        var answerDescription = $("#answernum-"+answerNum).val();
+        var params = {
+            answerId : answerNum,
+            answerDescription : answerDescription
+        } 
+        $.ajax({
+            type : "POST",            
+            url : "/admin/inquiry/answer/patch",   
+            data : params,           
+            success : function(res){ 
+                location.reload(true);
+            }
+        });
+    });
 </script>
 <style>
     .content-frame{
@@ -98,6 +124,22 @@
         background-size: cover;
         background-color: white;
         border: none;
+    }
+    .patch-answer-off{
+        background: none;
+        border: none;
+        color: white;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+    .patch-answer-on{
+        background: white;
+        border-radius: 5px;
+        color: black;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
     }
 </style>
 <body>
@@ -150,8 +192,8 @@
     </div>
     <c:forEach var="answer" items="${inquiry.answers}">    
         <div>
-            <div class="content-frame" style="width: 100%; display: block; text-align: left; color: white; background: black;">
-                ${answer.answerDescription}
+            <div class="content-frame" style="width: 100%; display: block; text-align: left; color: white; background: black; border: none; padding: 0px;">
+                <input type="text" class="content-frame patch-answer-off" id="answernum-${answer.answerId}" value="${answer.answerDescription}" disabled/>
             </div>
         </div>
         <div style="text-align: right;">
@@ -163,8 +205,7 @@
                 <fmt:formatDate value="${createdAt}" pattern="yyyy-MM-dd"/>
             </div>
             <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
-                <input type="hidden" id="answerId" value="${answer.answerId}"/>
-                <button type="button" class="btn btn-dark patch-answer">수정</button>
+                <button type="button" class="btn btn-dark patch-answer-init" data-answer_num="${answer.answerId}">수정</button>
             </div>
             <div style="margin: 5px 5px 5px; margin-right: 0px; display:inline-block;">
                 <input type="hidden" id="answerId" value="${answer.answerId}"/>

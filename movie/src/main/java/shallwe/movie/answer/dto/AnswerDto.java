@@ -17,7 +17,12 @@ public class AnswerDto {
         @NotBlank(message = "내용을 기입하셔야 합니다.")
         private String answerDescription;
     }
-
+    @Getter
+    @Setter
+    @Builder
+    public static class Patch {
+        private String answerDescription;
+    }
     @Getter
     @Setter
     @Builder

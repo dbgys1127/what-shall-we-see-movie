@@ -97,8 +97,7 @@ public class MovieController {
 
     @PostMapping("/movie/comment/claim")
     @ResponseBody
-    public void postCommentClaim(@RequestParam("commentId") Long commentId,
-                                   RedirectAttributes redirectAttributes) {
+    public void postCommentClaim(@RequestParam("commentId") Long commentId) {
         movieService.addMovieCommentClaim(commentId);
     }
 
