@@ -49,6 +49,13 @@ server:
         http-only: true
   port: 8080
 
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
 cloud:
   aws:
     credentials:

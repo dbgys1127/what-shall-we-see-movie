@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title> 무봐? 시큐리티 테스트 홈 화면 </title>
+    <title>무봐?</title>
 </head>
 <body>
 <h2 style="text-align: center;"> 비밀번호 수정 </h2>
