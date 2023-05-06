@@ -35,7 +35,6 @@
                 success : function(res){ 
                     $(".heart").removeClass("heart-on");
                     $(".heart").addClass("heart-off");
-                    location.reload(true);
                 }
             });
         }else{
@@ -50,7 +49,6 @@
                 success : function(res){ 
                     $(".heart").removeClass("heart-off");
                     $(".heart").addClass("heart-on");
-                    location.reload(true);
                 }
             });
         }
@@ -102,7 +100,6 @@
             url : "/movie/comment",   
             data : params,           
             success : function(res){ 
-                location.reload(true);
             }
         });
     });
@@ -116,7 +113,6 @@
             url : "/movie/comment/delete",   
             data : params,           
             success : function(res){ 
-                location.reload(true);
             }
         });
     });
@@ -129,7 +125,6 @@
             url : "/movie/comment/claim",   
             data : params,           
             success : function(res){ 
-                location.reload(true);
             }
         });
     });
