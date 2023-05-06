@@ -22,14 +22,24 @@ public class WantMovieService {
 
     private final WantMovieRepository wantMovieRepository;
 
+    /**
+     * 멤버와 영화가 일치하는 WantMovie 객체 조회용
+     */
     public WantMovie getWantMovie(Member member, Movie movie) {
         return wantMovieRepository.findWantMovieByMemberAndMovie(member, movie);
     }
 
+    /**
+     * 내가 찜을 등록한 영화 목록을 조회하기 위한 메서드
+     */
     public Page<WantMovie> getWantMovieList(Member member, PageRequest pageable) {
         return wantMovieRepository.findWantMoviesByMemberWithPaging(member, pageable);
     }
 
+    /**
+     * 찜 등록용
+     * 기존에 찜 등록하지 않았다면, WantMovie 객체를 새로 생성, 등록했다면, WantMovie 객체를 가져옴
+     */
     public void saveWantMovie(Member findMember,Movie findMovie) {
         WantMovie findWantMovie = getWantMovie(findMember, findMovie);
         if (Optional.ofNullable(findWantMovie).isPresent()) {

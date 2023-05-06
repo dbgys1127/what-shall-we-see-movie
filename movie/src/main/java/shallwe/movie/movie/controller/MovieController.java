@@ -27,8 +27,11 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    //==========================사용자 화면 컨트롤러=========================
+    //==========================사용자 요청 처리 API=========================
 
+    /**
+     * 영화 목록 조회용이며 메인 페이지
+     */
     @GetMapping("/movie")
     public String getMovies(@RequestParam(value = "page",defaultValue = "1") int page,
                             @RequestParam(value = "sort", defaultValue = "movieOpenDate") String sort, Model model) {
@@ -37,6 +40,9 @@ public class MovieController {
         return "movie/member-movie-list/allMovie";
     }
 
+    /**
+     * 영화 검색용
+     */
     @GetMapping("/movie/search/title")
     public String getSearchByTitleMovies(@RequestParam(value = "page",defaultValue = "1") int page,
                                   @RequestParam(value = "movieTitle",required = false) String movieTitle,
@@ -46,6 +52,9 @@ public class MovieController {
         return "movie/member-movie-list/memberMovieSearchResult";
     }
 
+    /**
+     * 영화 장르별 검색용
+     */
     @GetMapping("/movie/search/genre")
     public String getSearchByGenreMovies(@RequestParam(value = "page",defaultValue = "1") int page,
                                          @RequestParam(value="movieGenre", required=false) String movieGenre,
@@ -55,6 +64,9 @@ public class MovieController {
         return "movie/member-movie-list/memberMovieSearchResult";
     }
 
+    /**
+     * 영화 상세페이지용
+     */
     @NeedMemberAndMovieTitle
     @GetMapping("/movie/detail")
     public String getMovie(Member member, Movie movie,
@@ -64,6 +76,9 @@ public class MovieController {
         return "movie/movieDetail";
     }
 
+    /**
+     * 사용자의 영화 시청횟수 등록용
+     */
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/saw-movie")
     @ResponseBody
@@ -72,6 +87,9 @@ public class MovieController {
         movieService.updateSawCount(member, movie,movieSawCount);
     }
 
+    /**
+     * 사용자의 영화 찜 등록용
+     */
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/want-movie")
     @ResponseBody
@@ -80,6 +98,9 @@ public class MovieController {
         movieService.updateWantMovie(member, movie, isWant);
     }
 
+    /**
+     * 사용자의 영화에 대한 댓글 등록용
+     */
     @NeedMemberAndMovieTitle
     @PostMapping("/movie/comment")
     @ResponseBody
@@ -88,27 +109,38 @@ public class MovieController {
         movieService.writeMovieComment(member, movie, commentDto);
     }
 
+    /**
+     * 사용자의 영화에 대한 댓글 수정용
+     */
     @PostMapping("/movie/comment/patch")
     @ResponseBody
     public void patchComment(@RequestParam("commentId") Long commentId, @ModelAttribute CommentDto.Patch commentDto){
         movieService.patchMovieComment(commentId, commentDto);
     }
 
-
+    /**
+     * 사용자의 댓글 신고용
+     */
     @PostMapping("/movie/comment/claim")
     @ResponseBody
     public void postCommentClaim(@RequestParam("commentId") Long commentId) {
         movieService.addMovieCommentClaim(commentId);
     }
 
+    /**
+     * 사용자의 댓글 삭제용
+     */
     @PostMapping("/movie/comment/delete")
     @ResponseBody
     public void deleteComment(@RequestParam("commentId") Long commentId) {
         movieService.deleteMovieComment(commentId);
     }
 
-    //==========================관리자 화면 컨트롤러=========================
+    //==========================관리자 요청 처리 API=========================
 
+    /**
+     * 영화 등록시 등록된 동일 제목 영화가 있는지 판단용
+     */
     @PostMapping("/admin/movie/check")
     @ResponseBody
     public int checkEmail(@RequestParam("movieTitle") String movieTitle) {
@@ -116,6 +148,9 @@ public class MovieController {
         return cnt;
     }
 
+    /**
+     * 관리자의 영화 등록용
+     */
     @PostMapping("/admin/movie")
     public String postMovie(@RequestPart("moviePoster") MultipartFile multipartFile,
                             @ModelAttribute @Valid MovieDto.Post movieDto, Model model) throws IOException {
@@ -124,10 +159,9 @@ public class MovieController {
         return "movie/movie";
     }
 
-    /** 관리자 영화 목록 조회 메서드
-     * Param page -> 관리자가 화면에서 선택한 페이지가 출력된다.
-     * Param sort -> 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
-      */
+    /**
+     * 관리자 영화 목록 조회 메서드
+     */
     @GetMapping("/admin/movie")
     public String adminGetMovies(@RequestParam("page") int page,
                                   @RequestParam(value = "sort",defaultValue = "movieId") String sort, Model model) {
@@ -136,9 +170,8 @@ public class MovieController {
         return "movie/admin/movies";
     }
 
-    /** 관리자 영화 검색 메서드
-     * Param page -> 관리자가 화면에서 선택한 페이지가 출력된다.
-     * Param sort -> 관리자가 화면에서 선택한 정렬 기준대로 출력된다.
+    /**
+     * 관리자 영화 검색 메서드
      */
     @GetMapping("/admin/movie/search")
     public String adminSearchMovies(@RequestParam(value = "page",defaultValue = "1") int page,
@@ -149,7 +182,9 @@ public class MovieController {
         return "movie/admin/movieSearchResult";
     }
 
-    // 수정할 영화 페이지 가져오기
+    /**
+     * 수정할 영화 페이지 가져오기
+     */
     @NeedMemberAndMovieTitle
     @GetMapping("/admin/movie/patch")
     public String adminGetMovie(Member member, Movie movie, Model model) {
@@ -158,7 +193,9 @@ public class MovieController {
         return "movie/admin/moviePatch";
     }
 
-    // 영화 내용 수정
+    /**
+     * 영화 내용 수정
+     */
     @PostMapping("/admin/movie/patch")
     public String adminPatchMovie(@RequestPart(value = "moviePoster",required = false) MultipartFile multipartFile,
                                   @ModelAttribute @Valid MovieDto.Patch movieDto, Model model) throws IOException {
@@ -167,7 +204,9 @@ public class MovieController {
         return "movie/movie";
     }
 
-    // 영화 삭제 메서드
+    /**
+     * 영화 삭제 메서드
+     */
     @PostMapping("/admin/movie/delete")
     @ResponseBody
     public void adminDeleteMovie(@RequestParam("movieTitle") String movieTitle) {

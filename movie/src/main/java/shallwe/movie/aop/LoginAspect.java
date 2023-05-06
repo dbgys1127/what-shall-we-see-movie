@@ -29,6 +29,11 @@ public class LoginAspect {
     private final MemberService memberService;
     private final MovieService movieService;
 
+    /**
+     * 회원 객체가 필요한 컨트롤러 용 AOP
+     * 이메일이 필요한 요청이 오면, SecurityContextHolder에서 Authentication 객체를 구한뒤, 이메일을 구한다.
+     * 이후 memberService에서 해당 이메일의 Member 객체를 받아 컨트롤러 인자값으로 전달한다.
+     */
     @Around("@annotation(shallwe.movie.aop.NeedMember)")
     public Object getMember(ProceedingJoinPoint joinPoint) throws Throwable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -44,6 +49,11 @@ public class LoginAspect {
         return resultObj;
     }
 
+    /**
+     * 회원 이메일이 필요한 컨트롤러 용 AOP
+     * 이메일이 필요한 요청이 오면, SecurityContextHolder에서 Authentication 객체를 구한뒤, 이메일을 구한다.
+     * 이후 이메일을 컨트롤러 인자값으로 전달한다.
+     */
     @Around("@annotation(shallwe.movie.aop.NeedEmail)")
     public Object getEmail(ProceedingJoinPoint joinPoint) throws Throwable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -58,6 +68,12 @@ public class LoginAspect {
         return resultObj;
     }
 
+    /**
+     * 회원 객체와 영화 객체가 필요한 컨트롤러 용 AOP
+     * 이메일이 필요한 요청이 오면, SecurityContextHolder에서 Authentication 객체를 구한뒤, 이메일을 구한다.
+     * 이후 이메일을 컨트롤러 인자값으로 전달한다.
+     * Request 값 중 영화 제목값을 구한뒤 인자로 전달한다.
+     */
     @Around("@annotation(shallwe.movie.aop.NeedMemberAndMovieTitle)")
     public Object getMemberAndMovieTitle(ProceedingJoinPoint joinPoint) throws Throwable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

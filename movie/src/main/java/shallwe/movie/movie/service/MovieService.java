@@ -45,8 +45,10 @@ public class MovieService {
     private final CommentService commentService;
     private final S3UploadService s3UploadService;
 
-
-    // ============================ 일반 유저 요청 처리 메소드 =============================
+    /**
+     * 영화 장르별 검색
+     * @param movieGenre : 입력된 장르에 맞게 영화 목록이 조회된다.
+     */
     @Cacheable(value = "searchMovie",key = "#movieGenre.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> searchMovieByGenre(String movieGenre, int page, String sort) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sort).descending());
@@ -55,6 +57,9 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,"",movieGenre);
     }
 
+    /**
+     * 영화 상세페이지 용도로 영화 제목으로 해당 객체를 가져온다.
+     */
     public MovieDto.Response pickMovie(Member member, Movie movie) {
         SawMovie sawMovie=sawMovieService.getSawMovie(member, movie);
         WantMovie wantMovie = wantMovieService.getWantMovie(member, movie);
@@ -68,6 +73,10 @@ public class MovieService {
         return movieRepDto;
     }
 
+    /**
+     * 영화 시청횟수 등록
+     * 사용자의 시청횟수가 0일때 -를 입력할 시 등록 되지 않게 한다.
+     */
     @Caching(evict = {
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
@@ -81,6 +90,10 @@ public class MovieService {
         sawMovieService.saveSawMovie(movie, member, movieSawCount);
     }
 
+    /**
+     * 영화 찜 등록
+     * @param isWant : on 이면 찜 등록, off 이면 찜 해제
+     */
     @Caching(evict = {
             @CacheEvict(value = "myWantMovie",allEntries = true,cacheManager = "contentCacheManager"),
     })
@@ -94,6 +107,9 @@ public class MovieService {
         }
     }
 
+    /**
+     * 영화에 댓글 등록
+     */
     @Caching(evict = {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
@@ -101,12 +117,20 @@ public class MovieService {
         log.info("댓글 등록 시도 -> 회원 이메일 : {}, 영화 제목 : {}",member.getEmail(),movie.getMovieTitle());
         commentService.saveMovieComment(member, movie, commentDto);
     }
+
+    /**
+     * 영화 댓글 수정
+     */
     @Caching(evict = {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
     public void patchMovieComment(Long commentId, CommentDto.Patch commentDto) {
         commentService.patchMovieComment(commentId, commentDto);
     }
+
+    /**
+     * 사용자의 댓글 신고
+     */
     @Caching(evict = {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
@@ -115,6 +139,9 @@ public class MovieService {
         commentService.addMovieCommentClaim(commentId);
     }
 
+    /**
+     * 댓글 삭제
+     */
     @Caching(evict = {
             @CacheEvict(value = "myComment",allEntries = true,cacheManager = "contentCacheManager"),
     })
@@ -122,7 +149,10 @@ public class MovieService {
         log.info("댓글 삭제 시도 -> 삭제 대상 댓글 : {}",commentId);
         commentService.deleteMovieComment(commentId);
     }
-    // ============================ 관리자 요청 처리 메소드 ==============================
+
+    /**
+     * 관리자의 영화 등록
+     */
     @Caching(evict = {
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager")
@@ -146,10 +176,9 @@ public class MovieService {
         return movieRepDto;
     }
 
-
-    /** 1.관리자 영화 목록 조회
-     * sort -> 가입일, 시청영화순, 경고수, 차단여부
-     * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
+    /**
+     * 관리자 영화 목록 조회
+     * @param sort : 정렬 기준은 가입일, 시청영화순, 경고수, 차단여부
      */
     @Cacheable(value = "allMovie",key = "#sort.concat('-').concat(#page)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> findAllMovie(int page, String sort) {
@@ -160,10 +189,8 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo);
     }
 
-    /** 2. 관리자 영화 검색 조회
-     * title -> 관리자의 검색 대상
-     * sort -> 등록일 평균 시청횟수순 정렬
-     * page -> 화면에서 회원이 선택한 페이지가 넘어 온다.
+    /**
+     * 관리자 영화 검색 조회
      */
     @Cacheable(value = "searchMovie",key = "#title.concat('-').concat(#page).concat('-').concat(#sort)",cacheManager = "contentCacheManager",unless = "#result == null")
     public PagingResponseDto<MovieDto.Response> searchMovieByTitle(String title, int page, String sort) {
@@ -175,6 +202,9 @@ public class MovieService {
         return new PagingResponseDto<>(movieRepDtoList,pageInfo,title,"");
     }
 
+    /**
+     * 관리자의 영화 수정
+     */
     @Caching(evict = {
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
@@ -207,6 +237,9 @@ public class MovieService {
         return getMovieRepDto(movie);
     }
 
+    /**
+     * 영화 삭제
+     */
     @Caching(evict = {
             @CacheEvict(value = "allMovie",allEntries = true,cacheManager = "contentCacheManager"),
             @CacheEvict(value = "searchMovie",allEntries = true,cacheManager = "contentCacheManager"),
@@ -221,8 +254,9 @@ public class MovieService {
         return findAllMovie(0, "movieId");
     }
 
-    //================================= 중복 제거용 메소드 ================================
-
+    /**
+     * 영화 제목이 중복되면 1을 리턴해 중복임을 안내하는 화면이 그려진다.
+     */
     public int verifyExistsTitle(String movieTitle) {
         Optional<Movie> movie = movieRepository.findByMovieTitle(movieTitle);
         log.info("영화 DB 중복 조회 시도 -> 영화 제목 : {}",movieTitle);

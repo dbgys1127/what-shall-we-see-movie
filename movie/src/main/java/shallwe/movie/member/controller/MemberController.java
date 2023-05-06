@@ -29,8 +29,11 @@ public class MemberController {
     private final MemberService memberService;
 
 
-    //==========================사용자 화면 컨트롤러=========================
+    //==========================사용자 요청 처리 API=========================
 
+    /**
+     * 회원 가입시 이메일 중복 체크용
+     */
     @PostMapping("/email/check")
     @ResponseBody
     public int checkEmail(@RequestParam("email") String email) {
@@ -38,6 +41,9 @@ public class MemberController {
         return cnt;
     }
 
+    /**
+     * 회원 가입용
+     */
     @PostMapping("/join")
     public String join(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         MemberDto.Response saveMember = memberService.createMember(memberDto);
@@ -46,6 +52,9 @@ public class MemberController {
         return "member/login";
     }
 
+    /**
+     * 마이페이지 조회용
+     */
     @NeedMember
     @GetMapping("/mypage")
     public String mypage(Member member, Model model) {
@@ -54,6 +63,9 @@ public class MemberController {
         return "member/mypage";
     }
 
+    /**
+     * 나의 이미지 수정용
+     */
     @NeedMember
     @PostMapping("/mypage/myImage")
     public String patchMyImage(Member member,@RequestPart("myImage") MultipartFile multipartFile) throws IOException {
@@ -61,6 +73,9 @@ public class MemberController {
         return "redirect:/mypage";
     }
 
+    /**
+     * 비밀번호 수정용
+     */
     @NeedMember
     @PostMapping("/mypage/myPassword")
     @ResponseBody
@@ -68,6 +83,9 @@ public class MemberController {
         memberService.updateMemberPassword(memberDto, member);
     }
 
+    /**
+     * 마이 페이지에서 내가 시청한 영화를 더 조회 하고 싶을때 사용
+     */
     @NeedMember
     @GetMapping("/mypage/saw-movie")
     public String getMySawMovieList(Member member, @RequestParam(value = "page", defaultValue = "1") int page,
@@ -77,6 +95,9 @@ public class MemberController {
         return "member/sawMovieList";
     }
 
+    /**
+     * 마이 페이지에서 내가 찜한 영화를 더 조회 하고 싶을때 사용
+     */
     @NeedMember
     @GetMapping("/mypage/want-movie")
     public String getMyWantMovieList(Member member, @RequestParam(value = "page", defaultValue = "1") int page,
@@ -86,6 +107,9 @@ public class MemberController {
         return "member/wantMovieList";
     }
 
+    /**
+     * 마이 페이지에서 나의 댓글을 더 조회 하고 싶을때 사용
+     */
     @NeedEmail
     @GetMapping("/mypage/comment")
     public String getMyCommentList(String email, @RequestParam(value = "page", defaultValue = "1") int page,
@@ -96,8 +120,11 @@ public class MemberController {
         return "member/commentList";
     }
 
-    //==========================관리자 화면 컨트롤러=========================
+    //==========================관리자 요청 처리 컨트롤러=========================
 
+    /**
+     * 관리자가 경고 주고 싶은 회원을 클릭하면 넘아가는 페이지
+     */
     @GetMapping("/admin/member/warning-page")
     public String adminGetWarning(@RequestParam("email") String email, Model model) {
         MemberDto.Response memberRepDto = memberService.pickMember(email);
@@ -107,18 +134,29 @@ public class MemberController {
         return "member/admin/warning";
     }
 
+    /**
+     * 관리자가 회원에게 경고 등록
+     */
     @PostMapping("/admin/member/warning")
     @ResponseBody
     public void adminPatchWarning(@RequestParam("email") String email,
                                     @RequestParam(value = "warning", defaultValue = "off") String warning) {
         memberService.giveWarning(email, warning);
     }
+
+    /**
+     * 관리자가 회원을 차단/활성 등록
+     */
     @PostMapping("/admin/member/block")
     @ResponseBody
     public void adminPatchBlock(@RequestParam("email") String email,
                                   @RequestParam(value = "block", defaultValue = "off") String block) {
         memberService.giveBlock(email,block);
     }
+
+    /**
+     * 관리자용 회원 목록 조회
+     */
     @GetMapping("/admin/member")
     public String adminGetMembers(@RequestParam(value = "page", defaultValue = "1") int page,
                                   @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
@@ -128,6 +166,9 @@ public class MemberController {
         return "member/admin/member";
     }
 
+    /**
+     * 관리자용 회원 검색
+     */
     @GetMapping("/admin/member/search")
     public String getMemberBySearch(@RequestParam(value = "page", defaultValue = "1") int page,
                                     @RequestParam(value = "email", required = false) String email, Model model) {
@@ -136,6 +177,9 @@ public class MemberController {
         return "member/admin/memberSearchResult";
     }
 
+    /**
+     * 관리자 조회
+     */
     @GetMapping("/admin/administrator")
     public String adminGetAdmins(@RequestParam(value = "page", defaultValue = "1") int page,
                                  @RequestParam(value = "sort", defaultValue = "memberId") String sort, Model model) {
@@ -144,6 +188,9 @@ public class MemberController {
         return "member/admin/admins";
     }
 
+    /**
+     * 관리자 검색
+     */
     @GetMapping("/admin/administrator/search")
     public String adminGetAdminsBySearch(@RequestParam(value = "page", defaultValue = "1") int page,
                                          @RequestParam(value = "email", required = false) String email, Model model) {
@@ -152,6 +199,9 @@ public class MemberController {
         return "member/admin/admins";
     }
 
+    /**
+     * 관리자 추가
+     */
     @PostMapping("/admin/administrator/add")
     public String adminAddAdmin(@ModelAttribute @Valid MemberDto.Post memberDto, Model model) {
         MemberDto.Response saveMember = memberService.createAdmin(memberDto);
@@ -160,12 +210,18 @@ public class MemberController {
         return "member/join";
     }
 
+    /**
+     * 관리자 삭제
+     */
     @PostMapping("/admin/administrator/delete")
     @ResponseBody
     public void adminDeleteAdmin(@RequestParam("email") String email) {
         PagingResponseDto<MemberDto.Response> pageRepDto = memberService.deleteAdmin(email);
     }
 
+    /**
+     * 관리자가 신고된 댓글을 파악하기 위한 API
+     */
     @GetMapping("/admin/comment")
     public String adminGetCommentList(@RequestParam(value = "page", defaultValue = "1") int page,
                                       @RequestParam(value = "sort",defaultValue = "claimCount") String sort,
